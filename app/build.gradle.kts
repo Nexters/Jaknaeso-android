@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.jaknaeso.app"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.jaknaeso.app"
@@ -30,13 +30,26 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.7"
+    }
+    buildFeatures {
+        compose = true
+    }
+    packaging {
+        resources {
+            excludes += "META-INF/gradle/incremental.annotation.processors"
+        }
+    }
 }
 
 dependencies {
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    implementation(libs.bundles.basic)
+    implementation(libs.bundles.hilt)
+    implementation(libs.bundles.androidx.hilt)
+    implementation(libs.bundles.ui)
+    implementation(libs.bundles.lifecycle)
+    implementation(libs.bundles.network)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
