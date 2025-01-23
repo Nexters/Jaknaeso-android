@@ -1,7 +1,14 @@
+import java.util.*
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
 }
+
+val localProperties = Properties().apply {
+    load(project.rootProject.file("./local.properties").inputStream())
+}
+
 
 android {
     namespace = "com.jaknaeso.app"
@@ -15,8 +22,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "LIBRARY_PACKAGE_NAME", "\"com.jaknaeso.app\"")
+        buildConfigField("String", "BASE_URL", localProperties.getProperty("BASE_URL"))
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -35,6 +43,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     packaging {
         resources {
@@ -44,6 +53,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.datastore)
     implementation(libs.bundles.basic)
     implementation(libs.bundles.hilt)
     implementation(libs.bundles.androidx.hilt)
