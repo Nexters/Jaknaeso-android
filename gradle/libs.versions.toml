@@ -23,6 +23,8 @@ ui-tooling-version = "1.6.0"
 ui-version = "1.1.0"
 activity = "1.9.3"
 constraintlayout = "2.2.0"
+gms-google-services = "4.4.2"
+firebase = "33.8.0"
 
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat-version" }
@@ -53,16 +55,19 @@ sandwich = { group = "com.github.skydoves", name = "sandwich", version.ref = "sa
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore-version" }
 androidx-activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase" }
 
 [bundles]
-basic = ["appcompat","androidx-core-ktx"]
+basic = ["appcompat", "androidx-core-ktx"]
 hilt = ["hilt-android", "hilt-android-compiler"]
 androidx-hilt = ["hilt-navigation-compose", "hilt-viewmodel"]
-ui = ["ui-tooling-preview", "ui-tooling", "ui", "navigation-compose","material","material3","google-material"]
+ui = ["ui-tooling-preview", "ui-tooling", "ui", "navigation-compose", "material", "material3", "google-material"]
 lifecycle = ["lifecycle-runtime", "lifecycle-viewmodel-compose", "lifecycle-viewmodel-ktx"]
 network = ["retrofit", "retrofit-gson", "sandwich", "logging-interceptor", "kotlinx-serialization-json"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-gms-services = { id = "com.google.gms.google-services", version.ref = "gms-google-services" }
 

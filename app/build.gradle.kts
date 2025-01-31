@@ -3,6 +3,7 @@ import java.util.*
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.gms.services)
 }
 
 val localProperties = Properties().apply {
@@ -53,6 +54,8 @@ android {
 }
 
 dependencies {
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
     implementation(libs.datastore)
     implementation(libs.bundles.basic)
     implementation(libs.bundles.hilt)
