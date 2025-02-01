@@ -25,11 +25,21 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "LIBRARY_PACKAGE_NAME", "\"com.jaknaeso.app\"")
         buildConfigField("String", "BASE_URL", localProperties.getProperty("BASE_URL"))
+        buildConfigField("String", "NATIVE_APP_KEY", localProperties.getProperty("NATIVE_APP_KEY"))
+        manifestPlaceholders["REDIRECTION_PATH"] = localProperties["REDIRECTION_PATH"] as String
     }
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+    }
+    signingConfigs {
+        create("releaseKey") {
+            keyAlias = localProperties.getProperty("KEY_ALIAS")
+            keyPassword = localProperties.getProperty("KEY_PASSWORD")
+            storeFile = file("./releaseKey")
+            storePassword = localProperties.getProperty("STORE_PASSWORD")
         }
     }
     compileOptions {
@@ -54,7 +64,8 @@ android {
 }
 
 dependencies {
-    implementation(platform(libs.firebase.bom))
+    implementation(libs.kakao.all)
+    implementation(libs.firebase.messaging)
     implementation(libs.firebase.analytics)
     implementation(libs.datastore)
     implementation(libs.bundles.basic)
