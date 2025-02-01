@@ -1,4 +1,4 @@
-package com.jaknaeso.app
+package com.jaknaeso.app.presentation
 
 import android.os.Bundle
 import androidx.activity.compose.setContent

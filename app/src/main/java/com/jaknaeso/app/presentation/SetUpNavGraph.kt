@@ -1,4 +1,4 @@
-package com.jaknaeso.app
+package com.jaknaeso.app.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
