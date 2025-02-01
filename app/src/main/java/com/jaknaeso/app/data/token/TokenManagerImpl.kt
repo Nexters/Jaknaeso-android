@@ -29,18 +29,18 @@ val Context.datastore: DataStore<Preferences> by preferencesDataStore(
     name = BuildConfig.LIBRARY_PACKAGE_NAME
 )
 
-class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context):TokenManager {
+class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context) : TokenManager {
 
     private val dataStore = context.datastore
 
     companion object {
-        private val AUTH_TOKEN_KEY = stringPreferencesKey("AUTH_TOKEN")
-        private val REMEMBERED_TOKEN_KEY = stringPreferencesKey("REMEMBERED_TOKEN")
+        private val ACCESS_TOKEN_KEY = stringPreferencesKey("AUTH_TOKEN")
+        private val REFRESH_TOKEN_KEY = stringPreferencesKey("REMEMBERED_TOKEN")
     }
 
     override fun getAuthTokenForHeader(): String {
         val token: String? = runBlocking {
-            getAuthToken().first()
+            getAccessToken().first()
         }
         if (token != null) {
             Log.d("TokenManagerImpl", "getAuthTokenForHeader: AuthToken(accessToken):${token}")
@@ -48,28 +48,40 @@ class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context)
         return token ?: ""
     }
 
-    override suspend fun getAuthToken(): Flow<String?> {
+    override suspend fun getAccessToken(): Flow<String?> {
         return dataStore.data.map { preferences ->
-            Log.d("TokenManagerImpl", "getAuthToken: AuthToken(accessToken):${preferences[AUTH_TOKEN_KEY]}")
-            preferences[AUTH_TOKEN_KEY]
+            Log.d("TokenManagerImpl", "getAuthToken: AuthToken(accessToken):${preferences[ACCESS_TOKEN_KEY]}")
+            preferences[ACCESS_TOKEN_KEY]
         }
     }
 
-    override suspend fun getRememberedToken(): Flow<String?> {
+    override suspend fun getRefreshToken(): Flow<String?> {
         return dataStore.data.map { preferences ->
-            preferences[REMEMBERED_TOKEN_KEY]
+            preferences[REFRESH_TOKEN_KEY]
         }
     }
 
-    override suspend fun saveAuthToken(token: String) {
+    override suspend fun saveAccessToken(token: String) {
         dataStore.edit { preferences ->
-            preferences[AUTH_TOKEN_KEY] = token
+            preferences[ACCESS_TOKEN_KEY] = token
         }
     }
 
-    override suspend fun saveRememberedToken(token: String) {
+    override suspend fun saveRefreshToken(token: String) {
         dataStore.edit { preferences ->
-            preferences[REMEMBERED_TOKEN_KEY] = token
+            preferences[REFRESH_TOKEN_KEY] = token
+        }
+    }
+
+    override suspend fun deleteAccessToken() {
+        dataStore.edit { preferences ->
+            preferences.remove(ACCESS_TOKEN_KEY)
+        }
+    }
+
+    override suspend fun deleteRefreshToken() {
+        dataStore.edit { preferences ->
+            preferences.remove(REFRESH_TOKEN_KEY)
         }
     }
 }
