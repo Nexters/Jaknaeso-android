@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.gms.services)
+    alias(libs.plugins.hilt.android.gradle)
+    kotlin("kapt")
 }
 
 val localProperties = Properties().apply {
@@ -67,10 +69,12 @@ dependencies {
     implementation(libs.kakao.all)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.analytics)
+    kapt(libs.hilt.viewmodel)
+    kapt(libs.hilt.android.compiler)
+
     implementation(libs.datastore)
     implementation(libs.bundles.basic)
     implementation(libs.bundles.hilt)
-    implementation(libs.bundles.androidx.hilt)
     implementation(libs.bundles.ui)
     implementation(libs.bundles.lifecycle)
     implementation(libs.bundles.network)

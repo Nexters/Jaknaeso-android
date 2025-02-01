@@ -63,8 +63,7 @@ kakao-all = { group = "com.kakao.sdk", name = "v2-all", version.ref = "kakao" }
 
 [bundles]
 basic = ["appcompat", "androidx-core-ktx"]
-hilt = ["hilt-android", "hilt-android-compiler"]
-androidx-hilt = ["hilt-navigation-compose", "hilt-viewmodel"]
+hilt = ["hilt-android", "hilt-compiler", "hilt-navigation-compose"]
 ui = ["ui-tooling-preview", "ui-tooling", "ui", "navigation-compose", "material", "material3", "google-material"]
 lifecycle = ["lifecycle-runtime", "lifecycle-viewmodel-compose", "lifecycle-viewmodel-ktx"]
 network = ["retrofit", "retrofit-gson", "sandwich", "logging-interceptor", "kotlinx-serialization-json"]
@@ -73,4 +72,4 @@ network = ["retrofit", "retrofit-gson", "sandwich", "logging-interceptor", "kotl
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-gms-services = { id = "com.google.gms.google-services", version.ref = "gms-google-services" }
-
+hilt-android-gradle = { id = "com.google.dagger.hilt.android", version.ref = "hilt-version" }
