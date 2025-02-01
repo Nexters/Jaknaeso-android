@@ -12,11 +12,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun loginScreen(navigateToHome: () -> Unit, viewmodel: LoginViewmodel = hiltViewModel()) {
+fun LoginScreen(navigateToHome: () -> Unit, viewmodel: LoginViewmodel = hiltViewModel()) {
     LaunchedEffect(Unit) {
         viewmodel.effects.collect { effects ->
             when (effects) {
-                LoginEffect.NavigateToHome -> navigateToHome
+                LoginEffect.NavigateToHome -> navigateToHome()
             }
         }
     }
