@@ -1,7 +1,8 @@
 package com.jaknaeso.app.domain.repository
 
-import com.jaknaeso.app.data.model.Response
+import com.jaknaeso.app.data.model.ApiResponse
+import com.jaknaeso.app.data.model.response.MemberTokenResponse
 
 interface LoginRepository {
-    fun postAccessToken(token: String): Response<Any>
+    fun getMemberToken(token: String): ApiResponse<MemberTokenResponse>
 }
