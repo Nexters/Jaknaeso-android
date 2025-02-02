@@ -6,13 +6,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jaknaeso.app.R
-import com.jaknaeso.app.designSystem.ColorPalette
-import com.jaknaeso.app.designSystem.LoopyFilledButton
+import com.jaknaeso.app.designSystem.component.LoopyFilledButton
+import com.jaknaeso.app.designSystem.theme.ColorPalette
 
 @Composable
 fun LoginScreen(navigateToHome: () -> Unit, viewmodel: LoginViewmodel = hiltViewModel()) {
@@ -24,7 +23,7 @@ fun LoginScreen(navigateToHome: () -> Unit, viewmodel: LoginViewmodel = hiltView
             }
         }
     }
-    
+
     Column(
         modifier = Modifier.fillMaxSize().padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
