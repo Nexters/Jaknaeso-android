@@ -79,7 +79,7 @@ class LoginViewmodel @Inject constructor(
                 if (result.result == ResponseResult.SUCCESS.name) {
                     emit(result.data)
                 } else {
-                    //throw Exception(message = result.error?.message ?: "")
+                    throw Exception(message = result.error?.message ?: "")
                 }
             }.asResult()
                 .collectLatest {
