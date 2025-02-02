@@ -2,6 +2,6 @@ package com.jaknaeso.app.data.model
 
 data class Error(
     val code: ErrorCode,
-    val messge: String,
+    val message: String,
     val data: Any?
 )

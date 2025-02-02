@@ -3,7 +3,7 @@ package com.jaknaeso.app.presentation.home.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.jaknaeso.app.presentation.Route
+import com.jaknaeso.app.presentation.navigation.Route
 
 fun NavController.navigateToHome() = navigate("${Route.Home}")
 

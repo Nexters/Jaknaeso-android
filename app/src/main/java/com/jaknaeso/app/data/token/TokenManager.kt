@@ -4,8 +4,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface TokenManager {
     fun getAuthTokenForHeader(): String
-    suspend fun getAuthToken(): Flow<String?>
-    suspend fun getRememberedToken(): Flow<String?>
-    suspend fun saveAuthToken(token: String)
-    suspend fun saveRememberedToken(token: String)
+    suspend fun getAccessToken(): Flow<String?>
+    suspend fun getRefreshToken(): Flow<String?>
+    suspend fun saveAccessToken(token: String)
+    suspend fun saveRefreshToken(token: String)
+    suspend fun deleteAccessToken()
+    suspend fun deleteRefreshToken()
 }

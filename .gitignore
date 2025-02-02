@@ -14,5 +14,7 @@
 .cxx
 local.properties
 app/google-services.json
-app/releaseKey
+app/release.keystore
+app/debug.keystore
 app/release
+app/debug
