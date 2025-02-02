@@ -12,8 +12,11 @@ import javax.inject.Inject
 class MainViewmodel @Inject constructor(private val checkLoginedUserUseCase: CheckLoginedUserUseCase) :
     BaseViewModel<MainEvent, MainState, MainEffect>() {
 
-    override fun createInitialState(): MainState {
+    init {
         branchInitialRoute()
+    }
+
+    override fun createInitialState(): MainState {
         return MainState()
     }
 
@@ -23,9 +26,9 @@ class MainViewmodel @Inject constructor(private val checkLoginedUserUseCase: Che
     fun branchInitialRoute() {
         viewModelScope.launch {
             if (checkLoginedUserUseCase.isLoginedUser()) {
-                setState { copy(isLoginedUser = isLoginedUser, initialRoute = Route.Home.name) }
+                setState { copy(initialRoute = Route.Home.name) }
             } else {
-                setState { copy(isLoginedUser = isLoginedUser, initialRoute = Route.Login.name) }
+                setState { copy(initialRoute = Route.Login.name) }
             }
         }
     }

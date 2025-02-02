@@ -8,8 +8,7 @@ import com.jaknaeso.app.presentation.navigation.Route
 sealed interface MainEvent : UiEvent
 
 data class MainState(
-    val isLoginedUser: Boolean = true,
-    val initialRoute: String = Route.Home.name
+    val initialRoute: String = Route.Login.name
 ) : UiState
 
 sealed interface MainEffect : UiEffect

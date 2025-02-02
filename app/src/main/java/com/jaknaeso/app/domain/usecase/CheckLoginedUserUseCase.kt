@@ -7,9 +7,9 @@ class CheckLoginedUserUseCase @Inject constructor(private val loginRepository: L
     suspend fun isLoginedUser(): Boolean {
         val accessToken = loginRepository.getAccessToken()
         val refreshToken = loginRepository.getRefreshToken()
-        if (accessToken.isNullOrBlank() && refreshToken.isNullOrBlank()) {
-            return true
+        if (accessToken.isNullOrBlank() || refreshToken.isNullOrBlank()) {
+            return false
         }
-        return false
+        return true
     }
 }
