@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -19,9 +20,10 @@ import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
-fun LoopyChip(
+fun LoopySuggestionChip(
     label: String,
-    enabled:Boolean = true,
+    shape: Shape,
+    enabled: Boolean = true,
     labelStyle: TextStyle = TextStyles.subTitle03,
     labelIconColor: Color = ColorPalette.PrimaryBlue500,
     labelColor: Color = ColorPalette.PrimaryBlue500,
@@ -30,19 +32,25 @@ fun LoopyChip(
     disabledIconColor: Color = ColorPalette.Neautral700,
     disabledColor: Color = ColorPalette.Neautral200,
 ) {
-    val borderColor = remember { mutableStateOf(if(enabled) filledColor else disabledColor) }
+    val borderColor = remember { mutableStateOf(if (enabled) filledColor else disabledColor) }
 
-    SuggestionChip(modifier = Modifier.height(33.dp), label = { Text(label, style = labelStyle, color = labelColor) }, onClick = {}, colors = ChipColors(
-        containerColor = filledColor,
-        labelColor = filledColor,
-        leadingIconContentColor = filledColor,
-        trailingIconContentColor = Color.Cyan,
-        disabledContainerColor = disabledColor,
-        disabledLabelColor = disabledLabelColor,
-        disabledLeadingIconContentColor = disabledIconColor,
-        disabledTrailingIconContentColor = Color.Cyan
-    ), enabled = enabled,
-        border = BorderStroke(width = 0.dp, color = borderColor.value), shape = RoundedCornerShape(8.dp)
+    SuggestionChip(
+        modifier = Modifier.height(33.dp),
+        label = { Text(label, style = labelStyle, color = labelColor) },
+        onClick = {},
+        colors = ChipColors(
+            containerColor = filledColor,
+            labelColor = filledColor,
+            leadingIconContentColor = filledColor,
+            trailingIconContentColor = Color.Cyan,
+            disabledContainerColor = disabledColor,
+            disabledLabelColor = disabledLabelColor,
+            disabledLeadingIconContentColor = disabledIconColor,
+            disabledTrailingIconContentColor = Color.Cyan
+        ),
+        enabled = enabled,
+        border = BorderStroke(width = 0.dp, color = borderColor.value),
+        shape = shape
     )
 }
 
@@ -50,7 +58,13 @@ fun LoopyChip(
 @Composable
 fun PreviewLoopChip() {
     Column {
-        LoopyChip("N회차 질문", labelStyle = TextStyles.subTitle03)
-        LoopyChip("1번째 캐릭터", labelStyle = TextStyles.subTitle04, filledColor = ColorPalette.Neautral200, labelColor = ColorPalette.Neautral700)
+        LoopySuggestionChip("N회차 질문", labelStyle = TextStyles.subTitle03, shape = RoundedCornerShape(8.dp))
+        LoopySuggestionChip(
+            "1번째 캐릭터",
+            labelStyle = TextStyles.subTitle04,
+            filledColor = ColorPalette.Neautral200,
+            labelColor = ColorPalette.Neautral700,
+            shape = RoundedCornerShape(8.dp)
+        )
     }
 }
