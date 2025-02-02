@@ -1,4 +1,4 @@
-package com.jaknaeso.app.designSystem
+package com.jaknaeso.app.designSystem.theme
 
 import androidx.compose.ui.graphics.Color
 

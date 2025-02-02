@@ -1,4 +1,4 @@
-package com.jaknaeso.app.designSystem
+package com.jaknaeso.app.designSystem.component
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +15,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jaknaeso.app.R
+import com.jaknaeso.app.designSystem.theme.ColorPalette
+import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
 fun LoopyFilledButton(
