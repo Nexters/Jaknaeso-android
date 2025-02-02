@@ -15,8 +15,16 @@ fun NavGraphBuilder.loginScreen(navigateToHome: () -> Unit) {
     }
 }
 
-fun NavGraphBuilder.homeScreen() {
+fun NavGraphBuilder.homeScreen(
+    navigateToHome: () -> Unit,
+    navigateToReport: () -> Unit,
+    navigateToProfile: () -> Unit
+) {
     composable(route = "${Route.Home}") {
-        HomeScreen()
+        HomeScreen(
+            navigateToHome = navigateToHome,
+            navigateToReport = navigateToReport,
+            navigateToProfile = navigateToProfile
+        )
     }
 }

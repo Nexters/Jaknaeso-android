@@ -14,6 +14,6 @@ fun SetUpNavGraph(
         startDestination = startDestination
     ) {
         loginScreen(navigateToHome = navController::navigateToHome)
-        homeScreen()
+        homeScreen(navigateToHome = navController::navigateToHome, navigateToReport = {}, navigateToProfile = {})
     }
 }
