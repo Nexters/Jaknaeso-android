@@ -31,10 +31,11 @@ fun LoopySuggestionChip(
     disabledLabelColor: Color = ColorPalette.Neautral700,
     disabledIconColor: Color = ColorPalette.Neautral700,
     disabledColor: Color = ColorPalette.Neautral200,
+    modifier: Modifier? = null,
 ) {
     val borderColor = remember { mutableStateOf(if (enabled) filledColor else disabledColor) }
     SuggestionChip(
-        modifier = Modifier.height(33.dp),
+        modifier = Modifier.height(33.dp).then(modifier ?: Modifier),
         label = { Text(label, style = labelStyle, color = labelColor) },
         onClick = {},
         colors = ChipColors(
