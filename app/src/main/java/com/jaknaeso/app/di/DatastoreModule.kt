@@ -1,6 +1,8 @@
 package com.jaknaeso.app.di
 
+import com.jaknaeso.app.data.datastore.LoginLocalDatastore
 import com.jaknaeso.app.data.datastore.LoginRemoteDatastore
+import com.jaknaeso.app.data.datastoreImpl.LoginLocalDatastoreImpl
 import com.jaknaeso.app.data.datastoreImpl.LoginRemoteDatastoreImpl
 import dagger.Binds
 import dagger.Module
@@ -13,5 +15,9 @@ import javax.inject.Singleton
 interface DatastoreModule {
     @Singleton
     @Binds
-    fun provideLoginDatastore(loginDatastoreImpl: LoginRemoteDatastoreImpl): LoginRemoteDatastore
+    fun provideLoginRemoteDatastore(loginRemoteDatastoreImpl: LoginRemoteDatastoreImpl): LoginRemoteDatastore
+
+    @Singleton
+    @Binds
+    fun provideLoginLocalDatastore(loginLocalDatastoreImpl: LoginLocalDatastoreImpl): LoginLocalDatastore
 }
