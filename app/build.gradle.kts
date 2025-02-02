@@ -30,18 +30,20 @@ android {
         buildConfigField("String", "NATIVE_APP_KEY", localProperties.getProperty("NATIVE_APP_KEY"))
         manifestPlaceholders["REDIRECTION_PATH"] = localProperties["REDIRECTION_PATH"] as String
     }
+    signingConfigs {
+        create("release") {
+            keyAlias = localProperties.getProperty("KEY_ALIAS")
+            keyPassword = localProperties.getProperty("KEY_PASSWORD")
+            storeFile = file("./release.keystore")
+            storePassword = localProperties.getProperty("STORE_PASSWORD")
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-    }
-    signingConfigs {
-        create("releaseKey") {
-            keyAlias = localProperties.getProperty("KEY_ALIAS")
-            keyPassword = localProperties.getProperty("KEY_PASSWORD")
-            storeFile = file("./releaseKey")
-            storePassword = localProperties.getProperty("STORE_PASSWORD")
+            isDebuggable = false
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
