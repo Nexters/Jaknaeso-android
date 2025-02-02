@@ -20,7 +20,7 @@ import com.jaknaeso.app.R
 fun LoopyFilledButton(
     text: String,
     icon: Painter? = null,
-    iconColor:Color = Color.White,
+    iconColor: Color = Color.White,
     onClick: () -> Unit,
     modifier: Modifier? = null,
     enabled: Boolean = true,
@@ -44,12 +44,18 @@ fun LoopyFilledButton(
     ) {
         Row {
             if (icon != null) {
-                Icon(painter = icon, tint = iconColor, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
+                Icon(
+                    painter = icon,
+                    tint = iconColor,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
             }
             Text("${text}", color = textColor, style = textStyle)
         }
     }
 }
+
 
 @Preview
 @Composable
