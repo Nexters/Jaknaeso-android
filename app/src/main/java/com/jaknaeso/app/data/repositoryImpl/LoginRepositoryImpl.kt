@@ -17,6 +17,14 @@ class LoginRepositoryImpl @Inject constructor(
         return loginRemoteDatastore.getMemberToken(request)
     }
 
+    override suspend fun getAccessToken(): String? {
+        return loginLocalDatastore.getAccessToken()
+    }
+
+    override suspend fun getRefreshToken(): String? {
+        return loginLocalDatastore.getRefreshToken()
+    }
+
     override suspend fun saveAccessToken(token: String) {
         loginLocalDatastore.saveAccessToken(token)
     }

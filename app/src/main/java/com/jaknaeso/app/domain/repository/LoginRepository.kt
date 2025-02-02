@@ -6,6 +6,8 @@ import com.jaknaeso.app.data.model.response.MemberTokenResponse
 
 interface LoginRepository {
     suspend fun getMemberToken(request: TokenRequest): ApiResponse<MemberTokenResponse>
+    suspend fun getAccessToken(): String?
+    suspend fun getRefreshToken(): String?
     suspend fun saveAccessToken(token: String)
     suspend fun saveRefreshToken(token: String)
     suspend fun deleteAccessToken(token: String)
