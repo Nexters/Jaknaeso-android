@@ -15,12 +15,18 @@ fun SetUpNavGraph(
     ) {
         loginScreen(navigateToHome = navController::navigateToHome)
         homeScreen(
-            navigateToHome = navController::navigateToHome,
             navigateToReport = navController::navigateToReport,
-            navigateToProfile = {},
+            navigateToProfile = navController::navigateToProfile,
             navigateToBalanceRound = navController::navigateToBalanceRound
         )
         balanceRoundScreen(navigateToHome = navController::navigateToHome)
-        reportScreen(navigateToHome = navController::navigateToHome, navigateToReport = {}, navigateToProfile = {})
+        reportScreen(
+            navigateToHome = navController::navigateToHome,
+            navigateToProfile = navController::navigateToProfile
+        )
+        profileScreen(
+            navigateToHome = navController::navigateToHome,
+            navigateToReport = navController::navigateToReport
+        )
     }
 }

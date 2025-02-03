@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun ReportScreen(
     navigateToHome: () -> Unit,
-    navigateToReport: () -> Unit,
     navigateToProfile: () -> Unit,
     viewmodel: ReportViewmodel = hiltViewModel()
 ) {
@@ -104,5 +103,5 @@ fun ReportScreen(
 @Preview
 @Composable
 fun ReportScreenPreview() {
-    ReportScreen({}, {}, {})
+    ReportScreen({}, {})
 }

@@ -40,7 +40,6 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun HomeScreen(
-    navigateToHome: () -> Unit,
     navigateToReport: () -> Unit,
     navigateToProfile: () -> Unit,
     navigateToBalanceRound: (roundIndex: String) -> Unit,
@@ -63,7 +62,7 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral100),
         bottomBar = {
             LoopyBottomNavBar(
-                navigateToHome = navigateToHome,
+                navigateToHome = {},
                 navigateToReport = navigateToReport,
                 navigateToProfile = navigateToProfile
             )

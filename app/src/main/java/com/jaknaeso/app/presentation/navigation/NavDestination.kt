@@ -9,15 +9,13 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.jaknaeso.app.designSystem.theme.TextStyles
-import com.jaknaeso.app.presentation.view.BalanceRoundScreen
-import com.jaknaeso.app.presentation.view.HomeScreen
-import com.jaknaeso.app.presentation.view.LoginScreen
-import com.jaknaeso.app.presentation.view.ReportScreen
+import com.jaknaeso.app.presentation.view.*
 
 fun NavController.navigateToLogin() = navigate("${Route.Login}")
 fun NavController.navigateToHome() = navigate("${Route.Home}")
 fun NavController.navigateToBalanceRound(roundIndex: String) = navigate("${Route.BalanceRound}/${roundIndex}")
 fun NavController.navigateToReport() = navigate("${Route.Report}")
+fun NavController.navigateToProfile() = navigate("${Route.Profile}")
 
 fun NavGraphBuilder.loginScreen(navigateToHome: () -> Unit) {
     composable(route = "${Route.Login}") {
@@ -26,14 +24,12 @@ fun NavGraphBuilder.loginScreen(navigateToHome: () -> Unit) {
 }
 
 fun NavGraphBuilder.homeScreen(
-    navigateToHome: () -> Unit,
     navigateToReport: () -> Unit,
     navigateToProfile: () -> Unit,
     navigateToBalanceRound: (roundIndex: String) -> Unit
 ) {
     composable(route = "${Route.Home}") {
         HomeScreen(
-            navigateToHome = navigateToHome,
             navigateToReport = navigateToReport,
             navigateToProfile = navigateToProfile,
             navigateToBalanceRound = navigateToBalanceRound
@@ -59,14 +55,24 @@ fun NavGraphBuilder.balanceRoundScreen(
 
 fun NavGraphBuilder.reportScreen(
     navigateToHome: () -> Unit,
-    navigateToReport: () -> Unit,
     navigateToProfile: () -> Unit,
 ) {
     composable(route = "${Route.Report}") {
         ReportScreen(
             navigateToHome = navigateToHome,
-            navigateToReport = navigateToReport,
             navigateToProfile = navigateToProfile,
+        )
+    }
+}
+
+fun NavGraphBuilder.profileScreen(
+    navigateToHome: () -> Unit,
+    navigateToReport: () -> Unit,
+) {
+    composable(route = "${Route.Profile}") {
+        ProfileScreen(
+            navigateToHome = navigateToHome,
+            navigateToReport = navigateToReport,
         )
     }
 }
