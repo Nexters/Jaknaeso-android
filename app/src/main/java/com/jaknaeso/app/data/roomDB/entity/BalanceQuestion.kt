@@ -12,14 +12,14 @@ import androidx.room.PrimaryKey
             entity = Round::class,
             parentColumns = ["roundIndex"],
             childColumns = ["roundIndex"],
-            onDelete = ForeignKey.CASCADE // 🔥 Round 삭제 시 관련 질문 삭제
+            onDelete = ForeignKey.CASCADE // Round 삭제 시 관련 질문 삭제
         )
     ],
-    indices = [Index(value = ["roundIndex"])] // 🔥 조회 속도 최적화
+    indices = [Index(value = ["roundIndex"])]
 )
 data class BalanceQuestion(
     @PrimaryKey(autoGenerate = true) val id: Int = 0, // 개별 id 추가
-    val roundIndex: Int, // 🔥 Round의 roundIndex를 참조
+    val roundIndex: Int,
     val question: String,
     val options: List<String>
 )
