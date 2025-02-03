@@ -24,7 +24,7 @@ fun LoopyFilledButton(
     icon: Painter? = null,
     iconColor: Color = Color.White,
     onClick: () -> Unit,
-    modifier: Modifier? = null,
+    modifier: Modifier,
     enabled: Boolean = true,
     filledColor: Color = ColorPalette.PrimaryBlue500,
     disabledColor: Color = ColorPalette.Neautral300,

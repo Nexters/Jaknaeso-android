@@ -28,15 +28,16 @@ fun LoopyShapeFilledButton(
     icon: Painter? = null,
     label: String = "",
     shape: Shape,
+    modifier: Modifier,
     labelStyle: TextStyle = TextStyles.subTitle03,
     labelColor: Color = ColorPalette.PrimaryBlue500,
     filledColor: Color = ColorPalette.PrimaryBlue100,
-    iconColor:Color = ColorPalette.PrimaryBlue500,
+    iconColor: Color = ColorPalette.PrimaryBlue500,
     disabledColor: Color = ColorPalette.Neautral100,
-    disabledIconColor:Color = ColorPalette.Neautral400
+    disabledIconColor: Color = ColorPalette.Neautral400
 ) {
     val iconColor = remember { mutableStateOf(if (enabled) iconColor else disabledIconColor) }
-
+Column(modifier = modifier) {
     FilledIconButton(
         onClick = {},
         colors = IconButtonColors(
@@ -47,20 +48,21 @@ fun LoopyShapeFilledButton(
         ),
         enabled = enabled,
         shape = shape,
-        modifier = Modifier.sizeIn(minWidth = 58.dp, minHeight = 58.dp)
-    ){
-        if(icon != null){
-        Icon(painter = icon, contentDescription = null, tint = iconColor.value)
+        modifier = modifier
+    ) {
+        if (icon != null) {
+            Icon(painter = icon, contentDescription = null, tint = iconColor.value)
         }
         Text(text = label, style = labelStyle, color = labelColor)
     }
+}
 }
 
 @Preview
 @Composable
 fun PreviewFilterChip() {
     Column {
-        LoopyShapeFilledButton(enabled = true, icon = painterResource(R.drawable.ic_lock), shape = CircleShape)
-        LoopyShapeFilledButton(enabled = false, icon = painterResource(R.drawable.ic_lock), shape = CircleShape)
+        LoopyShapeFilledButton(enabled = true, icon = painterResource(R.drawable.ic_lock), shape = CircleShape, modifier = Modifier.sizeIn(70.dp,70.dp))
+        LoopyShapeFilledButton(enabled = false, icon = painterResource(R.drawable.ic_lock), shape = CircleShape, modifier = Modifier.sizeIn(70.dp,70.dp))
     }
 }
