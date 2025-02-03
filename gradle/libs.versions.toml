@@ -28,7 +28,7 @@ gms-google-services = "4.4.2"
 firebase-analytics = "21.6.2"
 firebase-messaging = "23.4.1"
 kakao = "2.20.5"
-
+room = "2.6.1"
 [libraries]
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat-version" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -62,13 +62,16 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebase-analytics" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebase-messaging" }
 kakao-all = { group = "com.kakao.sdk", name = "v2-all", version.ref = "kakao" }
-
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 [bundles]
 basic = ["appcompat", "androidx-core-ktx"]
 hilt = ["hilt-android", "hilt-compiler", "hilt-navigation-compose"]
 ui = ["ui-tooling-preview", "ui-tooling", "ui", "navigation-compose", "material", "material3", "google-material"]
 lifecycle = ["lifecycle-runtime", "lifecycle-viewmodel-compose", "lifecycle-viewmodel-ktx"]
 network = ["retrofit", "retrofit-gson", "sandwich", "logging-interceptor", "kotlinx-serialization-json"]
+roomDB = ["room-runtime", "room-ktx"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

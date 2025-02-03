@@ -74,7 +74,8 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     kapt(libs.hilt.viewmodel)
     kapt(libs.hilt.android.compiler)
-
+    implementation(libs.bundles.roomDB)
+    kapt(libs.room.compiler)
     implementation(libs.datastore)
     implementation(libs.bundles.basic)
     implementation(libs.bundles.hilt)
