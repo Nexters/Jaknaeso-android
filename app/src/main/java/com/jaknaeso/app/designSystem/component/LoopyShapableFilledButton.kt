@@ -1,5 +1,6 @@
 package com.jaknaeso.app.designSystem.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.CircleShape
@@ -48,7 +49,7 @@ Column(modifier = modifier) {
         ),
         enabled = enabled,
         shape = shape,
-        modifier = modifier
+        modifier = modifier.background(Color.Transparent)
     ) {
         if (icon != null) {
             Icon(painter = icon, contentDescription = null, tint = iconColor.value)
