@@ -12,10 +12,12 @@ import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.presentation.home.view.BalanceRoundScreen
 import com.jaknaeso.app.presentation.home.view.HomeScreen
 import com.jaknaeso.app.presentation.login.LoginScreen
+import com.jaknaeso.app.presentation.report.ReportScreen
 
 fun NavController.navigateToLogin() = navigate("${Route.Login}")
 fun NavController.navigateToHome() = navigate("${Route.Home}")
 fun NavController.navigateToBalanceRound(roundIndex: String) = navigate("${Route.BalanceRound}/${roundIndex}")
+fun NavController.navigateToReport() = navigate("${Route.Report}")
 
 fun NavGraphBuilder.loginScreen(navigateToHome: () -> Unit) {
     composable(route = "${Route.Login}") {
@@ -52,5 +54,19 @@ fun NavGraphBuilder.balanceRoundScreen(
         } else {
             Text("유효하지 않은 페이지입니다 :(", style = TextStyles.title01, modifier = Modifier.fillMaxSize())
         }
+    }
+}
+
+fun NavGraphBuilder.reportScreen(
+    navigateToHome: () -> Unit,
+    navigateToReport: () -> Unit,
+    navigateToProfile: () -> Unit,
+) {
+    composable(route = "${Route.Report}") {
+        ReportScreen(
+            navigateToHome = navigateToHome,
+            navigateToReport = navigateToReport,
+            navigateToProfile = navigateToProfile,
+        )
     }
 }

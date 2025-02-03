@@ -23,7 +23,7 @@ fun LoopyBottomNavBar(navigateToHome: () -> Unit, navigateToReport: () -> Unit, 
                     when (bottomNavigationItem.route) {
                         Route.Home -> navigateToHome()
                         Route.Report -> navigateToReport()
-                        Route.MyPage -> navigateToProfile()
+                        Route.Profile -> navigateToProfile()
                         else -> {}
                     }
                     navigationSelectedItem = index
