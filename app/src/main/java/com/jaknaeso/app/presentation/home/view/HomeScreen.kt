@@ -43,7 +43,7 @@ fun HomeScreen(
     navigateToHome: () -> Unit,
     navigateToReport: () -> Unit,
     navigateToProfile: () -> Unit,
-    navigateToRound: (roundIndex: String) -> Unit,
+    navigateToBalanceRound: (roundIndex: String) -> Unit,
     viewmodel: HomeViewmodel = hiltViewModel(),
 ) {
     var isExpanded by remember { mutableStateOf(false) }
@@ -53,7 +53,7 @@ fun HomeScreen(
         viewmodel.effects.collectLatest { effect ->
             when (effect) {
                 is HomeEffect.NavigateToRound -> {
-                    navigateToRound(effect.roundIndex)
+                    navigateToBalanceRound(effect.roundIndex)
                 }
             }
         }

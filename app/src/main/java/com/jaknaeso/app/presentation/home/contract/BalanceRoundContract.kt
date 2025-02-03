@@ -6,15 +6,15 @@ import com.jaknaeso.app.presentation.common.UiEvent
 import com.jaknaeso.app.presentation.common.UiState
 
 
-sealed interface OptionsRoundEvent : UiEvent {
-    data class GetBalanceQuestion(val roundIndex: String) : OptionsRoundEvent
-    data object SelectOption : OptionsRoundEvent
+sealed interface BalanceRoundEvent : UiEvent {
+    data class GetBalanceQuestion(val roundIndex: String) : BalanceRoundEvent
+    data object SelectOption : BalanceRoundEvent
 }
 
-data class OptionsRoundState(
+data class BalanceRoundState(
     val balanceQuestion: BalanceQuestion? = null
 ) : UiState
 
-sealed interface OptionsRoundEffect : UiEffect {
-    data object NavigateToHome : OptionsRoundEffect
+sealed interface BalanceRoundEffect : UiEffect {
+    data object NavigateToHome : BalanceRoundEffect
 }

@@ -22,27 +22,27 @@ import com.jaknaeso.app.designSystem.component.LoopyFilledButton
 import com.jaknaeso.app.designSystem.component.LoopySuggestionChip
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
-import com.jaknaeso.app.presentation.home.contract.OptionsRoundEffect
-import com.jaknaeso.app.presentation.home.contract.OptionsRoundEvent
-import com.jaknaeso.app.presentation.home.viewmodel.OptionsRoundViewmodel
+import com.jaknaeso.app.presentation.home.contract.BalanceRoundEffect
+import com.jaknaeso.app.presentation.home.contract.BalanceRoundEvent
+import com.jaknaeso.app.presentation.home.viewmodel.BalanceRoundViewmodel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun OptionsRoundScreen(
+fun BalanceRoundScreen(
     navigateToHome: () -> Unit,
     roundIndex: String,
-    viewmodel: OptionsRoundViewmodel = hiltViewModel()
+    viewmodel: BalanceRoundViewmodel = hiltViewModel()
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
     val scope = rememberCoroutineScope()
     val uiState = viewmodel.uiState.collectAsStateWithLifecycle()
     val question = uiState.value.balanceQuestion
     LaunchedEffect(Unit) {
-        viewmodel.handleEvent(OptionsRoundEvent.GetBalanceQuestion(roundIndex))
+        viewmodel.handleEvent(BalanceRoundEvent.GetBalanceQuestion(roundIndex))
         viewmodel.effects.collect { effect ->
             when (effect) {
-                OptionsRoundEffect.NavigateToHome -> navigateToHome()
+                BalanceRoundEffect.NavigateToHome -> navigateToHome()
             }
         }
     }

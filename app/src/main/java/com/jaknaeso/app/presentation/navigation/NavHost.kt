@@ -18,8 +18,8 @@ fun SetUpNavGraph(
             navigateToHome = navController::navigateToHome,
             navigateToReport = {},
             navigateToProfile = {},
-            navigateToRound = navController::navigateToOptionsRound
+            navigateToBalanceRound = navController::navigateToBalanceRound
         )
-        optionsRoundScreen(navigateToHome = navController::navigateToHome)
+        balanceRoundScreen(navigateToHome = navController::navigateToHome)
     }
 }
