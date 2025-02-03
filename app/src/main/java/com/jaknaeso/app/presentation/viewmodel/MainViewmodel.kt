@@ -1,8 +1,11 @@
-package com.jaknaeso.app.presentation.main
+package com.jaknaeso.app.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.jaknaeso.app.domain.usecase.CheckLoginedUserUseCase
 import com.jaknaeso.app.presentation.common.BaseViewModel
+import com.jaknaeso.app.presentation.contract.MainEffect
+import com.jaknaeso.app.presentation.contract.MainEvent
+import com.jaknaeso.app.presentation.contract.MainState
 import com.jaknaeso.app.presentation.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

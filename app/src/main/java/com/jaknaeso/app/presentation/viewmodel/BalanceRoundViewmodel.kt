@@ -1,12 +1,12 @@
-package com.jaknaeso.app.presentation.home.viewmodel
+package com.jaknaeso.app.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.jaknaeso.app.domain.usecase.GetBalanceQuestionUseCase
 import com.jaknaeso.app.domain.usecase.UpdateRoundsStateUseCase
 import com.jaknaeso.app.presentation.common.BaseViewModel
-import com.jaknaeso.app.presentation.home.contract.BalanceRoundEffect
-import com.jaknaeso.app.presentation.home.contract.BalanceRoundEvent
-import com.jaknaeso.app.presentation.home.contract.BalanceRoundState
+import com.jaknaeso.app.presentation.contract.BalanceRoundEffect
+import com.jaknaeso.app.presentation.contract.BalanceRoundEvent
+import com.jaknaeso.app.presentation.contract.BalanceRoundState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,7 +20,7 @@ class BalanceRoundViewmodel @Inject constructor(
     override fun createInitialState(): BalanceRoundState {
         return BalanceRoundState()
     }
-    
+
     override fun handleEvent(event: BalanceRoundEvent) {
         viewModelScope.launch {
             when (event) {

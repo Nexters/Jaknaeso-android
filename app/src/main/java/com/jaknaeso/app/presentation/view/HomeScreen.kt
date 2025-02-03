@@ -1,4 +1,4 @@
-package com.jaknaeso.app.presentation.home.view
+package com.jaknaeso.app.presentation.view
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
@@ -32,9 +32,9 @@ import com.jaknaeso.app.designSystem.component.LoopySuggestionChip
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.domain.entity.Round
-import com.jaknaeso.app.presentation.home.contract.HomeEffect
-import com.jaknaeso.app.presentation.home.contract.HomeEvent
-import com.jaknaeso.app.presentation.home.viewmodel.HomeViewmodel
+import com.jaknaeso.app.presentation.contract.HomeEffect
+import com.jaknaeso.app.presentation.contract.HomeEvent
+import com.jaknaeso.app.presentation.viewmodel.HomeViewmodel
 import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
 import kotlinx.coroutines.flow.collectLatest
 

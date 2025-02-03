@@ -1,4 +1,4 @@
-package com.jaknaeso.app.presentation.home.view
+package com.jaknaeso.app.presentation.view
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -22,9 +22,9 @@ import com.jaknaeso.app.designSystem.component.LoopyFilledButton
 import com.jaknaeso.app.designSystem.component.LoopySuggestionChip
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
-import com.jaknaeso.app.presentation.home.contract.BalanceRoundEffect
-import com.jaknaeso.app.presentation.home.contract.BalanceRoundEvent
-import com.jaknaeso.app.presentation.home.viewmodel.BalanceRoundViewmodel
+import com.jaknaeso.app.presentation.contract.BalanceRoundEffect
+import com.jaknaeso.app.presentation.contract.BalanceRoundEvent
+import com.jaknaeso.app.presentation.viewmodel.BalanceRoundViewmodel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)

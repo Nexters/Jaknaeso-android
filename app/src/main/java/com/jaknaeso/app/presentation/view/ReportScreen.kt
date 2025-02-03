@@ -1,4 +1,4 @@
-package com.jaknaeso.app.presentation.report
+package com.jaknaeso.app.presentation.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,6 +18,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
+import com.jaknaeso.app.presentation.contract.ReportEffect
+import com.jaknaeso.app.presentation.contract.ReportEvent
+import com.jaknaeso.app.presentation.viewmodel.ReportViewmodel
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

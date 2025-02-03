@@ -1,12 +1,12 @@
-package com.jaknaeso.app.presentation.home.viewmodel
+package com.jaknaeso.app.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.jaknaeso.app.data.roomDB.RoundDatabase
 import com.jaknaeso.app.domain.usecase.GetRoundsUseCase
 import com.jaknaeso.app.presentation.common.BaseViewModel
-import com.jaknaeso.app.presentation.home.contract.HomeEffect
-import com.jaknaeso.app.presentation.home.contract.HomeEvent
-import com.jaknaeso.app.presentation.home.contract.HomeState
+import com.jaknaeso.app.presentation.contract.HomeEffect
+import com.jaknaeso.app.presentation.contract.HomeEvent
+import com.jaknaeso.app.presentation.contract.HomeState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.jaknaeso.app.presentation.main
+package com.jaknaeso.app.presentation.contract
 
 import com.jaknaeso.app.presentation.common.UiEffect
 import com.jaknaeso.app.presentation.common.UiEvent

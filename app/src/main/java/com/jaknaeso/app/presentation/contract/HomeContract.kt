@@ -1,4 +1,4 @@
-package com.jaknaeso.app.presentation.home.contract
+package com.jaknaeso.app.presentation.contract
 
 import com.jaknaeso.app.domain.entity.Round
 import com.jaknaeso.app.presentation.common.UiEffect

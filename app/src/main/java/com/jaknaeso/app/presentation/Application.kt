@@ -1,6 +1,7 @@
-package com.jaknaeso.app
+package com.jaknaeso.app.presentation
 
 import android.app.Application
+import com.jaknaeso.app.BuildConfig
 import com.kakao.sdk.common.KakaoSdk
 import dagger.hilt.android.HiltAndroidApp
 

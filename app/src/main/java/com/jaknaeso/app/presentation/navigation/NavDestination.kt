@@ -9,10 +9,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.jaknaeso.app.designSystem.theme.TextStyles
-import com.jaknaeso.app.presentation.home.view.BalanceRoundScreen
-import com.jaknaeso.app.presentation.home.view.HomeScreen
-import com.jaknaeso.app.presentation.login.LoginScreen
-import com.jaknaeso.app.presentation.report.ReportScreen
+import com.jaknaeso.app.presentation.view.BalanceRoundScreen
+import com.jaknaeso.app.presentation.view.HomeScreen
+import com.jaknaeso.app.presentation.view.LoginScreen
+import com.jaknaeso.app.presentation.view.ReportScreen
 
 fun NavController.navigateToLogin() = navigate("${Route.Login}")
 fun NavController.navigateToHome() = navigate("${Route.Home}")

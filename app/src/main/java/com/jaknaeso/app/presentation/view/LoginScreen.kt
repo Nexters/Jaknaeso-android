@@ -1,4 +1,4 @@
-package com.jaknaeso.app.presentation.login
+package com.jaknaeso.app.presentation.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -12,6 +12,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.jaknaeso.app.R
 import com.jaknaeso.app.designSystem.component.LoopyFilledButton
 import com.jaknaeso.app.designSystem.theme.ColorPalette
+import com.jaknaeso.app.presentation.contract.LoginEffect
+import com.jaknaeso.app.presentation.contract.LoginEvent
+import com.jaknaeso.app.presentation.viewmodel.LoginViewmodel
 
 @Composable
 fun LoginScreen(navigateToHome: () -> Unit, viewmodel: LoginViewmodel = hiltViewModel()) {

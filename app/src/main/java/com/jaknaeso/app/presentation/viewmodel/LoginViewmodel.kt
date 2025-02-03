@@ -1,4 +1,4 @@
-package com.jaknaeso.app.presentation.login
+package com.jaknaeso.app.presentation.viewmodel
 
 import android.app.Application
 import android.util.Log
@@ -9,6 +9,9 @@ import com.jaknaeso.app.domain.Result
 import com.jaknaeso.app.domain.asResult
 import com.jaknaeso.app.domain.repository.LoginRepository
 import com.jaknaeso.app.presentation.common.BaseViewModel
+import com.jaknaeso.app.presentation.contract.LoginEffect
+import com.jaknaeso.app.presentation.contract.LoginEvent
+import com.jaknaeso.app.presentation.contract.LoginState
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause

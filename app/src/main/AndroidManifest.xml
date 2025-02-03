@@ -4,7 +4,7 @@
           package="com.jaknaeso.app">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-            android:name=".Application"
+            android:name=".presentation.Application"
             android:allowBackup="false"
             android:dataExtractionRules="@xml/data_extraction_rules"
             android:fullBackupContent="@xml/backup_rules"
@@ -15,7 +15,7 @@
             android:theme="@style/Theme.Jaknaeso"
             tools:targetApi="31">
         <activity
-                android:name=".presentation.main.MainActivity"
+                android:name=".presentation.MainActivity"
                 android:exported="true"
                 android:launchMode="singleTask">
             <intent-filter>
