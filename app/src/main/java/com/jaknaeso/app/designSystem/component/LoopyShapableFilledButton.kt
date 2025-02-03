@@ -25,6 +25,7 @@ import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
 fun LoopyShapeFilledButton(
+    onClick:()->Unit,
     enabled: Boolean,
     icon: Painter? = null,
     label: String = "",
@@ -40,7 +41,7 @@ fun LoopyShapeFilledButton(
     val iconColor = remember { mutableStateOf(if (enabled) iconColor else disabledIconColor) }
 Column(modifier = modifier) {
     FilledIconButton(
-        onClick = {},
+        onClick = onClick,
         colors = IconButtonColors(
             containerColor = filledColor,
             contentColor = filledColor,
@@ -63,7 +64,7 @@ Column(modifier = modifier) {
 @Composable
 fun PreviewFilterChip() {
     Column {
-        LoopyShapeFilledButton(enabled = true, icon = painterResource(R.drawable.ic_lock), shape = CircleShape, modifier = Modifier.sizeIn(70.dp,70.dp))
-        LoopyShapeFilledButton(enabled = false, icon = painterResource(R.drawable.ic_lock), shape = CircleShape, modifier = Modifier.sizeIn(70.dp,70.dp))
+        LoopyShapeFilledButton(onClick = {}, enabled = true, icon = painterResource(R.drawable.ic_lock), shape = CircleShape, modifier = Modifier.sizeIn(70.dp,70.dp))
+        LoopyShapeFilledButton(onClick = {}, enabled = false, icon = painterResource(R.drawable.ic_lock), shape = CircleShape, modifier = Modifier.sizeIn(70.dp,70.dp))
     }
 }
