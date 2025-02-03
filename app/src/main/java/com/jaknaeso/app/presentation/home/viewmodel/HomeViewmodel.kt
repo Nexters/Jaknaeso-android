@@ -1,4 +1,42 @@
 package com.jaknaeso.app.presentation.home.viewmodel
 
-class HomeViewmodel {
+import androidx.lifecycle.viewModelScope
+import com.jaknaeso.app.data.roomDB.RoundDatabase
+import com.jaknaeso.app.domain.usecase.GetRoundsUseCase
+import com.jaknaeso.app.presentation.common.BaseViewModel
+import com.jaknaeso.app.presentation.home.contract.HomeEffect
+import com.jaknaeso.app.presentation.home.contract.HomeEvent
+import com.jaknaeso.app.presentation.home.contract.HomeState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class HomeViewmodel @Inject constructor(
+    private val getRoundsUseCase: GetRoundsUseCase,
+    private val databaseCallback: RoundDatabase.DatabaseCallback
+) :
+    BaseViewModel<HomeEvent, HomeState, HomeEffect>() {
+
+    init {
+        viewModelScope.launch {
+            databaseCallback.isDatabaseInitialized.collect { isInitialized ->
+                getRounds()
+            }
+        }
+    }
+
+    override fun createInitialState(): HomeState {
+        return HomeState()
+    }
+
+    override fun handleEvent(event: HomeEvent) {
+
+    }
+
+    suspend fun getRounds() {
+        getRoundsUseCase().collect { rounds ->
+            setState { copy(rounds) }
+        }
+    }
 }
