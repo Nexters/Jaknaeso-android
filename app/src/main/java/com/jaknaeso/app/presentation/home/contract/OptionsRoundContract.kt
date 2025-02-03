@@ -5,12 +5,12 @@ import com.jaknaeso.app.presentation.common.UiEvent
 import com.jaknaeso.app.presentation.common.UiState
 
 
-sealed interface RoundEvent : UiEvent {
-    data object SelectOption : RoundEvent
+sealed interface OptionsRoundEvent : UiEvent {
+    data object SelectOption : OptionsRoundEvent
 }
 
-data object RoundState : UiState
+data object OptionsRoundState : UiState
 
-sealed interface RoundEffect : UiEffect {
-    data object NavigateToHome : RoundEffect
+sealed interface OptionsRoundEffect : UiEffect {
+    data object NavigateToHome : OptionsRoundEffect
 }
