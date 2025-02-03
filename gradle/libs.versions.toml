@@ -14,6 +14,7 @@ hilt-nav-compose-version = "1.0.0"
 hilt-version = "2.48.1"
 hilt-viewmodel-version = "1.0.0-alpha03"
 kotlinx-version = "1.5.0"
+kotlinx-collections-immutable-version = "0.3.8"
 lifecycle-version = "2.5.1"
 navigation-compose-version = "2.7.0"
 okhttp3-version = "4.12.0"
@@ -40,6 +41,7 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 hilt-viewmodel = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hilt-viewmodel-version" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-version" }
+kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinx-collections-immutable-version" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp3-version" }
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle-version" }
 lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle-version" }

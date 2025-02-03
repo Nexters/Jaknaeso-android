@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.kakao.all)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.analytics)
+    implementation(libs.kotlinx.collections.immutable)
     kapt(libs.hilt.viewmodel)
     kapt(libs.hilt.android.compiler)
 
