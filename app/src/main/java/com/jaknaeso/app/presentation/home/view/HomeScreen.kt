@@ -32,18 +32,32 @@ import com.jaknaeso.app.designSystem.component.LoopySuggestionChip
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.domain.entity.Round
+import com.jaknaeso.app.presentation.home.contract.HomeEffect
+import com.jaknaeso.app.presentation.home.contract.HomeEvent
 import com.jaknaeso.app.presentation.home.viewmodel.HomeViewmodel
 import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun HomeScreen(
     navigateToHome: () -> Unit,
     navigateToReport: () -> Unit,
     navigateToProfile: () -> Unit,
-    viewmodel: HomeViewmodel = hiltViewModel()
+    navigateToRound: (roundIndex: String) -> Unit,
+    viewmodel: HomeViewmodel = hiltViewModel(),
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     val uiState = viewmodel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewmodel.effects.collectLatest { effect ->
+            when (effect) {
+                is HomeEffect.NavigateToRound -> {
+                    navigateToRound(effect.roundIndex)
+                }
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral100),
@@ -74,18 +88,19 @@ fun HomeScreen(
                     modifier = Modifier.background(
                         color = Color.White,
                         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
-                    )
+                    ).padding(horizontal = 20.dp)
                 ) {
                     BottomSheetContent(
-                        onClick = { isExpanded = !isExpanded },
+                        onClickDragHandle = { isExpanded = !isExpanded },
+                        onClickRound = { viewmodel.handleEvent(HomeEvent.ClickRound) },
                         isExpanded = isExpanded,
-                        rounds = uiState.value.rounds
+                        rounds = uiState.value.rounds,
                     )
                     Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
                     LoopyFilledButton(
-                        text = "오늘의 질문 답변하기",
+                        text = "이번 순서의 질문 답변하기",
                         textStyle = TextStyles.subTitle01,
-                        onClick = {},
+                        onClick = { viewmodel.handleEvent(HomeEvent.ClickRound) },
                         modifier = Modifier.fillMaxWidth(1f)
                             .padding(bottom = 28.dp),
                     )
@@ -96,7 +111,12 @@ fun HomeScreen(
 }
 
 @Composable
-fun BottomSheetContent(isExpanded: Boolean, onClick: () -> Unit, rounds: List<Round>?) {
+fun BottomSheetContent(
+    isExpanded: Boolean,
+    onClickDragHandle: () -> Unit,
+    rounds: List<Round>?,
+    onClickRound: () -> Unit
+) {
     if (rounds?.size ?: 0 > 0) {
         val ROW = 5
         val chunkedRounds = rounds!!.chunked(ROW)
@@ -107,15 +127,14 @@ fun BottomSheetContent(isExpanded: Boolean, onClick: () -> Unit, rounds: List<Ro
                 color = Color.White,
                 shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
             ).fillMaxWidth()
-                .padding(horizontal = 20.dp)
         ) {
-            DragHandle(onClick = onClick)
+            DragHandle(onClick = onClickDragHandle)
             LazyRow(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 14.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 items(firstRowRound) { round ->
-                    QuestionItem(round)
+                    QuestionItem(round, onClickItem = onClickRound)
                 }
             }
             // 추가 LazyRow (애니메이션 적용)
@@ -134,7 +153,7 @@ fun BottomSheetContent(isExpanded: Boolean, onClick: () -> Unit, rounds: List<Ro
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             items(rowRound) { round ->
-                                QuestionItem(round)
+                                QuestionItem(round = round, onClickItem = onClickRound)
                             }
                         }
                     }
@@ -144,7 +163,7 @@ fun BottomSheetContent(isExpanded: Boolean, onClick: () -> Unit, rounds: List<Ro
     }
 }
 
-data class QuestionItemState(
+private data class QuestionItemState(
     val isEnabled: Boolean,
     val icon: Painter,
     val iconColor: Color,
@@ -154,7 +173,7 @@ data class QuestionItemState(
 )
 
 @Composable
-fun QuestionItem(round: Round) {
+fun QuestionItem(round: Round, onClickItem: () -> Unit) {
     val ROW = 5
     val size = (LocalConfiguration.current.screenWidthDp - (6 * 20)).div(ROW)
     val item = round.let {
@@ -193,6 +212,7 @@ fun QuestionItem(round: Round) {
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         LoopyShapeFilledButton(
+            onClick = onClickItem,
             enabled = item.isEnabled,
             icon = item.icon,
             shape = CircleShape,

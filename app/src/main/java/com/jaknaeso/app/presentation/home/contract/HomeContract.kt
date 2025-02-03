@@ -6,12 +6,14 @@ import com.jaknaeso.app.presentation.common.UiEvent
 import com.jaknaeso.app.presentation.common.UiState
 
 sealed interface HomeEvent : UiEvent {
-    data object ClickTodayQuestion
+    data object ClickRound : HomeEvent
 }
 
 data class HomeState(
-    val rounds: List<Round>? = null
+    val rounds: List<Round>? = null,
+    val nextRound: Round? = null
 ) : UiState
 
 sealed interface HomeEffect : UiEffect {
+    data class NavigateToRound(val roundIndex: String) : HomeEffect
 }

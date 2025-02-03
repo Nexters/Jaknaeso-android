@@ -22,6 +22,7 @@ class HomeViewmodel @Inject constructor(
         viewModelScope.launch {
             databaseCallback.isDatabaseInitialized.collect { isInitialized ->
                 getRounds()
+                updateNextQuestion()
             }
         }
     }
@@ -31,12 +32,23 @@ class HomeViewmodel @Inject constructor(
     }
 
     override fun handleEvent(event: HomeEvent) {
-
+        when (event) {
+            is HomeEvent.ClickRound -> {
+                val nextRound = uiState.value.nextRound
+                if (nextRound != null) {
+                    setEffect(HomeEffect.NavigateToRound(nextRound.roundIndex.toString()))
+                }
+            }
+        }
     }
 
     suspend fun getRounds() {
         getRoundsUseCase().collect { rounds ->
             setState { copy(rounds) }
         }
+    }
+
+    fun updateNextQuestion() {
+        setState { copy(nextRound = uiState.value.rounds?.find { !it.isLocked && !it.isCompleted }) }
     }
 }

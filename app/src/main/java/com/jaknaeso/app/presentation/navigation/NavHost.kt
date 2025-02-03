@@ -14,6 +14,12 @@ fun SetUpNavGraph(
         startDestination = startDestination
     ) {
         loginScreen(navigateToHome = navController::navigateToHome)
-        homeScreen(navigateToHome = navController::navigateToHome, navigateToReport = {}, navigateToProfile = {})
+        homeScreen(
+            navigateToHome = navController::navigateToHome,
+            navigateToReport = {},
+            navigateToProfile = {},
+            navigateToRound = navController::navigateToOptionsRound
+        )
+        optionsRoundScreen(navigateToHome = navController::navigateToHome)
     }
 }
