@@ -2,6 +2,7 @@ package com.jaknaeso.app.presentation.home.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.jaknaeso.app.domain.usecase.GetBalanceQuestionUseCase
+import com.jaknaeso.app.domain.usecase.UpdateRoundsStateUseCase
 import com.jaknaeso.app.presentation.common.BaseViewModel
 import com.jaknaeso.app.presentation.home.contract.BalanceRoundEffect
 import com.jaknaeso.app.presentation.home.contract.BalanceRoundEvent
@@ -11,23 +12,27 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BalanceRoundViewmodel @Inject constructor(private val getBalanceQuestionUseCase: GetBalanceQuestionUseCase) :
+class BalanceRoundViewmodel @Inject constructor(
+    private val getBalanceQuestionUseCase: GetBalanceQuestionUseCase,
+    private val updateRoundsStateUseCase: UpdateRoundsStateUseCase
+) :
     BaseViewModel<BalanceRoundEvent, BalanceRoundState, BalanceRoundEffect>() {
     override fun createInitialState(): BalanceRoundState {
         return BalanceRoundState()
     }
-
+    
     override fun handleEvent(event: BalanceRoundEvent) {
-        when (event) {
-            is BalanceRoundEvent.GetBalanceQuestion -> {
-                viewModelScope.launch {
+        viewModelScope.launch {
+            when (event) {
+                is BalanceRoundEvent.GetBalanceQuestion -> {
                     val balanceQuestion = getBalanceQuestionUseCase(event.roundIndex.toInt())
                     setState { copy(balanceQuestion) }
                 }
-            }
 
-            BalanceRoundEvent.SelectOption -> {
-
+                is BalanceRoundEvent.SelectOption -> {
+                    updateRoundsStateUseCase(event.roundIndex.toInt())
+                    setEffect(BalanceRoundEffect.NavigateToHome)
+                }
             }
         }
     }

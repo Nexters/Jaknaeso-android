@@ -8,7 +8,7 @@ import com.jaknaeso.app.presentation.common.UiState
 
 sealed interface BalanceRoundEvent : UiEvent {
     data class GetBalanceQuestion(val roundIndex: String) : BalanceRoundEvent
-    data object SelectOption : BalanceRoundEvent
+    data class SelectOption(val roundIndex: String) : BalanceRoundEvent
 }
 
 data class BalanceRoundState(

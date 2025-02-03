@@ -117,7 +117,7 @@ fun BalanceRoundScreen(
                     }
                     LoopyFilledButton(
                         "작성 완료",
-                        onClick = { navigateToHome() },
+                        onClick = { viewmodel.handleEvent(BalanceRoundEvent.SelectOption(roundIndex)) },
                         modifier = Modifier.fillMaxWidth(1f)
                     )
                 }
