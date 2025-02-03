@@ -2,8 +2,9 @@ package com.jaknaeso.app.di
 
 import android.content.Context
 import androidx.room.Room
-import com.jaknaeso.app.data.roomDB.dao.RoundDao
 import com.jaknaeso.app.data.roomDB.RoundDatabase
+import com.jaknaeso.app.data.roomDB.dao.BalanceQuestionDao
+import com.jaknaeso.app.data.roomDB.dao.RoundDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +27,7 @@ object RoomDBModule {
             context,
             RoundDatabase::class.java,
             "round_database"
-        ).addCallback(callback) // 🚀 DatabaseCallback 추가
+        ).addCallback(callback)
             .build()
     }
 
@@ -36,9 +37,15 @@ object RoomDBModule {
     }
 
     @Provides
+    fun provideBalanceQuestionDao(database: RoundDatabase): BalanceQuestionDao {
+        return database.balanceQuestionDao()
+    }
+
+    @Provides
     @Singleton
     fun provideDatabaseCallback(database: Provider<RoundDatabase>): RoundDatabase.DatabaseCallback {
         return RoundDatabase.DatabaseCallback(database)
     }
+
 }
 
