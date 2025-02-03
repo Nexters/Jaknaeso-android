@@ -20,11 +20,12 @@ import com.jaknaeso.app.designSystem.component.LoopySuggestionChip
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.domain.entity.VersusQuestion
+import com.jaknaeso.app.presentation.home.viewmodel.HomeViewmodel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun OptionsRoundScreen(navigateToHome: () -> Unit, roundIndex: String) {
+fun OptionsRoundScreen(navigateToHome: () -> Unit, roundIndex: String, viewmodel: ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
     val question = VersusQuestion(
         roundIndex = 0,
