@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.google.gms.services)
     alias(libs.plugins.hilt.android.gradle)
     kotlin("kapt")
+    id("com.google.android.gms.oss-licenses-plugin")
 }
 
 val localProperties = Properties().apply {
