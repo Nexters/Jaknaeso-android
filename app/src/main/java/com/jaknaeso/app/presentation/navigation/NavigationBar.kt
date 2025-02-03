@@ -10,7 +10,10 @@ import androidx.compose.ui.graphics.Color
 fun LoopyBottomNavBar(navigateToHome: () -> Unit, navigateToReport: () -> Unit, navigateToProfile: () -> Unit) {
     var navigationSelectedItem by remember { mutableStateOf(0) }
 
-    NavigationBar(contentColor = Color.Transparent, containerColor = Color.Transparent) {
+    NavigationBar(
+        contentColor = Color.White,
+        containerColor = Color.White,
+    ) {
         bottomNavigationItems().forEachIndexed { index, bottomNavigationItem ->
             NavigationBarItem(
                 selected = index == navigationSelectedItem,
