@@ -1,7 +1,7 @@
 package com.jaknaeso.app.data.repositoryImpl
 
-import com.jaknaeso.app.data.roomDB.Round
-import com.jaknaeso.app.data.roomDB.RoundDao
+import com.jaknaeso.app.data.roomDB.entity.Round
+import com.jaknaeso.app.data.roomDB.dao.RoundDao
 import com.jaknaeso.app.domain.repository.RoundRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

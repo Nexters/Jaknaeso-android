@@ -1,6 +1,6 @@
 package com.jaknaeso.app.domain.repository
 
-import com.jaknaeso.app.data.roomDB.Round
+import com.jaknaeso.app.data.roomDB.entity.Round
 import kotlinx.coroutines.flow.Flow
 
 interface RoundRepository {

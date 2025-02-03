@@ -1,6 +1,7 @@
-package com.jaknaeso.app.data.roomDB
+package com.jaknaeso.app.data.roomDB.dao
 
 import androidx.room.*
+import com.jaknaeso.app.data.roomDB.entity.Round
 
 @Dao
 interface RoundDao {

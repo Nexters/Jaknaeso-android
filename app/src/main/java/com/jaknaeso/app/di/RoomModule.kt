@@ -2,7 +2,7 @@ package com.jaknaeso.app.di
 
 import android.content.Context
 import androidx.room.Room
-import com.jaknaeso.app.data.roomDB.RoundDao
+import com.jaknaeso.app.data.roomDB.dao.RoundDao
 import com.jaknaeso.app.data.roomDB.RoundDatabase
 import dagger.Module
 import dagger.Provides

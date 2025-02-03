@@ -1,4 +1,4 @@
-package com.jaknaeso.app.data.roomDB
+package com.jaknaeso.app.data.roomDB.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
