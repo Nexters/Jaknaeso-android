@@ -4,7 +4,7 @@
           package="com.jaknaeso.app">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-            android:name=".presentation.Application"
+            android:name=".Application"
             android:allowBackup="false"
             android:dataExtractionRules="@xml/data_extraction_rules"
             android:fullBackupContent="@xml/backup_rules"
@@ -23,6 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+                android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+                android:theme="@style/Theme.AppCompat"/>
         <activity
                 android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
                 android:exported="true">
