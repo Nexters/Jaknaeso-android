@@ -29,7 +29,9 @@ firebase-analytics = "21.6.2"
 firebase-messaging = "23.4.1"
 kakao = "2.20.5"
 room = "2.6.1"
+oss-licenses-version = "17.0.0"
 [libraries]
+open-licenses = { group = "com.google.android.gms", name = "play-services-oss-licenses", version.ref = "oss-licenses-version" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat-version" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
