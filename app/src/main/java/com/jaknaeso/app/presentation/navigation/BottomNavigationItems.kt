@@ -28,7 +28,7 @@ fun bottomNavigationItems(): List<BottomNavigationItem> {
         BottomNavigationItem(
             label = "Profile",
             icon = painterResource(R.drawable.ic_person),
-            route = Route.MyPage
+            route = Route.Profile
         ),
     )
 }
