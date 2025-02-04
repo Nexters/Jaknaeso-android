@@ -17,9 +17,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
-import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
 import com.jaknaeso.app.presentation.contract.ReportEffect
 import com.jaknaeso.app.presentation.contract.ReportEvent
+import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
+import com.jaknaeso.app.presentation.navigation.Route
 import com.jaknaeso.app.presentation.viewmodel.ReportViewmodel
 import kotlinx.coroutines.flow.collectLatest
 
@@ -47,7 +48,8 @@ fun ReportScreen(
             LoopyBottomNavBar(
                 navigateToHome = { viewmodel.handleEvent(ReportEvent.ClickHome) },
                 navigateToReport = {},
-                navigateToProfile = { viewmodel.handleEvent(ReportEvent.ClickProfile) }
+                navigateToProfile = { viewmodel.handleEvent(ReportEvent.ClickProfile) },
+                currentRoute = Route.Report
             )
         },
         content = { paddingValues ->

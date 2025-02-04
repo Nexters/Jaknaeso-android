@@ -34,8 +34,9 @@ import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.domain.entity.Round
 import com.jaknaeso.app.presentation.contract.HomeEffect
 import com.jaknaeso.app.presentation.contract.HomeEvent
-import com.jaknaeso.app.presentation.viewmodel.HomeViewmodel
 import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
+import com.jaknaeso.app.presentation.navigation.Route
+import com.jaknaeso.app.presentation.viewmodel.HomeViewmodel
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -64,7 +65,8 @@ fun HomeScreen(
             LoopyBottomNavBar(
                 navigateToHome = {},
                 navigateToReport = navigateToReport,
-                navigateToProfile = navigateToProfile
+                navigateToProfile = navigateToProfile,
+                currentRoute = Route.Home
             )
         },
         content = { paddingValues ->

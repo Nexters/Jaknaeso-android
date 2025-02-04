@@ -25,6 +25,7 @@ import com.jaknaeso.app.R
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
+import com.jaknaeso.app.presentation.navigation.Route
 
 @Composable
 fun ProfileScreen(
@@ -57,9 +58,10 @@ fun ProfileScreen(
         modifier = Modifier.fillMaxSize(1f).background(color = Color.White),
         bottomBar = {
             LoopyBottomNavBar(
-                navigateToHome = { navigateToHome()},
+                navigateToHome = { navigateToHome() },
                 navigateToReport = { navigateToReport() },
-                navigateToProfile = { }
+                navigateToProfile = { },
+                currentRoute = Route.Profile
             )
         },
         content = { paddingValues ->
@@ -69,29 +71,64 @@ fun ProfileScreen(
                     .padding(vertical = 54.dp).padding(paddingValues),
                 verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start
             ) {
-                Text(text = "설정", style = TextStyles.title03, color = ColorPalette.Neautral900, modifier = Modifier.padding(start = 20.dp).padding(bottom = 40.dp))
+                Text(
+                    text = "설정",
+                    style = TextStyles.title03,
+                    color = ColorPalette.Neautral900,
+                    modifier = Modifier.padding(start = 20.dp).padding(bottom = 40.dp)
+                )
                 Row(
                     modifier = Modifier.fillMaxWidth().height(47.dp).clickable { openTermsOfServiceLink() },
                     horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "이용 약관", style = TextStyles.subTitle04, color = ColorPalette.Neautral800, modifier = Modifier.padding(start = 20.dp))
-                    Icon(painter = painterResource(R.drawable.ic_next), tint = Color.Black, contentDescription = null, modifier = Modifier.padding(end = 20.dp))
+                    Text(
+                        text = "이용 약관",
+                        style = TextStyles.subTitle04,
+                        color = ColorPalette.Neautral800,
+                        modifier = Modifier.padding(start = 20.dp)
+                    )
+                    Icon(
+                        painter = painterResource(R.drawable.ic_next),
+                        tint = Color.Black,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 20.dp)
+                    )
                 }
                 Divider(modifier = Modifier.fillMaxWidth())
                 Row(
                     modifier = Modifier.fillMaxWidth().height(47.dp).clickable { openPrivacyPolicyLink() },
                     horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "개인정보처리방침", style = TextStyles.subTitle04, color = ColorPalette.Neautral800, modifier = Modifier.padding(start = 20.dp))
-                    Icon(painter = painterResource(R.drawable.ic_next), tint = Color.Black, contentDescription = null, modifier = Modifier.padding(end = 20.dp))
+                    Text(
+                        text = "개인정보처리방침",
+                        style = TextStyles.subTitle04,
+                        color = ColorPalette.Neautral800,
+                        modifier = Modifier.padding(start = 20.dp)
+                    )
+                    Icon(
+                        painter = painterResource(R.drawable.ic_next),
+                        tint = Color.Black,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 20.dp)
+                    )
                 }
                 Divider(modifier = Modifier.fillMaxWidth())
                 Row(
                     modifier = Modifier.fillMaxWidth().height(47.dp).clickable { openLicenses() },
                     horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "오픈소스 라이센스", style = TextStyles.subTitle04, color = ColorPalette.Neautral800, modifier = Modifier.padding(start = 20.dp))
-                    Icon(painter = painterResource(R.drawable.ic_next), tint = Color.Black, contentDescription = null, modifier = Modifier.padding(end = 20.dp))
+                    Text(
+                        text = "오픈소스 라이센스",
+                        style = TextStyles.subTitle04,
+                        color = ColorPalette.Neautral800,
+                        modifier = Modifier.padding(start = 20.dp)
+                    )
+                    Icon(
+                        painter = painterResource(R.drawable.ic_next),
+                        tint = Color.Black,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 20.dp)
+                    )
                 }
             }
         }
