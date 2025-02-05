@@ -11,6 +11,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomSheetValue
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -31,7 +33,7 @@ import com.jaknaeso.app.designSystem.component.LoopyShapeFilledButton
 import com.jaknaeso.app.designSystem.component.LoopySuggestionChip
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
-import com.jaknaeso.app.domain.entity.Round
+import com.jaknaeso.app.domain.model.Round
 import com.jaknaeso.app.presentation.contract.HomeEffect
 import com.jaknaeso.app.presentation.contract.HomeEvent
 import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
@@ -39,6 +41,7 @@ import com.jaknaeso.app.presentation.navigation.Route
 import com.jaknaeso.app.presentation.viewmodel.HomeViewmodel
 import kotlinx.coroutines.flow.collectLatest
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     navigateToReport: () -> Unit,
@@ -48,6 +51,7 @@ fun HomeScreen(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     val uiState = viewmodel.uiState.collectAsStateWithLifecycle()
+    val bottomSheetValue = BottomSheetValue.Expanded
 
     LaunchedEffect(Unit) {
         viewmodel.effects.collectLatest { effect ->
@@ -83,7 +87,7 @@ fun HomeScreen(
                         labelColor = ColorPalette.Neautral700,
                         shape = RoundedCornerShape(8.dp)
                     )
-                    Text("순서대로\n질문에 답해보세요", style = TextStyles.title01, modifier = Modifier.padding(top = 10.dp))
+                    Text("", style = TextStyles.title01, modifier = Modifier.padding(top = 10.dp))
                 }
                 Column(
                     modifier = Modifier.background(

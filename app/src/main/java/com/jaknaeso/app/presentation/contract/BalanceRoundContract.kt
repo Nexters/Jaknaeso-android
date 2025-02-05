@@ -1,6 +1,6 @@
 package com.jaknaeso.app.presentation.contract
 
-import com.jaknaeso.app.domain.entity.BalanceQuestion
+import com.jaknaeso.app.domain.model.BalanceQuestion
 import com.jaknaeso.app.presentation.common.UiEffect
 import com.jaknaeso.app.presentation.common.UiEvent
 import com.jaknaeso.app.presentation.common.UiState

@@ -1,6 +1,6 @@
 package com.jaknaeso.app.domain.usecase
 
-import com.jaknaeso.app.domain.entity.Round
+import com.jaknaeso.app.domain.model.Round
 import com.jaknaeso.app.domain.repository.RoundRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
