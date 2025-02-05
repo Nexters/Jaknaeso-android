@@ -1,10 +1,10 @@
 package com.jaknaeso.app.data.authentication
 
 import android.util.Log
-import com.jaknaeso.app.data.model.ApiResponse
-import com.jaknaeso.app.data.model.Error
-import com.jaknaeso.app.data.model.ErrorCode
 import com.jaknaeso.app.data.token.TokenManager
+import com.jaknaeso.app.domain.entity.ApiResponse
+import com.jaknaeso.app.domain.entity.Error
+import com.jaknaeso.app.domain.entity.ErrorCode
 import com.skydoves.sandwich.message
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnSuccess

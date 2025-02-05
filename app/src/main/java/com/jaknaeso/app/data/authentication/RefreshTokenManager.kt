@@ -1,6 +1,6 @@
 package com.jaknaeso.app.data.authentication
 
-import com.jaknaeso.app.data.model.response.MemberTokenResponse
+import com.jaknaeso.app.domain.entity.response.MemberTokenResponse
 import com.skydoves.sandwich.ApiResponse
 
 interface RefreshTokenManager {

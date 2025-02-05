@@ -2,9 +2,9 @@ package com.jaknaeso.app.data.repositoryImpl
 
 import com.jaknaeso.app.data.datastore.LoginLocalDatastore
 import com.jaknaeso.app.data.datastore.LoginRemoteDatastore
-import com.jaknaeso.app.data.model.ApiResponse
-import com.jaknaeso.app.data.model.request.TokenRequest
-import com.jaknaeso.app.data.model.response.MemberTokenResponse
+import com.jaknaeso.app.domain.entity.ApiResponse
+import com.jaknaeso.app.domain.entity.request.TokenRequest
+import com.jaknaeso.app.domain.entity.response.MemberTokenResponse
 import com.jaknaeso.app.domain.repository.LoginRepository
 import javax.inject.Inject
 

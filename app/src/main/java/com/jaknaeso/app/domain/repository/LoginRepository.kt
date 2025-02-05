@@ -1,8 +1,8 @@
 package com.jaknaeso.app.domain.repository
 
-import com.jaknaeso.app.data.model.ApiResponse
-import com.jaknaeso.app.data.model.request.TokenRequest
-import com.jaknaeso.app.data.model.response.MemberTokenResponse
+import com.jaknaeso.app.domain.entity.ApiResponse
+import com.jaknaeso.app.domain.entity.request.TokenRequest
+import com.jaknaeso.app.domain.entity.response.MemberTokenResponse
 
 interface LoginRepository {
     suspend fun getMemberToken(request: TokenRequest): ApiResponse<MemberTokenResponse>

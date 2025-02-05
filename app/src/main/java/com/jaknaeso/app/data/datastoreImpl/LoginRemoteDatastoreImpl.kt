@@ -2,11 +2,11 @@ package com.jaknaeso.app.data.datastoreImpl
 
 import com.jaknaeso.app.data.authentication.Authenticator
 import com.jaknaeso.app.data.datastore.LoginRemoteDatastore
-import com.jaknaeso.app.data.model.ApiResponse
-import com.jaknaeso.app.data.model.ResponseResult
-import com.jaknaeso.app.data.model.request.TokenRequest
-import com.jaknaeso.app.data.model.response.MemberTokenResponse
 import com.jaknaeso.app.data.service.LoginService
+import com.jaknaeso.app.domain.entity.ApiResponse
+import com.jaknaeso.app.domain.entity.ResponseResult
+import com.jaknaeso.app.domain.entity.request.TokenRequest
+import com.jaknaeso.app.domain.entity.response.MemberTokenResponse
 import com.skydoves.sandwich.message
 import com.skydoves.sandwich.suspendMapSuccess
 import com.skydoves.sandwich.suspendOnError

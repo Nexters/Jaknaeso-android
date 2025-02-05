@@ -1,6 +1,6 @@
 package com.jaknaeso.app.data.authentication
 
-import com.jaknaeso.app.data.model.Error
+import com.jaknaeso.app.domain.entity.Error
 
 interface Authenticator {
     // API 에러를 처리하고, 토큰 갱신이 필요한 경우 처리하는 함수
