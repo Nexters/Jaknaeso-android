@@ -3,9 +3,11 @@ package com.jaknaeso.app.di
 import com.jaknaeso.app.data.repositoryImpl.BalanceQuestionRepositoryImpl
 import com.jaknaeso.app.data.repositoryImpl.LoginRepositoryImpl
 import com.jaknaeso.app.data.repositoryImpl.RoundRepositoryImpl
+import com.jaknaeso.app.data.repositoryImpl.SurveyRepositoryImpl
 import com.jaknaeso.app.domain.repository.BalanceQuestionRepository
 import com.jaknaeso.app.domain.repository.LoginRepository
 import com.jaknaeso.app.domain.repository.RoundRepository
+import com.jaknaeso.app.domain.repository.SurveyRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -25,5 +27,9 @@ interface RepositoryModule {
 
     @Binds
     @Singleton
-    fun BalanceQuestionRepositoryImpl(repositoryImpl: BalanceQuestionRepositoryImpl): BalanceQuestionRepository
+    fun bindBalanceQuestionRepositoryImpl(repositoryImpl: BalanceQuestionRepositoryImpl): BalanceQuestionRepository
+
+    @Binds
+    @Singleton
+    fun bindSurveyRepositoryImpl(surveyRepositoryImpl: SurveyRepositoryImpl): SurveyRepository
 }

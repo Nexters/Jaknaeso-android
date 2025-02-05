@@ -2,8 +2,10 @@ package com.jaknaeso.app.di
 
 import com.jaknaeso.app.data.datastore.LoginLocalDatastore
 import com.jaknaeso.app.data.datastore.LoginRemoteDatastore
+import com.jaknaeso.app.data.datastore.SurveyDataStore
 import com.jaknaeso.app.data.datastoreImpl.LoginLocalDatastoreImpl
 import com.jaknaeso.app.data.datastoreImpl.LoginRemoteDatastoreImpl
+import com.jaknaeso.app.data.datastoreImpl.SurveyDataStoreImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -20,4 +22,8 @@ interface DatastoreModule {
     @Singleton
     @Binds
     fun provideLoginLocalDatastore(loginLocalDatastoreImpl: LoginLocalDatastoreImpl): LoginLocalDatastore
+
+    @Singleton
+    @Binds
+    fun provideSurveyDatastore(surveyDataStoreImpl: SurveyDataStoreImpl): SurveyDataStore
 }
