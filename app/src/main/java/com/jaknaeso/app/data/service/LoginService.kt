@@ -7,7 +7,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface LoginService {
-    @POST("/api/v1/auth/kakao-login")
+    @POST("/api/v1/auth/kakao-login/token")
     suspend fun getMemberToken(@Body request: TokenRequest): ApiResponse<MemberTokenResponse>
 
     @POST("/api/v1/auth/reissue")

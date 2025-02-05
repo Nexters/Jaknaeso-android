@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TokenRequest(
-    val code: String
+    val accessToken: String
 )
