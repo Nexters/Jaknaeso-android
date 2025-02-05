@@ -1,4 +1,4 @@
-package com.jaknaeso.app.domain.entity
+package com.jaknaeso.app.domain.model
 
 data class Round(
     val roundIndex: Int,
