@@ -1,7 +1,10 @@
-package com.jaknaeso.app.presentation.common
+package com.jaknaeso.app.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jaknaeso.app.presentation.contract.UiEffect
+import com.jaknaeso.app.presentation.contract.UiEvent
+import com.jaknaeso.app.presentation.contract.UiState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

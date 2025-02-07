@@ -1,9 +1,5 @@
 package com.jaknaeso.app.presentation.contract
 
-import com.jaknaeso.app.presentation.common.UiEffect
-import com.jaknaeso.app.presentation.common.UiEvent
-import com.jaknaeso.app.presentation.common.UiState
-
 
 sealed interface ReportEvent : UiEvent {
     data object ClickHome : ReportEvent

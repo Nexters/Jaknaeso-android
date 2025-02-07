@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
             val navHostController = rememberNavController()
             SetUpNavGraph(
                 navController = navHostController,
-                startDestination = Route.Home.name,
+                startDestination = Route.Login.name,
             )
         }
     }

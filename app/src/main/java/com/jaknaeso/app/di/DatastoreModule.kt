@@ -1,8 +1,8 @@
 package com.jaknaeso.app.di
 
-import com.jaknaeso.app.data.datastore.LoginLocalDatastore
 import com.jaknaeso.app.data.datastore.LoginRemoteDatastore
 import com.jaknaeso.app.data.datastore.SurveyDataStore
+import com.jaknaeso.app.data.datastoreImpl.LoginLocalDatastore
 import com.jaknaeso.app.data.datastoreImpl.LoginLocalDatastoreImpl
 import com.jaknaeso.app.data.datastoreImpl.LoginRemoteDatastoreImpl
 import com.jaknaeso.app.data.datastoreImpl.SurveyDataStoreImpl

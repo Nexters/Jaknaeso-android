@@ -3,7 +3,6 @@ package com.jaknaeso.app.presentation.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.jaknaeso.app.domain.usecase.GetBalanceQuestionUseCase
 import com.jaknaeso.app.domain.usecase.UpdateRoundsStateUseCase
-import com.jaknaeso.app.presentation.common.BaseViewModel
 import com.jaknaeso.app.presentation.contract.BalanceRoundEffect
 import com.jaknaeso.app.presentation.contract.BalanceRoundEvent
 import com.jaknaeso.app.presentation.contract.BalanceRoundState

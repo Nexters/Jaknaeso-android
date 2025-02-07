@@ -8,7 +8,6 @@ import com.jaknaeso.app.domain.asResult
 import com.jaknaeso.app.domain.entity.ResponseResult
 import com.jaknaeso.app.domain.entity.request.TokenRequest
 import com.jaknaeso.app.domain.repository.LoginRepository
-import com.jaknaeso.app.presentation.common.BaseViewModel
 import com.jaknaeso.app.presentation.contract.LoginEffect
 import com.jaknaeso.app.presentation.contract.LoginEvent
 import com.jaknaeso.app.presentation.contract.LoginState

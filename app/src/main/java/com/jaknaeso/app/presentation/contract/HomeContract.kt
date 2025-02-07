@@ -1,9 +1,6 @@
 package com.jaknaeso.app.presentation.contract
 
 import com.jaknaeso.app.domain.model.Round
-import com.jaknaeso.app.presentation.common.UiEffect
-import com.jaknaeso.app.presentation.common.UiEvent
-import com.jaknaeso.app.presentation.common.UiState
 
 sealed interface HomeEvent : UiEvent {
     data object ClickRound : HomeEvent

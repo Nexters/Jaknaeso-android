@@ -1,9 +1,5 @@
 package com.jaknaeso.app.presentation.contract
 
-import com.jaknaeso.app.presentation.common.UiEffect
-import com.jaknaeso.app.presentation.common.UiEvent
-import com.jaknaeso.app.presentation.common.UiState
-
 sealed interface LoginEvent : UiEvent {
     data object ClickKakaoLogin : LoginEvent
 }

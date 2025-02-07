@@ -1,8 +1,5 @@
 package com.jaknaeso.app.presentation.contract
 
-import com.jaknaeso.app.presentation.common.UiEffect
-import com.jaknaeso.app.presentation.common.UiEvent
-import com.jaknaeso.app.presentation.common.UiState
 import com.jaknaeso.app.presentation.navigation.Route
 
 sealed interface MainEvent : UiEvent
