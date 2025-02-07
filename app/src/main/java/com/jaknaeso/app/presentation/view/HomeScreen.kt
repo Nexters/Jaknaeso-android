@@ -1,21 +1,15 @@
 package com.jaknaeso.app.presentation.view
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.BottomSheetValue
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jaknaeso.app.R
-import com.jaknaeso.app.designSystem.component.DragHandle
+import com.jaknaeso.app.designSystem.component.ExpandingBottomSheet
 import com.jaknaeso.app.designSystem.component.LoopyFilledButton
 import com.jaknaeso.app.designSystem.component.LoopyShapeFilledButton
 import com.jaknaeso.app.designSystem.component.LoopySuggestionChip
@@ -41,7 +35,6 @@ import com.jaknaeso.app.presentation.navigation.Route
 import com.jaknaeso.app.presentation.viewmodel.HomeViewmodel
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     navigateToReport: () -> Unit,
@@ -49,9 +42,7 @@ fun HomeScreen(
     navigateToBalanceRound: (roundIndex: String) -> Unit,
     viewmodel: HomeViewmodel = hiltViewModel(),
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
     val uiState = viewmodel.uiState.collectAsStateWithLifecycle()
-    val bottomSheetValue = BottomSheetValue.Expanded
 
     LaunchedEffect(Unit) {
         viewmodel.effects.collectLatest { effect ->
@@ -91,24 +82,21 @@ fun HomeScreen(
                 }
                 Column(
                     modifier = Modifier.background(
-                        color = Color.White,
+                        color = Color.Transparent,
                         shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
-                    ).padding(horizontal = 20.dp)
+                    )
                 ) {
-                    BottomSheetContent(
-                        onClickDragHandle = { isExpanded = !isExpanded },
-                        onClickRound = { viewmodel.handleEvent(HomeEvent.ClickRound) },
-                        isExpanded = isExpanded,
-                        rounds = uiState.value.rounds,
-                    )
-                    Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
-                    LoopyFilledButton(
-                        text = "이번 순서의 질문 답변하기",
-                        textStyle = TextStyles.subTitle01,
-                        onClick = { viewmodel.handleEvent(HomeEvent.ClickRound) },
-                        modifier = Modifier.fillMaxWidth(1f)
-                            .padding(bottom = 28.dp),
-                    )
+                    ExpandingBottomSheet(
+                        faceContent = { FaceContent(uiState.value.rounds?.subList(0, 5), onClickRound = {}) },
+                        wholeContent = { WholeContent(uiState.value.rounds, {}) },
+                        bottomContent = {
+                            LoopyFilledButton(
+                                text = "오늘의 질문 답변하기",
+                                textStyle = TextStyles.subTitle01,
+                                onClick = { viewmodel.handleEvent(HomeEvent.ClickRound) },
+                                modifier = Modifier.fillMaxWidth(1f)
+                            )
+                        })
                 }
             }
         }
@@ -116,9 +104,22 @@ fun HomeScreen(
 }
 
 @Composable
-fun BottomSheetContent(
-    isExpanded: Boolean,
-    onClickDragHandle: () -> Unit,
+fun FaceContent(
+    rounds: List<Round>?,
+    onClickRound: () -> Unit
+) {
+    LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        items(rounds ?: emptyList()) { round ->
+            QuestionItem(round, onClickItem = onClickRound)
+        }
+    }
+}
+
+@Composable
+fun WholeContent(
     rounds: List<Round>?,
     onClickRound: () -> Unit
 ) {
@@ -130,10 +131,16 @@ fun BottomSheetContent(
         Column(
             modifier = Modifier.background(
                 color = Color.White,
-                shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
-            ).fillMaxWidth()
+            ).fillMaxWidth(1f)
         ) {
-            DragHandle(onClick = onClickDragHandle)
+            LazyRow(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                items(firstRowRound) { round ->
+                    QuestionItem(round, onClickItem = onClickRound)
+                }
+            }
             LazyRow(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 14.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -142,26 +149,12 @@ fun BottomSheetContent(
                     QuestionItem(round, onClickItem = onClickRound)
                 }
             }
-            // 추가 LazyRow (애니메이션 적용)
-            AnimatedVisibility(visible = isExpanded) {
-                LazyColumn {
-                    itemsIndexed(hiddedRowRounds) { index, rowRound ->
-                        val animatedOffset by animateDpAsState(
-                            targetValue = if (isExpanded) (-10 * (index + 1)).dp else 0.dp, // 위로 이동
-                            animationSpec = tween(durationMillis = 300)
-                        )
-                        LazyRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .offset(y = animatedOffset)
-                                .padding(vertical = 14.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            items(rowRound) { round ->
-                                QuestionItem(round = round, onClickItem = onClickRound)
-                            }
-                        }
-                    }
+            LazyRow(
+                modifier = Modifier.fillMaxWidth().padding(top = 14.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                items(firstRowRound) { round ->
+                    QuestionItem(round, onClickItem = onClickRound)
                 }
             }
         }

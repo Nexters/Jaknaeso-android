@@ -34,7 +34,7 @@ fun LoopyFilledButton(
     val buttonModifier = Modifier.then(modifier ?: Modifier)
     FilledIconButton(
         onClick = onClick,
-        modifier = buttonModifier.height(58.dp),
+        modifier = buttonModifier.sizeIn(minHeight = 58.dp),
         colors = IconButtonColors(
             containerColor = filledColor,
             contentColor = filledColor,
