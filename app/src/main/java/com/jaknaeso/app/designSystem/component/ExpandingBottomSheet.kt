@@ -17,8 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.jaknaeso.app.R
 import kotlinx.coroutines.launch
 
 @Composable
@@ -30,8 +32,8 @@ fun ExpandingBottomSheet(
 ) {
     val PADDING = 40.dp
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-    val maxSheetHeight = screenHeight * 1f // 최대 높이 (화면의 90%)
-    val minSheetHeight = (screenHeight * 0.3f + PADDING) // 최소 높이 (화면의 20%)
+    val maxSheetHeight = screenHeight * 0.9f // 최대 높이 (화면의 90%)
+    val minSheetHeight = (screenHeight * 0.3f) // 최소 높이 (화면의 20%)
     val sheetHeight = remember { mutableStateOf(minSheetHeight.value) } // 시트의 높이 (초기: 최소 높이)
     val coroutineScope = rememberCoroutineScope()
     var isModalOpen by remember { mutableStateOf(false) }
@@ -81,8 +83,6 @@ fun ExpandingBottomSheet(
                         onDragStarted = { isModalOpen = !isModalOpen }
                     )
             ) {
-
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -91,10 +91,10 @@ fun ExpandingBottomSheet(
                             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
                         )
                         .padding(top = 8.dp).padding(horizontal = 20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom
+                    horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     // 드래그 핸들러
-                    DragHandle {
+                    DragHandle(icon = painterResource(R.drawable.ic_arrow_upside)) {
                         coroutineScope.launch {
                             if (isModalOpen) {
                                 animateToClose(sheetHeight, minSheetHeight)
