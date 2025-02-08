@@ -55,7 +55,7 @@ fun HomeScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral100),
+        modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral50),
         bottomBar = {
             LoopyBottomNavBar(
                 navigateToHome = {},
@@ -78,7 +78,7 @@ fun HomeScreen(
                         labelColor = ColorPalette.Neautral700,
                         shape = RoundedCornerShape(8.dp)
                     )
-                    Text("", style = TextStyles.title01, modifier = Modifier.padding(top = 10.dp))
+                    Text("{ValueType}\n두 줄인 경우", style = TextStyles.title01, modifier = Modifier.padding(top = 10.dp))
                 }
                 Column(
                     modifier = Modifier.background(
@@ -87,6 +87,7 @@ fun HomeScreen(
                     )
                 ) {
                     ExpandingBottomSheet(
+                        floatingContent = { RestRoundsUntilCharacter(14) },
                         faceContent = { FaceContent(uiState.value.rounds?.subList(0, 5), onClickRound = {}) },
                         wholeContent = { WholeContent(uiState.value.rounds, {}) },
                         bottomContent = {
@@ -96,11 +97,36 @@ fun HomeScreen(
                                 onClick = { viewmodel.handleEvent(HomeEvent.ClickRound) },
                                 modifier = Modifier.fillMaxWidth(1f)
                             )
-                        })
+                        }
+                    )
                 }
             }
         }
     )
+}
+
+@Composable
+fun RestRoundsUntilCharacter(count: Int) {
+    Row(
+        modifier = Modifier.background(color = ColorPalette.Neautral200, shape = RoundedCornerShape(40.dp))
+            .padding(horizontal = 26.dp).padding(top = 16.dp, bottom = 15.dp)
+    ) {
+        Text(
+            text = "캐릭터 완성까지",
+            style = TextStyles.subTitle01,
+            color = ColorPalette.Neautral600,
+            modifier = Modifier.padding(end = 10.dp)
+        )
+        Spacer(
+            modifier = Modifier.background(color = ColorPalette.Neautral500).width(1.dp).height(20.dp)
+        )
+        Text(
+            text = "${count}개",
+            style = TextStyles.subTitle01,
+            color = Color.Black,
+            modifier = Modifier.padding(start = 10.dp)
+        )
+    }
 }
 
 @Composable
@@ -127,7 +153,6 @@ fun WholeContent(
         val ROW = 5
         val chunkedRounds = rounds!!.chunked(ROW)
         val firstRowRound = chunkedRounds[0]
-        val hiddedRowRounds = chunkedRounds.subList(1, chunkedRounds.size)
         Column(
             modifier = Modifier.background(
                 color = Color.White,

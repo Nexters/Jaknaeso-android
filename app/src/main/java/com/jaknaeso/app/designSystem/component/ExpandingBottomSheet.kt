@@ -1,6 +1,5 @@
 package com.jaknaeso.app.designSystem.component
 
-import android.util.Log
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
@@ -24,6 +23,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ExpandingBottomSheet(
+    floatingContent: @Composable () -> Unit,
     faceContent: @Composable () -> Unit,
     wholeContent: @Composable () -> Unit,
     bottomContent: @Composable () -> Unit,
@@ -39,8 +39,13 @@ fun ExpandingBottomSheet(
     Column(
         Modifier
             .fillMaxSize(1f),
-        verticalArrangement = Arrangement.Bottom
+        verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        if (!isModalOpen) {
+            floatingContent()
+            Spacer(Modifier.fillMaxWidth().height(20.dp))
+        }
+
         Box(
             modifier = Modifier.fillMaxWidth()
                 .background(Color.Transparent)
@@ -76,17 +81,21 @@ fun ExpandingBottomSheet(
                         onDragStarted = { isModalOpen = !isModalOpen }
                     )
             ) {
+
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(color = Color.White, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                        .background(
+                            color = Color.White,
+                            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+                        )
                         .padding(top = 8.dp).padding(horizontal = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom
                 ) {
                     // 드래그 핸들러
                     DragHandle {
                         coroutineScope.launch {
-                            Log.d("isModalOpen", "${isModalOpen}")
                             if (isModalOpen) {
                                 animateToClose(sheetHeight, minSheetHeight)
                                 isModalOpen = !isModalOpen
