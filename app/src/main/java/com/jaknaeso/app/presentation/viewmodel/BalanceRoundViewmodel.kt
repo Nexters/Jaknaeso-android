@@ -30,8 +30,13 @@ class BalanceRoundViewmodel @Inject constructor(
 
                 is BalanceRoundEvent.SelectOption -> {
                     updateRoundsStateUseCase(event.roundIndex.toInt())
-                    setEffect(BalanceRoundEffect.NavigateToHome)
+                    setEffect(BalanceRoundEffect.OpenModal)
                 }
+
+                is BalanceRoundEvent.ClickSubmitReasonButton -> setEffect(BalanceRoundEffect.NavigateToBalanceRoundComplete)
+
+                BalanceRoundEvent.ClickPassEnterReason -> setEffect(BalanceRoundEffect.NavigateToBalanceRoundComplete)
+                BalanceRoundEvent.ClickBackButton -> setEffect(BalanceRoundEffect.NavigateToBack)
             }
         }
     }

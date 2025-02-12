@@ -6,6 +6,9 @@ import com.jaknaeso.app.domain.model.BalanceQuestion
 sealed interface BalanceRoundEvent : UiEvent {
     data class GetBalanceQuestion(val roundIndex: String) : BalanceRoundEvent
     data class SelectOption(val roundIndex: String) : BalanceRoundEvent
+    data object ClickSubmitReasonButton : BalanceRoundEvent
+    data object ClickPassEnterReason : BalanceRoundEvent
+    data object ClickBackButton : BalanceRoundEvent
 }
 
 data class BalanceRoundState(
@@ -13,5 +16,7 @@ data class BalanceRoundState(
 ) : UiState
 
 sealed interface BalanceRoundEffect : UiEffect {
-    data object NavigateToHome : BalanceRoundEffect
+    data object NavigateToBack : BalanceRoundEffect
+    data object NavigateToBalanceRoundComplete : BalanceRoundEffect
+    data object OpenModal : BalanceRoundEffect
 }
