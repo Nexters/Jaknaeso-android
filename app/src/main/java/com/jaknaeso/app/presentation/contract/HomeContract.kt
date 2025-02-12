@@ -8,9 +8,10 @@ sealed interface HomeEvent : UiEvent {
 
 data class HomeState(
     val rounds: List<Round>? = null,
-    val nextRound: Round? = null
+    val nextRound: Round? = null,
 ) : UiState
 
 sealed interface HomeEffect : UiEffect {
     data class NavigateToRound(val roundIndex: String) : HomeEffect
+    data object ShowSnackbar : HomeEffect
 }

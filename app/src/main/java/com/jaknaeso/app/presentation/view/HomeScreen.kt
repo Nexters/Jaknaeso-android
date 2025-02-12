@@ -7,9 +7,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,14 +21,12 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jaknaeso.app.R
-import com.jaknaeso.app.designSystem.component.ExpandingBottomSheet
-import com.jaknaeso.app.designSystem.component.LoopyFilledButton
-import com.jaknaeso.app.designSystem.component.LoopyShapeFilledButton
-import com.jaknaeso.app.designSystem.component.LoopySuggestionChip
+import com.jaknaeso.app.designSystem.component.*
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.domain.model.Round
@@ -34,6 +36,7 @@ import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
 import com.jaknaeso.app.presentation.navigation.Route
 import com.jaknaeso.app.presentation.viewmodel.HomeViewmodel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -43,13 +46,19 @@ fun HomeScreen(
     viewmodel: HomeViewmodel = hiltViewModel(),
 ) {
     val uiState = viewmodel.uiState.collectAsStateWithLifecycle()
-
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(Unit) {
         viewmodel.effects.collectLatest { effect ->
             when (effect) {
                 is HomeEffect.NavigateToRound -> {
                     navigateToBalanceRound(effect.roundIndex)
                 }
+
+                HomeEffect.SnackBar -> snackbarHostState.showSnackbar(
+                    message = "\"NOO\"",
+                    duration = SnackbarDuration.Short
+                )
             }
         }
     }
@@ -63,6 +72,17 @@ fun HomeScreen(
                 navigateToProfile = navigateToProfile,
                 currentRoute = Route.Home
             )
+        },
+        snackbarHost = {
+            Loopysnackbar(snackbarHostState = snackbarHostState) {
+                Text(
+                    "하루에 한 회차씩 답변할 수 있어요",
+                    style = TextStyles.subTitle04,
+                    color = Color.White,
+                    modifier = Modifier.padding(vertical = 25.dp).fillMaxWidth(1f),
+                    textAlign = TextAlign.Center
+                )
+            }
         },
         content = { paddingValues ->
             Column(
@@ -88,7 +108,13 @@ fun HomeScreen(
                 ) {
                     ExpandingBottomSheet(
                         floatingContent = { RestRoundsUntilCharacter(14) },
-                        faceContent = { FaceContent(uiState.value.rounds, onClickRound = {}) },
+                        faceContent = {
+                            FaceContent(uiState.value.rounds, onClickRound = {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar(message = "\"하루에 한 회차씩 답변할 수 있어요??\"")
+                                }
+                            })
+                        },
                         wholeContent = { WholeContent(uiState.value.rounds, {}) },
                         bottomContent = {
                             LoopyFilledButton(
@@ -121,7 +147,7 @@ fun RestRoundsUntilCharacter(count: Int) {
             modifier = Modifier.background(color = ColorPalette.Neautral500).width(1.dp).height(20.dp)
         )
         Text(
-            text = "${count}개",
+            text = "${count}회차",
             style = TextStyles.subTitle01,
             color = Color.Black,
             modifier = Modifier.padding(start = 10.dp)
@@ -132,7 +158,7 @@ fun RestRoundsUntilCharacter(count: Int) {
 @Composable
 fun FaceContent(
     rounds: List<Round>?,
-    onClickRound: () -> Unit
+    onClickRound: (isTodaysQuestion: Boolean) -> Unit
 ) {
     val faceRounds = rounds?.subList(0, 5)
     LazyRow(
@@ -140,7 +166,7 @@ fun FaceContent(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         items(faceRounds ?: emptyList()) { round ->
-            QuestionItem(round, onClickItem = onClickRound)
+            QuestionItem(round, onClickItem = { onClickRound(it) })
         }
     }
 }
@@ -148,7 +174,7 @@ fun FaceContent(
 @Composable
 fun WholeContent(
     rounds: List<Round>?,
-    onClickRound: () -> Unit
+    onClickRound: (unavailableQuestion: Boolean) -> Unit
 ) {
     if (rounds?.size ?: 0 > 0) {
         val ROW = 5
@@ -164,7 +190,7 @@ fun WholeContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 items(firstRowRound) { round ->
-                    QuestionItem(round, onClickItem = onClickRound)
+                    QuestionItem(round, onClickItem = { onClickRound(it) })
                 }
             }
             LazyRow(
@@ -172,7 +198,7 @@ fun WholeContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 items(firstRowRound) { round ->
-                    QuestionItem(round, onClickItem = onClickRound)
+                    QuestionItem(round, onClickItem = { onClickRound(it) })
                 }
             }
             LazyRow(
@@ -180,7 +206,7 @@ fun WholeContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 items(firstRowRound) { round ->
-                    QuestionItem(round, onClickItem = onClickRound)
+                    QuestionItem(round, onClickItem = { onClickRound(it) })
                 }
             }
         }
@@ -196,8 +222,9 @@ private data class QuestionItemState(
     val textStyle: TextStyle
 )
 
+
 @Composable
-fun QuestionItem(round: Round, onClickItem: () -> Unit) {
+fun QuestionItem(round: Round, onClickItem: (unavailableQuestion: Boolean) -> Unit) {
     val ROW = 5
     val size = (LocalConfiguration.current.screenWidthDp - (6 * 20)).div(ROW)
     val item = round.let {
@@ -236,7 +263,7 @@ fun QuestionItem(round: Round, onClickItem: () -> Unit) {
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         LoopyShapeFilledButton(
-            onClick = onClickItem,
+            onClick = { onClickItem(round.isTodayQuestion) },
             enabled = item.isEnabled,
             icon = item.icon,
             shape = CircleShape,
