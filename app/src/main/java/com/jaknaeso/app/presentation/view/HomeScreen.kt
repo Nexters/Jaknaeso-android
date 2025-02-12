@@ -88,7 +88,7 @@ fun HomeScreen(
                 ) {
                     ExpandingBottomSheet(
                         floatingContent = { RestRoundsUntilCharacter(14) },
-                        faceContent = { FaceContent(uiState.value.rounds?.subList(0, 5), onClickRound = {}) },
+                        faceContent = { FaceContent(uiState.value.rounds, onClickRound = {}) },
                         wholeContent = { WholeContent(uiState.value.rounds, {}) },
                         bottomContent = {
                             LoopyFilledButton(
@@ -134,11 +134,12 @@ fun FaceContent(
     rounds: List<Round>?,
     onClickRound: () -> Unit
 ) {
+    val faceRounds = rounds?.subList(0, 5)
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        items(rounds ?: emptyList()) { round ->
+        items(faceRounds ?: emptyList()) { round ->
             QuestionItem(round, onClickItem = onClickRound)
         }
     }
