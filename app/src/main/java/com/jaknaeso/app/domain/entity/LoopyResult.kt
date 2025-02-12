@@ -1,6 +1,6 @@
 package com.jaknaeso.app.domain.entity
 
-data class ApiResponse<T>(
+data class LoopyResult<T>(
     var result: String?,
     var data: T?,
     var error: Error?

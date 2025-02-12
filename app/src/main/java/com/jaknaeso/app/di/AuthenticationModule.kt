@@ -1,7 +1,5 @@
 package com.jaknaeso.app.di
 
-import com.jaknaeso.app.data.authentication.Authenticator
-import com.jaknaeso.app.data.authentication.AuthenticatorImpl
 import com.jaknaeso.app.data.authentication.RefreshTokenManager
 import com.jaknaeso.app.data.authentication.RefreshTokenManagerImpl
 import com.jaknaeso.app.data.token.TokenManager
@@ -23,8 +21,4 @@ interface AuthenticationModule {
     @Binds
     @Singleton
     fun bindRefreshTokenManager(refreshTokenManagerImpl: RefreshTokenManagerImpl): RefreshTokenManager
-
-    @Binds
-    @Singleton
-    fun bindAuthenticator(authenticatorImpl: AuthenticatorImpl): Authenticator
 }

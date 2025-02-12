@@ -1,7 +1,7 @@
 package com.jaknaeso.app.domain.entity
 
 data class Error(
-    val code: ErrorCode,
+    var code: Int,
     val message: String,
     val data: Any?
 )

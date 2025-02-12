@@ -2,8 +2,8 @@ package com.jaknaeso.app.di
 
 import com.google.gson.GsonBuilder
 import com.jaknaeso.app.BuildConfig
+import com.jaknaeso.app.data.service.LoginService
 import com.jaknaeso.app.data.token.TokenManager
-import com.skydoves.sandwich.adapters.ApiResponseCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,20 +13,22 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+    @Singleton
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
-            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()
     }
 
+    @Singleton
     @Provides
     fun provideOkHttpClient(headerInterceptor: Interceptor): OkHttpClient {
         val okHttpClientBuilder = OkHttpClient().newBuilder()
@@ -47,5 +49,11 @@ object NetworkModule {
                 proceed(newRequest)
             }
         }
+    }
+
+    @Singleton
+    @Provides
+    fun provideLoginService(retrofit: Retrofit): LoginService {
+        return retrofit.create(LoginService::class.java)
     }
 }
