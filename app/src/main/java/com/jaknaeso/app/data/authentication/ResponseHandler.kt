@@ -1,7 +1,6 @@
-package com.jaknaeso.app.data
+package com.jaknaeso.app.data.authentication
 
 import android.util.Log
-import com.jaknaeso.app.data.authentication.RefreshTokenManager
 import com.jaknaeso.app.data.token.TokenManager
 import com.jaknaeso.app.domain.entity.Error
 import com.jaknaeso.app.domain.entity.LoopyResult
@@ -77,8 +76,8 @@ class ResponseHandler @Inject constructor(
                     if (responseBody != null) {
                         Log.d("Authenticator", "토큰 리프레싱 성공")
                         updateAllTokens(
-                            accessToken = responseBody.accessToken,
-                            refreshToken = responseBody.refreshToken
+                            accessToken = responseBody.data?.accessToken ?: "",
+                            refreshToken = responseBody.data?.refreshToken ?: ""
                         )
                         onRefreshSuccess()
                     }

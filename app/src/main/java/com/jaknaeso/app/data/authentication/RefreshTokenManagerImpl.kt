@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.jaknaeso.app.BuildConfig
 import com.jaknaeso.app.data.service.LoginService
 import com.jaknaeso.app.data.token.TokenManager
+import com.jaknaeso.app.domain.entity.LoopyResult
 import com.jaknaeso.app.domain.entity.response.MemberTokenResponse
 import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.adapters.ApiResponseCallAdapterFactory
@@ -29,7 +30,7 @@ class RefreshTokenManagerImpl @Inject constructor(private val tokenManager: Toke
         OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS).addInterceptor(httpLoggingInterceptor)
             .readTimeout(60, TimeUnit.SECONDS).build()
 
-    override suspend fun refreshTokens(): ApiResponse<MemberTokenResponse> {
+    override suspend fun refreshTokens(): ApiResponse<LoopyResult<MemberTokenResponse>> {
         val response =
             createWebService(BuildConfig.BASE_URL, okHttp).create(LoginService::class.java).getRefreshToken()
         return response
