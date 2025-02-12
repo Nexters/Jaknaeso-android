@@ -2,6 +2,7 @@ package com.jaknaeso.app.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.jaknaeso.app.data.roomDB.RoundDatabase
+import com.jaknaeso.app.domain.model.QuestionState
 import com.jaknaeso.app.domain.usecase.GetRoundsUseCase
 import com.jaknaeso.app.presentation.contract.HomeEffect
 import com.jaknaeso.app.presentation.contract.HomeEvent
@@ -21,7 +22,6 @@ class HomeViewmodel @Inject constructor(
         viewModelScope.launch {
             databaseCallback.isDatabaseInitialized.collect { isInitialized ->
                 getRounds()
-                updateNextQuestion()
             }
         }
     }
@@ -32,22 +32,30 @@ class HomeViewmodel @Inject constructor(
 
     override fun handleEvent(event: HomeEvent) {
         when (event) {
-            is HomeEvent.ClickRound -> {
-                val nextRound = uiState.value.nextRound
-                if (nextRound != null) {
-                    setEffect(HomeEffect.NavigateToRound(nextRound.roundIndex.toString()))
-                }
-            }
+            is HomeEvent.ClickRound -> handleQuestionState(event.questionState)
+
+            HomeEvent.TodayRoundButton -> {}
         }
     }
 
     suspend fun getRounds() {
         getRoundsUseCase().collect { rounds ->
-            setState { copy(rounds) }
+            setState {
+                copy(
+                    bundleId = rounds?.bundleId,
+                    rounds = rounds?.rounds,
+                    isEnabledTodayRoundButton = rounds?.isTodayRoundCompleted ?: false
+                )
+            }
         }
     }
 
-    fun updateNextQuestion() {
-        setState { copy(nextRound = uiState.value.rounds?.find { !it.isLocked && !it.isCompleted }) }
+    fun handleQuestionState(questionState: QuestionState) {
+        when (questionState) {
+            QuestionState.FUTURE -> setEffect(HomeEffect.ShowSnackbar)
+            QuestionState.TODAY_LOCKED -> setEffect(HomeEffect.NavigateToRound(currentState.bundleId.toString()))
+            QuestionState.PAST -> setEffect(HomeEffect.NavigateToRoundHistory)
+            QuestionState.TODAY_COMPLETED -> setEffect(HomeEffect.NavigateToRoundHistory)
+        }
     }
 }

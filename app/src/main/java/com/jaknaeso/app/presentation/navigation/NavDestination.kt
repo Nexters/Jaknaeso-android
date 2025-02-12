@@ -13,7 +13,7 @@ import com.jaknaeso.app.presentation.view.*
 
 fun NavController.navigateToLogin() = navigate("${Route.Login}")
 fun NavController.navigateToHome() = navigate("${Route.Home}")
-fun NavController.navigateToBalanceRound(roundIndex: String) = navigate("${Route.BalanceRound}/${roundIndex}")
+fun NavController.navigateToBalanceRound(bundleIndex: String) = navigate("${Route.BalanceRound}/${bundleIndex}")
 fun NavController.navigateToReport() = navigate("${Route.Report}")
 fun NavController.navigateToProfile() = navigate("${Route.Profile}")
 fun NavController.navigateToBalanceRoundComplete() = navigate("${Route.BalanceRoundComplete}")

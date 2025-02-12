@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration
@@ -14,21 +13,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.jaknaeso.app.R
 import com.jaknaeso.app.designSystem.component.*
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
+import com.jaknaeso.app.domain.model.QuestionState
 import com.jaknaeso.app.domain.model.Round
 import com.jaknaeso.app.presentation.contract.HomeEffect
 import com.jaknaeso.app.presentation.contract.HomeEvent
@@ -52,13 +46,15 @@ fun HomeScreen(
         viewmodel.effects.collectLatest { effect ->
             when (effect) {
                 is HomeEffect.NavigateToRound -> {
-                    navigateToBalanceRound(effect.roundIndex)
+                    navigateToBalanceRound(effect.bundleIndex)
                 }
 
-                HomeEffect.SnackBar -> snackbarHostState.showSnackbar(
-                    message = "\"NOO\"",
+                HomeEffect.ShowSnackbar -> snackbarHostState.showSnackbar(
+                    message = "",
                     duration = SnackbarDuration.Short
                 )
+
+                HomeEffect.NavigateToRoundHistory -> {}
             }
         }
     }
@@ -118,9 +114,10 @@ fun HomeScreen(
                         wholeContent = { WholeContent(uiState.value.rounds, {}) },
                         bottomContent = {
                             LoopyFilledButton(
+                                enabled = uiState.value.isEnabledTodayRoundButton,
                                 text = "오늘의 질문 답변하기",
                                 textStyle = TextStyles.subTitle01,
-                                onClick = { viewmodel.handleEvent(HomeEvent.ClickRound) },
+                                onClick = { viewmodel.handleEvent(HomeEvent.TodayRoundButton) },
                                 modifier = Modifier.fillMaxWidth(1f)
                             )
                         },
@@ -158,7 +155,7 @@ fun RestRoundsUntilCharacter(count: Int) {
 @Composable
 fun FaceContent(
     rounds: List<Round>?,
-    onClickRound: (isTodaysQuestion: Boolean) -> Unit
+    onClickRound: (state: QuestionState) -> Unit
 ) {
     val faceRounds = rounds?.subList(0, 5)
     LazyRow(
@@ -174,7 +171,7 @@ fun FaceContent(
 @Composable
 fun WholeContent(
     rounds: List<Round>?,
-    onClickRound: (unavailableQuestion: Boolean) -> Unit
+    onClickRound: (state: QuestionState) -> Unit
 ) {
     if (rounds?.size ?: 0 > 0) {
         val ROW = 5
@@ -213,71 +210,3 @@ fun WholeContent(
     }
 }
 
-private data class QuestionItemState(
-    val isEnabled: Boolean,
-    val icon: Painter,
-    val iconColor: Color,
-    val filledColor: Color,
-    val textColor: Color,
-    val textStyle: TextStyle
-)
-
-
-@Composable
-fun QuestionItem(round: Round, onClickItem: (unavailableQuestion: Boolean) -> Unit) {
-    val ROW = 5
-    val size = (LocalConfiguration.current.screenWidthDp - (6 * 20)).div(ROW)
-    val item = round.let {
-        if (it.isCompleted && it.isLocked) {
-            QuestionItemState(
-                isEnabled = false,
-                icon = painterResource(R.drawable.ic_check),
-                iconColor = ColorPalette.Neautral600,
-                filledColor = ColorPalette.Neautral200,
-                textColor = ColorPalette.Neautral600,
-                textStyle = TextStyles.subTitle04
-            )
-        } else if (!it.isCompleted && it.isLocked) {
-            QuestionItemState(
-                isEnabled = false,
-                icon = painterResource(R.drawable.ic_lock),
-                iconColor = ColorPalette.Neautral400,
-                filledColor = ColorPalette.Neautral100,
-                textColor = ColorPalette.Neautral400,
-                textStyle = TextStyles.subTitle04
-            )
-        } else {
-            QuestionItemState(
-                isEnabled = true,
-                icon = painterResource(R.drawable.ic_lock),
-                iconColor = ColorPalette.PrimaryBlue500,
-                filledColor = ColorPalette.PrimaryBlue100,
-                textColor = ColorPalette.Neautral900,
-                textStyle = TextStyles.subTitle03
-            )
-        }
-    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        LoopyShapeFilledButton(
-            onClick = { onClickItem(round.isTodayQuestion) },
-            enabled = item.isEnabled,
-            icon = item.icon,
-            shape = CircleShape,
-            modifier = Modifier.sizeIn(minWidth = size.dp, minHeight = size.dp),
-            iconColor = item.iconColor,
-            disabledIconColor = item.iconColor,
-            disabledColor = item.filledColor,
-            filledColor = item.filledColor,
-        )
-        Text(
-            "${round.roundIndex + 1}회차",
-            style = item.textStyle,
-            modifier = Modifier.padding(top = 6.dp),
-            color = item.textColor
-        )
-    }
-}
