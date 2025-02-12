@@ -97,7 +97,7 @@ fun HomeScreen(
                                 onClick = { viewmodel.handleEvent(HomeEvent.ClickRound) },
                                 modifier = Modifier.fillMaxWidth(1f)
                             )
-                        }
+                        },
                     )
                 }
             }
