@@ -3,9 +3,7 @@ package com.jaknaeso.app.presentation.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.jaknaeso.app.domain.Result
-import com.jaknaeso.app.domain.asResult
-import com.jaknaeso.app.domain.entity.ResponseResult
+import com.jaknaeso.app.data.LoopyApiResponse
 import com.jaknaeso.app.domain.entity.request.TokenRequest
 import com.jaknaeso.app.domain.repository.LoginRepository
 import com.jaknaeso.app.presentation.contract.LoginEffect
@@ -17,8 +15,6 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -65,39 +61,30 @@ class LoginViewmodel @Inject constructor(
                     UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
                 } else if (token != null) {
                     viewModelScope.launch(Dispatchers.IO) { postAccessToken(token.accessToken) }
-                    Log.d("LoginViewmodel", "토큰값 유효2")
                 }
             }
         } else {
-            Log.e("LoginViewmodel", "카카오 계정으로 간다")
             UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
         }
     }
 
     fun postAccessToken(token: String) {
         viewModelScope.launch {
-            flow {
-                val result = loginRepository.getMemberToken(TokenRequest(token))
-                if (result.result == ResponseResult.SUCCESS.name) {
-                    emit(result.data)
-                } else {
-                    throw Exception(result.error?.message ?: "불편을 끼쳐 죄송해요 :(")
-                }
-            }.asResult()
-                .collectLatest {
-                    when (it) {
-                        is Result.Success -> {
-                            if (it.data != null) {
-                                loginRepository.saveAccessToken(it.data.accessToken)
-                                loginRepository.saveRefreshToken(it.data.refreshToken)
-                            }
-                            setEffect(LoginEffect.NavigateToHome)
-                        }
-
-                        is Result.Error -> {}
-                        Result.Loading -> {}
+            val result = loginRepository.getMemberToken(TokenRequest(token))
+            when (result) {
+                is LoopyApiResponse.Error -> TODO()
+                is LoopyApiResponse.Success -> {
+                    if (result.data.data != null) {
+                        Log.d(
+                            "LoginViewmodel",
+                            "accessToken:${result.data.data!!.accessToken}, refreshToken:${result.data.data!!.refreshToken}"
+                        )
+                        loginRepository.saveAccessToken(result.data.data!!.accessToken)
+                        loginRepository.saveRefreshToken(result.data.data!!.refreshToken)
                     }
+                    setEffect(LoginEffect.NavigateToHome)
                 }
+            }
         }
     }
 }
