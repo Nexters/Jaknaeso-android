@@ -19,7 +19,11 @@ fun SetUpNavGraph(
             navigateToProfile = navController::navigateToProfile,
             navigateToBalanceRound = navController::navigateToBalanceRound
         )
-        balanceRoundScreen(navigateToHome = navController::navigateToHome)
+        balanceRoundScreen(
+            navigateToBack = navController::popBackStack,
+            navigateToBalanceRoundComplete = navController::navigateToBalanceRoundComplete
+        )
+        balanceRoundCompleteScreen(navigateToHome = navController::navigateToHome)
         reportScreen(
             navigateToHome = navController::navigateToHome,
             navigateToProfile = navController::navigateToProfile

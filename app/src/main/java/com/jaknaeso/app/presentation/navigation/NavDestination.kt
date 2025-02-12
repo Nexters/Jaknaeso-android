@@ -16,6 +16,7 @@ fun NavController.navigateToHome() = navigate("${Route.Home}")
 fun NavController.navigateToBalanceRound(roundIndex: String) = navigate("${Route.BalanceRound}/${roundIndex}")
 fun NavController.navigateToReport() = navigate("${Route.Report}")
 fun NavController.navigateToProfile() = navigate("${Route.Profile}")
+fun NavController.navigateToBalanceRoundComplete() = navigate("${Route.BalanceRoundComplete}")
 
 fun NavGraphBuilder.loginScreen(navigateToHome: () -> Unit) {
     composable(route = "${Route.Login}") {
@@ -38,7 +39,8 @@ fun NavGraphBuilder.homeScreen(
 }
 
 fun NavGraphBuilder.balanceRoundScreen(
-    navigateToHome: () -> Unit
+    navigateToBack: () -> Unit,
+    navigateToBalanceRoundComplete: () -> Unit,
 ) {
     composable(
         route = "${Route.BalanceRound}/{roundIndex}",
@@ -46,10 +48,20 @@ fun NavGraphBuilder.balanceRoundScreen(
     ) {
         val roundIndex = it.arguments?.getString("roundIndex")
         if (roundIndex != null) {
-            BalanceRoundScreen(navigateToHome, roundIndex = roundIndex)
+            BalanceRoundScreen(
+                navigateToBalanceRoundComplete = navigateToBalanceRoundComplete,
+                navigateToBack = navigateToBack,
+                roundIndex = roundIndex,
+            )
         } else {
             Text("유효하지 않은 페이지입니다 :(", style = TextStyles.title01, modifier = Modifier.fillMaxSize())
         }
+    }
+}
+
+fun NavGraphBuilder.balanceRoundCompleteScreen(navigateToHome: () -> Unit) {
+    composable(route = "${Route.BalanceRoundComplete}") {
+        BalanceRoundCompleteScreen(navigateToHome)
     }
 }
 
@@ -76,3 +88,4 @@ fun NavGraphBuilder.profileScreen(
         )
     }
 }
+
