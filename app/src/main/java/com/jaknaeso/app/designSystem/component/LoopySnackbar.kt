@@ -28,6 +28,5 @@ fun Loopysnackbar(snackbarHostState: SnackbarHostState, content: @Composable () 
         ) {
             content()
         }
-
     }
 }

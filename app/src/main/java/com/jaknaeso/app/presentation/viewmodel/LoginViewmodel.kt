@@ -3,7 +3,7 @@ package com.jaknaeso.app.presentation.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.jaknaeso.app.data.LoopyApiResponse
+import com.jaknaeso.app.data.authentication.LoopyApiResponse
 import com.jaknaeso.app.domain.entity.request.TokenRequest
 import com.jaknaeso.app.domain.repository.LoginRepository
 import com.jaknaeso.app.presentation.contract.LoginEffect
