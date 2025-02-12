@@ -2,7 +2,7 @@ package com.jaknaeso.app.data.authentication
 
 import android.util.Log
 import com.jaknaeso.app.data.token.TokenManager
-import com.jaknaeso.app.domain.entity.Error
+import com.jaknaeso.app.domain.entity.ErrorData
 import com.jaknaeso.app.domain.entity.LoopyResult
 import com.skydoves.sandwich.message
 import com.skydoves.sandwich.suspendOnError
@@ -64,7 +64,7 @@ class ResponseHandler @Inject constructor(
 
     private suspend fun refreshToken(
         onRefreshSuccess: suspend () -> Unit,
-        onRefreshFail: (errorMessage: Error?) -> Unit
+        onRefreshFail: (errorMessage: ErrorData?) -> Unit
     ) {
         val rememberedToken = runBlocking {
             tokenManager.getRefreshToken().first()
@@ -99,9 +99,9 @@ class ResponseHandler @Inject constructor(
         refreshTokenManager.saveRefreshTokens(accessToken, refreshToken)
     }
 
-    private suspend inline fun Error.handleTokenExpiredError(
-        crossinline onResult: suspend Error.(message: Error) -> Unit,
-    ): Error {
+    private suspend inline fun ErrorData.handleTokenExpiredError(
+        crossinline onResult: suspend ErrorData.(message: ErrorData) -> Unit,
+    ): ErrorData {
         if (this.code == 401) {
             onResult(this)
         }

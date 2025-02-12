@@ -10,5 +10,4 @@ class SurveyRepositoryImpl @Inject constructor(private val surveyDataStore: Surv
     override suspend fun getSurveysHistory(): LoopyResult<BundleRoundsResponse> {
         return surveyDataStore.getSurveysHistory()
     }
-
 }

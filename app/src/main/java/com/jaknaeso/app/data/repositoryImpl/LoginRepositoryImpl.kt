@@ -1,6 +1,6 @@
 package com.jaknaeso.app.data.repositoryImpl
 
-import com.jaknaeso.app.data.LoopyApiResponse
+import com.jaknaeso.app.data.authentication.LoopyApiResponse
 import com.jaknaeso.app.data.datastore.LoginRemoteDatastore
 import com.jaknaeso.app.data.datastoreImpl.LoginLocalDatastore
 import com.jaknaeso.app.domain.entity.LoopyResult

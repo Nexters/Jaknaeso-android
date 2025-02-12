@@ -1,7 +1,7 @@
 package com.jaknaeso.app.data.datastoreImpl
 
-import com.jaknaeso.app.data.LoopyApiResponse
-import com.jaknaeso.app.data.ResponseHandler
+import com.jaknaeso.app.data.authentication.LoopyApiResponse
+import com.jaknaeso.app.data.authentication.ResponseHandler
 import com.jaknaeso.app.data.datastore.LoginRemoteDatastore
 import com.jaknaeso.app.data.service.LoginService
 import com.jaknaeso.app.domain.entity.LoopyResult

@@ -13,5 +13,5 @@ interface LoginService {
     suspend fun getMemberToken(@Body request: TokenRequest): Response<LoopyResult<MemberTokenResponse>>
 
     @POST("/api/v1/auth/reissue")
-    suspend fun getRefreshToken(): ApiResponse<MemberTokenResponse>
+    suspend fun getRefreshToken(): ApiResponse<LoopyResult<MemberTokenResponse>>
 }
