@@ -2,6 +2,7 @@ package com.jaknaeso.app.di
 
 import com.google.gson.GsonBuilder
 import com.jaknaeso.app.BuildConfig
+import com.jaknaeso.app.data.service.CharacterService
 import com.jaknaeso.app.data.service.LoginService
 import com.jaknaeso.app.data.service.SurveyService
 import com.jaknaeso.app.data.token.TokenManager
@@ -62,5 +63,11 @@ object NetworkModule {
     @Provides
     fun provideSurveyService(retrofit: Retrofit): SurveyService {
         return retrofit.create(SurveyService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideCharacterService(retrofit: Retrofit): CharacterService {
+        return retrofit.create(CharacterService::class.java)
     }
 }
