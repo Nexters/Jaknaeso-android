@@ -45,7 +45,7 @@ object NetworkModule {
             with(chain) {
                 val token = tokenManager.getAuthTokenForHeader()
                 val newRequest = request().newBuilder()
-                    .header("X-AUTH-TOKEN", "${token}")
+                    .header("Authorization", "Bearer ${token}")
                     .build()
                 proceed(newRequest)
             }
