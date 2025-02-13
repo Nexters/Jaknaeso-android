@@ -10,7 +10,8 @@ sealed interface ReportEvent : UiEvent {
 
 data class ReportState(
     val isReportExisted: Boolean = false,
-    val characters: List<Character> = emptyList()
+    val chracterOrdinalWord: String,
+    val characters: List<Character> = emptyList(),
 ) : UiState
 
 sealed interface ReportEffect : UiEffect {

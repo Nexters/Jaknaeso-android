@@ -21,7 +21,7 @@ class ReportViewmodel @Inject constructor(private val judgeAllRoundCompletedUseC
     }
 
     override fun createInitialState(): ReportState {
-        return ReportState()
+        return ReportState(chracterOrdinalWord = "")
     }
 
     override fun handleEvent(event: ReportEvent) {
