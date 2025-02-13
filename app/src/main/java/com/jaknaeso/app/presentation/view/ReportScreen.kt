@@ -126,18 +126,25 @@ fun CharacterSelectModalContent(
 ) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(Modifier.fillMaxWidth(1f).padding(bottom = 36.dp)) {
+        Row(
+            Modifier.fillMaxWidth(1f).padding(bottom = 28.dp).padding(horizontal = 20.dp).padding(top = 28.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(text = "가치관 캐릭터 선택하기", style = TextStyles.title03)
             IconButton(
                 enabled = true,
                 onClick = onModalTitleClick,
-                modifier = Modifier.background(color = Color.Transparent)
+                modifier = Modifier.background(color = Color.Transparent).size(15.dp),
             ) {
-                Icon(painter = painterResource(R.drawable.ic_close), contentDescription = null)
+                Icon(
+                    painter = painterResource(R.drawable.ic_close),
+                    contentDescription = null,
+                    modifier = Modifier.size(15.dp)
+                )
             }
         }
         RadioButtons(characters = characters, onChanged = { index -> onSelectionChanged(characters[index].bundleId) })
@@ -149,26 +156,18 @@ fun RadioButtons(
     characters: List<Character>,
     onChanged: (index: Int) -> Unit,
 ) {
-    val size = characters.size
-    val isSelectedList = remember { MutableList(size) { false } } //TODO(해시로 최적화하기)
+    var selectedIndex by remember { mutableStateOf(-1) } // 하나만 선택 가능하도록 변경
 
-    fun initializeOtherSelection(selectedIndex: Int) {
-        onChanged(selectedIndex)
-        isSelectedList.mapIndexed { index, isSelected ->
-            if (index == selectedIndex) true else false
-        }
-    }
-
-    LazyColumn {
+    LazyColumn(modifier = Modifier.padding(start = 4.dp, end = 12.dp)) {
         itemsIndexed(characters) { index, item ->
             SelectionFilterChip(
-                isSelected = isSelectedList[index],
+                isSelected = (index == selectedIndex),
                 label = { Text(text = "${item.ordinalWord}번째 캐릭터", style = TextStyles.subTitle01) },
                 shape = RoundedCornerShape(10.dp),
                 onClick = { isSelected ->
-                    if (isSelected) {
-                        initializeOtherSelection(index)
-                        onChanged(index)
+                    if (!isSelected) { // 선택되지 않은 경우만 변경
+                        selectedIndex = index
+                        onChanged(index) // 선택 변경 이벤트 전달
                     }
                 },
                 trailingIcon = painterResource(R.drawable.ic_check),
@@ -176,6 +175,7 @@ fun RadioButtons(
                 modifier = Modifier.fillMaxWidth(1f),
                 filledColor = Color.White
             )
+            Spacer(modifier = Modifier.fillMaxWidth().height(16.dp))
         }
     }
 }
@@ -188,7 +188,7 @@ fun CharacterAnalysisView() {
             .padding(top = 40.dp),
         verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start
     ) {
-        LazyColumn(Modifier.padding(horizontal = 20.dp)) {
+        LazyColumn {
             item {
                 Column(
                     modifier = Modifier.fillMaxWidth(1f),
@@ -197,7 +197,7 @@ fun CharacterAnalysisView() {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
-                        modifier = Modifier.padding(bottom = 40.dp)
+                        modifier = Modifier.padding(bottom = 40.dp).padding(horizontal = 20.dp)
                     ) {
                         LottieImageView()
                         Text(
@@ -227,7 +227,10 @@ fun CharacterAnalysisView() {
                     Spacer(
                         modifier = Modifier.fillMaxWidth().height(1.dp).background(color = ColorPalette.Neautral300)
                     )
-                    Column(horizontalAlignment = Alignment.Start, modifier = Modifier.padding(vertical = 40.dp)) {
+                    Column(
+                        horizontalAlignment = Alignment.Start,
+                        modifier = Modifier.padding(vertical = 40.dp).padding(horizontal = 20.dp)
+                    ) {
                         Text("가치관 선택 비율", style = TextStyles.title03, modifier = Modifier.padding(bottom = 8.dp))
                         Text(
                             "{userName님은 성장과 평화를 가장 중요시 여기고 있어요.}",
@@ -239,7 +242,7 @@ fun CharacterAnalysisView() {
                     Spacer(
                         modifier = Modifier.fillMaxWidth().height(1.dp).background(color = ColorPalette.Neautral300)
                     )
-                    Column(modifier = Modifier.padding(top = 40.dp, bottom = 24.dp)) {
+                    Column(modifier = Modifier.padding(top = 40.dp, bottom = 24.dp).padding(horizontal = 20.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
                                 text = "회고를 자주 남긴 주제는 ",
@@ -266,78 +269,80 @@ fun CharacterAnalysisView() {
                 }
             }
             items(items = listOf(0, 1, 2, 3)) {
-                DropdownCard(shellContent = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(1f),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = "3회차", style = TextStyles.subTitle03)
-                        Icon(
-                            painter = painterResource(R.drawable.ic_arrow_down),
-                            contentDescription = null,
-                            tint = Color.Black
-                        )
-                    }
-                }, mainContent = {
-                    Column {
-                        Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
-                        LoopyAssistChip(
-                            "2025.1.2",
-                            labelStyle = TextStyles.body02,
-                            filledColor = ColorPalette.Neautral200,
-                            labelColor = ColorPalette.Neautral700,
-                            shape = RoundedCornerShape(6.dp),
-                            enabled = false
-                        )
-                        Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
+                Column(Modifier.padding(horizontal = 20.dp)) {
+                    DropdownCard(shellContent = {
                         Row(
-                            verticalAlignment = Alignment.Top,
-                            horizontalArrangement = Arrangement.Start,
-                            modifier = Modifier.padding(bottom = 16.dp)
+                            modifier = Modifier.fillMaxWidth(1f),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("Q.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
-                            Text(
-                                "커리어를 향상시킬 수 있는 일자리이지만 가까운 사람들과 멀어져야한다면, 이 일자리를 선택하실 건가요?",
-                                style = TextStyles.body01,
-                                softWrap = true
+                            Text(text = "3회차", style = TextStyles.subTitle03)
+                            Icon(
+                                painter = painterResource(R.drawable.ic_arrow_down),
+                                contentDescription = null,
+                                tint = Color.Black
                             )
                         }
-                        Spacer(
-                            modifier = Modifier.fillMaxWidth().height(1.dp)
-                                .background(color = ColorPalette.Neautral300)
-                        )
-                        Row(
-                            verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Start,
-                            modifier = Modifier.padding(top = 16.dp, bottom = 12.dp)
-                        ) {
-                            Text("A.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
-                            Text(
-                                "주변 사람과 물리적으로 멀어지더라도, 커리어를 선택한다.",
-                                style = TextStyles.body01,
-                                softWrap = true
+                    }, mainContent = {
+                        Column {
+                            Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
+                            LoopyAssistChip(
+                                "2025.1.2",
+                                labelStyle = TextStyles.body02,
+                                filledColor = ColorPalette.Neautral200,
+                                labelColor = ColorPalette.Neautral700,
+                                shape = RoundedCornerShape(6.dp),
+                                enabled = false
                             )
+                            Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
+                            Row(
+                                verticalAlignment = Alignment.Top,
+                                horizontalArrangement = Arrangement.Start,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            ) {
+                                Text("Q.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
+                                Text(
+                                    "커리어를 향상시킬 수 있는 일자리이지만 가까운 사람들과 멀어져야한다면, 이 일자리를 선택하실 건가요?",
+                                    style = TextStyles.body01,
+                                    softWrap = true
+                                )
+                            }
+                            Spacer(
+                                modifier = Modifier.fillMaxWidth().height(1.dp)
+                                    .background(color = ColorPalette.Neautral300)
+                            )
+                            Row(
+                                verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Start,
+                                modifier = Modifier.padding(top = 16.dp, bottom = 12.dp)
+                            ) {
+                                Text("A.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
+                                Text(
+                                    "주변 사람과 물리적으로 멀어지더라도, 커리어를 선택한다.",
+                                    style = TextStyles.body01,
+                                    softWrap = true
+                                )
+                            }
+                            Column(
+                                modifier = Modifier.background(
+                                    color = ColorPalette.Neautral100,
+                                    shape = RoundedCornerShape(12.dp)
+                                ).padding(vertical = 12.dp).padding(horizontal = 16.dp)
+                            ) {
+                                Text(
+                                    "회고",
+                                    style = TextStyles.body01,
+                                    color = ColorPalette.Neautral800,
+                                    modifier = Modifier.padding(bottom = 8.dp),
+                                    softWrap = true
+                                )
+                                Text(
+                                    "가까운 사람들과 물리적으로 멀어지더라도 그 관계가 사라지진 않음. 내 노력에 따라 관계는 달라질 수 있지만 커리어 기회는 원할 때 오는 게 아님",
+                                    style = TextStyles.body01, color = ColorPalette.Neautral700, softWrap = true
+                                )
+                            }
                         }
-                        Column(
-                            modifier = Modifier.background(
-                                color = ColorPalette.Neautral100,
-                                shape = RoundedCornerShape(12.dp)
-                            ).padding(vertical = 12.dp).padding(horizontal = 16.dp)
-                        ) {
-                            Text(
-                                "회고",
-                                style = TextStyles.body01,
-                                color = ColorPalette.Neautral800,
-                                modifier = Modifier.padding(bottom = 8.dp),
-                                softWrap = true
-                            )
-                            Text(
-                                "가까운 사람들과 물리적으로 멀어지더라도 그 관계가 사라지진 않음. 내 노력에 따라 관계는 달라질 수 있지만 커리어 기회는 원할 때 오는 게 아님",
-                                style = TextStyles.body01, color = ColorPalette.Neautral700, softWrap = true
-                            )
-                        }
-                    }
-                })
+                    })
+                }
                 Spacer(modifier = Modifier.fillMaxWidth().height(18.dp))
             }
         }
