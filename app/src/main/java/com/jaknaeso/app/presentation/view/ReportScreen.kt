@@ -1,37 +1,50 @@
 package com.jaknaeso.app.presentation.view
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jaknaeso.app.R
+import com.jaknaeso.app.designSystem.component.*
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
+import com.jaknaeso.app.domain.model.Character
 import com.jaknaeso.app.presentation.contract.ReportEffect
-import com.jaknaeso.app.presentation.contract.ReportEvent
 import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
 import com.jaknaeso.app.presentation.navigation.Route
 import com.jaknaeso.app.presentation.viewmodel.ReportViewmodel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ReportScreen(
     navigateToHome: () -> Unit,
     navigateToProfile: () -> Unit,
     viewmodel: ReportViewmodel = hiltViewModel()
 ) {
-    val scrollState = rememberScrollState()
-    val uistate = viewmodel.uiState.collectAsStateWithLifecycle()
+//    val scrollState = rememberScrollState()
+//    val uistate = viewmodel.uiState.collectAsStateWithLifecycle()
+    val pagerState = rememberPagerState(pageCount = { 2 })
+    var isModalExpanded by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         viewmodel.effects.collectLatest { effect ->
@@ -43,67 +56,386 @@ fun ReportScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(1f).background(color = Color.White),
+        modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral0),
         bottomBar = {
             LoopyBottomNavBar(
-                navigateToHome = { viewmodel.handleEvent(ReportEvent.ClickHome) },
+                navigateToHome = navigateToHome,
                 navigateToReport = {},
-                navigateToProfile = { viewmodel.handleEvent(ReportEvent.ClickProfile) },
+                navigateToProfile = navigateToProfile,
                 currentRoute = Route.Report
             )
         },
         content = { paddingValues ->
             Column(
                 modifier = Modifier
-                    .background(color = Color.White).fillMaxSize(1f)
-                    .padding(vertical = 54.dp).padding(horizontal = 40.dp).padding(paddingValues),
-                verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.CenterHorizontally
+                    .background(color = ColorPalette.Neautral0).fillMaxSize(1f).padding(paddingValues),
+                verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start
             ) {
-                Text(
-                    text = "캐릭터 분석",
-                    style = TextStyles.title03,
-                    color = Color.Black,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.fillMaxWidth().height(80.dp))
-                if (uistate.value.isReportExisted) {
-                    Text(text = "F1멋쟁이 f1 드라이버", style = TextStyles.subTitle03, color = Color.Black)
-                    Spacer(modifier = Modifier.fillMaxWidth().height(40.dp))
-                    Column(
-                        modifier = Modifier.fillMaxHeight(1f).verticalScroll(scrollState)
+                if (isModalExpanded) {
+                    BasicBottomSheet(
+                        isVisible = isModalExpanded,
+                        onDismiss = { isModalExpanded = false }
                     ) {
-                        Text(
-                            text = "당신의 가치관을 분석한 결과, 멋쟁이 F1 드라이버 라는 별명이 가장 잘 어울립니다. 당신은 도전을 두려워하지 않으며, 한계를 뛰어넘는 데서 진정한 성취감을 느끼는 사람입니다. 경쟁을 피하기보다는 오히려 그 속에서 더 성장하고 발전하는 타입으로, 주어진 상황에서 최상의 결과를 만들어내는 능력을 가지고 있습니다. 위험을 감수하더라도 새로운 기회를 잡기 위해 가속 페달을 밟는 스타일이며, 정체된 환경보다는 끊임없이 변화하는 무대를 더 선호합니다.",
-                            style = TextStyles.subTitle04,
-                            color = ColorPalette.Neautral700
-                        )
-                        Spacer(modifier = Modifier.fillMaxWidth().height(40.dp))
-                        Text(
-                            text = "당신은 철저한 전략가이면서도 직관적인 승부사입니다. INTJ적인 치밀한 계획성과 ESTP적인 즉흥적 판단력이 공존하는 독특한 성향을 가지고 있어, 장기적인 목표를 세우면서도 기회가 찾아왔을 때는 빠른 결단력으로 행동할 줄 압니다. 계획을 중요하게 여기지만, 때로는 본능적으로 즉각적인 움직임을 보여주기도 합니다. 레이싱 트랙 위에서 치밀한 분석을 바탕으로 최적의 코스를 계산하면서도, 순간적인 판단으로 추월을 시도하는 드라이버처럼, 당신은 판을 읽고 빠르게 대응하는 능력이 탁월합니다.",
-                            style = TextStyles.subTitle04,
-                            color = ColorPalette.Neautral700
+                        CharacterSelectModalContent(
+                            onModalTitleClick = { isModalExpanded = false },
+                            onSelectionChanged = {},
+                            characters = listOf(
+                                Character("첫", 1),
+                                Character("두", 2),
+                                Character("세", 3),
+                                Character("네", 4)
+                            )
                         )
                     }
-                } else {
-                    Text(
-                        text = "아직 결과가 안 나왔어요..!\n질문에 모두 답하면 알 수 있을 거에요!",
-                        style = TextStyles.subTitle03,
-                        color = Color.Black
+                }
+                Spacer(Modifier.fillMaxWidth().height(54.dp))
+                Column(Modifier.padding(horizontal = 20.dp)) {
+                    LoopyAssistChip(
+                        onClick = { isModalExpanded = !isModalExpanded },
+                        label = "첫번째 캐릭터",
+                        labelStyle = TextStyles.title03,
+                        filledColor = Color.Transparent,
+                        labelColor = Color.Black,
+                        shape = RoundedCornerShape(8.dp),
+                        trailingIcon = painterResource(R.drawable.ic_arrow_down),
+                        trailingIconColor = ColorPalette.Neautral600
                     )
-                    Spacer(modifier = Modifier.fillMaxWidth().height(40.dp))
-                    Text(
-                        text = "보편적 가치이론(Universal Theory of Values) 에 기반하여, 개인이 중요하게 여기는 가치관을 분석하고 해석해줘요. 이를 통해 당신이 어떤 가치를 중시하며, 어떤 동기와 신념이 행동에 영향을 미치는지에 대한 인사이트를 제공하고 싶어요. 저희 서비스는 자신을 더 깊이 이해하고, 개인적 성장과 의사결정에 도움이 되었으면 해요 :)",
-                        style = TextStyles.subTitle04,
-                        color = ColorPalette.Neautral700
-                    )
+                    Spacer(modifier = Modifier.fillMaxWidth(1f).height(20.dp))
+                }
+                LoopyTabBar(tabBarTitles = listOf("캐릭터 분석", "나의 답변 모아보기"), onPage = { index ->
+                    scope.launch {
+                        pagerState.animateScrollToPage((pagerState.currentPage + 1) % 2)
+                    }
+                })
+                HorizontalPager(state = pagerState, userScrollEnabled = false) { page ->
+                    when (page) {
+                        0 -> CharacterAnalysisView()
+                        1 -> MyAnswersView()
+                    }
                 }
             }
         }
     )
 }
 
+@Composable
+fun CharacterSelectModalContent(
+    onModalTitleClick: () -> Unit,
+    onSelectionChanged: (bundleId: Int) -> Unit,
+    characters: List<Character>
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(Modifier.fillMaxWidth(1f).padding(bottom = 36.dp)) {
+            Text(text = "가치관 캐릭터 선택하기", style = TextStyles.title03)
+            IconButton(
+                enabled = true,
+                onClick = onModalTitleClick,
+                modifier = Modifier.background(color = Color.Transparent)
+            ) {
+                Icon(painter = painterResource(R.drawable.ic_close), contentDescription = null)
+            }
+        }
+        RadioButtons(characters = characters, onChanged = { index -> onSelectionChanged(characters[index].bundleId) })
+    }
+}
+
+@Composable
+fun RadioButtons(
+    characters: List<Character>,
+    onChanged: (index: Int) -> Unit,
+) {
+    val size = characters.size
+    val isSelectedList = remember { MutableList(size) { false } } //TODO(해시로 최적화하기)
+
+    fun initializeOtherSelection(selectedIndex: Int) {
+        onChanged(selectedIndex)
+        isSelectedList.mapIndexed { index, isSelected ->
+            if (index == selectedIndex) true else false
+        }
+    }
+
+    LazyColumn {
+        itemsIndexed(characters) { index, item ->
+            SelectionFilterChip(
+                isSelected = isSelectedList[index],
+                label = { Text(text = "${item.ordinalWord}번째 캐릭터", style = TextStyles.subTitle01) },
+                shape = RoundedCornerShape(10.dp),
+                onClick = { isSelected ->
+                    if (isSelected) {
+                        initializeOtherSelection(index)
+                        onChanged(index)
+                    }
+                },
+                trailingIcon = painterResource(R.drawable.ic_check),
+                selectedIconColor = ColorPalette.PrimaryBlue500,
+                modifier = Modifier.fillMaxWidth(1f),
+                filledColor = Color.White
+            )
+        }
+    }
+}
+
+@Composable
+fun CharacterAnalysisView() {
+    Column(
+        modifier = Modifier
+            .background(color = ColorPalette.Neautral0).fillMaxSize()
+            .padding(top = 40.dp),
+        verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start
+    ) {
+        LazyColumn(Modifier.padding(horizontal = 20.dp)) {
+            item {
+                Column(
+                    modifier = Modifier.fillMaxWidth(1f),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.padding(bottom = 40.dp)
+                    ) {
+                        LottieImageView()
+                        Text(
+                            text = "{valueType}",
+                            style = TextStyles.title03,
+                            color = Color.Black,
+                            modifier = Modifier.padding(top = 16.dp, bottom = 12.dp),
+                            softWrap = true
+                        )
+                        LoopySuggestionChip(
+                            enabled = false,
+                            label = "24.01.02 - 24.04.02",
+                            labelStyle = TextStyles.body02,
+                            filledColor = ColorPalette.Neautral200,
+                            labelColor = ColorPalette.Neautral700,
+                            shape = RoundedCornerShape(5.dp),
+                            height = 26.dp
+                        )
+                        Text(
+                            "캐릭터 설명을 최대 두줄, 간결하게 작성해주세요. 캐릭터 설명을 최대 두줄, 간결하게 작성해주세요",
+                            style = TextStyles.subTitle04,
+                            color = ColorPalette.Neautral700,
+                            modifier = Modifier.padding(top = 12.dp),
+                            softWrap = true
+                        )
+                    }
+                    Spacer(
+                        modifier = Modifier.fillMaxWidth().height(1.dp).background(color = ColorPalette.Neautral300)
+                    )
+                    Column(horizontalAlignment = Alignment.Start, modifier = Modifier.padding(vertical = 40.dp)) {
+                        Text("가치관 선택 비율", style = TextStyles.title03, modifier = Modifier.padding(bottom = 8.dp))
+                        Text(
+                            "{userName님은 성장과 평화를 가장 중요시 여기고 있어요.}",
+                            style = TextStyles.subTitle04,
+                            color = ColorPalette.Neautral700,
+                            softWrap = true
+                        )
+                    }
+                    Spacer(
+                        modifier = Modifier.fillMaxWidth().height(1.dp).background(color = ColorPalette.Neautral300)
+                    )
+                    Column(modifier = Modifier.padding(top = 40.dp, bottom = 24.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "회고를 자주 남긴 주제는 ",
+                                style = TextStyles.title03,
+                                color = Color.Black,
+                                modifier = Modifier.padding(end = 9.dp)
+                            )
+                            LoopyAssistChip(
+                                enabled = false,
+                                label = "{value}",
+                                labelStyle = TextStyles.subTitle03,
+                                filledColor = ColorPalette.PrimaryBlue100,
+                                labelColor = ColorPalette.PrimaryBlue500,
+                                shape = RoundedCornerShape(5.dp),
+                            )
+                            Text(
+                                text = " 예요.",
+                                style = TextStyles.title03,
+                                color = Color.Black,
+                                modifier = Modifier.padding(start = 7.dp)
+                            )
+                        }
+                    }
+                }
+            }
+            items(items = listOf(0, 1, 2, 3)) {
+                DropdownCard(shellContent = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(1f),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "3회차", style = TextStyles.subTitle03)
+                        Icon(
+                            painter = painterResource(R.drawable.ic_arrow_down),
+                            contentDescription = null,
+                            tint = Color.Black
+                        )
+                    }
+                }, mainContent = {
+                    Column {
+                        Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
+                        LoopyAssistChip(
+                            "2025.1.2",
+                            labelStyle = TextStyles.body02,
+                            filledColor = ColorPalette.Neautral200,
+                            labelColor = ColorPalette.Neautral700,
+                            shape = RoundedCornerShape(6.dp),
+                            enabled = false
+                        )
+                        Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
+                        Row(
+                            verticalAlignment = Alignment.Top,
+                            horizontalArrangement = Arrangement.Start,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        ) {
+                            Text("Q.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
+                            Text(
+                                "커리어를 향상시킬 수 있는 일자리이지만 가까운 사람들과 멀어져야한다면, 이 일자리를 선택하실 건가요?",
+                                style = TextStyles.body01,
+                                softWrap = true
+                            )
+                        }
+                        Spacer(
+                            modifier = Modifier.fillMaxWidth().height(1.dp)
+                                .background(color = ColorPalette.Neautral300)
+                        )
+                        Row(
+                            verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Start,
+                            modifier = Modifier.padding(top = 16.dp, bottom = 12.dp)
+                        ) {
+                            Text("A.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
+                            Text(
+                                "주변 사람과 물리적으로 멀어지더라도, 커리어를 선택한다.",
+                                style = TextStyles.body01,
+                                softWrap = true
+                            )
+                        }
+                        Column(
+                            modifier = Modifier.background(
+                                color = ColorPalette.Neautral100,
+                                shape = RoundedCornerShape(12.dp)
+                            ).padding(vertical = 12.dp).padding(horizontal = 16.dp)
+                        ) {
+                            Text(
+                                "회고",
+                                style = TextStyles.body01,
+                                color = ColorPalette.Neautral800,
+                                modifier = Modifier.padding(bottom = 8.dp),
+                                softWrap = true
+                            )
+                            Text(
+                                "가까운 사람들과 물리적으로 멀어지더라도 그 관계가 사라지진 않음. 내 노력에 따라 관계는 달라질 수 있지만 커리어 기회는 원할 때 오는 게 아님",
+                                style = TextStyles.body01, color = ColorPalette.Neautral700, softWrap = true
+                            )
+                        }
+                    }
+                })
+                Spacer(modifier = Modifier.fillMaxWidth().height(18.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun MyAnswersView() {
+    Column {
+        Spacer(Modifier.fillMaxWidth().height(40.dp))
+        LazyColumn(Modifier.padding(horizontal = 20.dp)) {
+            items(items = listOf(0, 1, 2, 3)) {
+                DropdownCard(shellContent = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(1f),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "3회차", style = TextStyles.subTitle03)
+                        Icon(
+                            painter = painterResource(R.drawable.ic_arrow_down),
+                            contentDescription = null,
+                            tint = Color.Black
+                        )
+                    }
+                }, mainContent = {
+                    Column {
+                        Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
+                        LoopyAssistChip(
+                            "2025.1.2",
+                            labelStyle = TextStyles.body02,
+                            filledColor = ColorPalette.Neautral200,
+                            labelColor = ColorPalette.Neautral700,
+                            shape = RoundedCornerShape(6.dp),
+                            enabled = false
+                        )
+                        Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
+                        Row(
+                            verticalAlignment = Alignment.Top,
+                            horizontalArrangement = Arrangement.Start,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        ) {
+                            Text("Q.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
+                            Text(
+                                "커리어를 향상시킬 수 있는 일자리이지만 가까운 사람들과 멀어져야한다면, 이 일자리를 선택하실 건가요?",
+                                style = TextStyles.body01,
+                                softWrap = true
+                            )
+                        }
+                        Spacer(
+                            modifier = Modifier.fillMaxWidth().height(1.dp)
+                                .background(color = ColorPalette.Neautral300)
+                        )
+                        Row(
+                            verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Start,
+                            modifier = Modifier.padding(top = 16.dp, bottom = 12.dp)
+                        ) {
+                            Text("A.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
+                            Text(
+                                "주변 사람과 물리적으로 멀어지더라도, 커리어를 선택한다.",
+                                style = TextStyles.body01,
+                                softWrap = true
+                            )
+                        }
+                        Column(
+                            modifier = Modifier.background(
+                                color = ColorPalette.Neautral100,
+                                shape = RoundedCornerShape(12.dp)
+                            ).padding(vertical = 12.dp).padding(horizontal = 16.dp)
+                        ) {
+                            Text(
+                                "회고",
+                                style = TextStyles.body01,
+                                color = ColorPalette.Neautral800,
+                                modifier = Modifier.padding(bottom = 8.dp),
+                                softWrap = true
+                            )
+                            Text(
+                                "가까운 사람들과 물리적으로 멀어지더라도 그 관계가 사라지진 않음. 내 노력에 따라 관계는 달라질 수 있지만 커리어 기회는 원할 때 오는 게 아님",
+                                style = TextStyles.body01, color = ColorPalette.Neautral700, softWrap = true
+                            )
+                        }
+                    }
+                })
+                Spacer(modifier = Modifier.fillMaxWidth().height(18.dp))
+            }
+        }
+    }
+}
+
 @Preview
 @Composable
-fun ReportScreenPreview() {
-    ReportScreen({}, {})
+fun CharacterAnalysisPreview() {
+    CharacterAnalysisView()
+}
+
+@Preview
+@Composable
+fun MyAnswersReportPreview() {
+    MyAnswersView()
 }

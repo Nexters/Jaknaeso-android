@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jaknaeso.app.designSystem.component.LoopyFilledButton
+import com.jaknaeso.app.designSystem.component.LottieImageView
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 
@@ -31,12 +32,7 @@ fun BalanceRoundCompleteScreen(navigateToHome: () -> Unit) {
                 softWrap = true
             )
             Spacer(Modifier.height(40.dp))
-            Column(
-                modifier = Modifier.fillMaxSize(0.56f).aspectRatio(1f).sizeIn(minWidth = 220.dp, minHeight = 220.dp)
-                    .background(color = ColorPalette.Neautral300, shape = RoundedCornerShape(25.dp))
-            ) {
-
-            }
+            LottieImageView()
         }
         Column(
             Modifier.fillMaxSize().padding(bottom = 62.dp),

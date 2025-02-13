@@ -1,5 +1,7 @@
 package com.jaknaeso.app.presentation.contract
 
+import com.jaknaeso.app.domain.model.Character
+
 
 sealed interface ReportEvent : UiEvent {
     data object ClickHome : ReportEvent
@@ -7,7 +9,8 @@ sealed interface ReportEvent : UiEvent {
 }
 
 data class ReportState(
-    val isReportExisted: Boolean = false
+    val isReportExisted: Boolean = false,
+    val characters: List<Character> = emptyList()
 ) : UiState
 
 sealed interface ReportEffect : UiEffect {
