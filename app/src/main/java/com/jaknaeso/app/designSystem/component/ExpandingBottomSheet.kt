@@ -113,7 +113,7 @@ fun ExpandingBottomSheet(
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     // 드래그 핸들러
-                    DragHandle(icon = painterResource(R.drawable.ic_arrow_upside)) {
+                    DragHandle(icon = painterResource(R.drawable.ic_arrow_up)) {
                         coroutineScope.launch {
                             if (isModalOpen) {
                                 animateToClose(sheetHeight, minSheetHeight.value)

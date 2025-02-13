@@ -2,8 +2,10 @@ package com.jaknaeso.app.designSystem.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.FilterChip
 import androidx.compose.material.Text
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.ChipColors
@@ -69,7 +71,7 @@ fun LoopyAssistChip(
 @Preview
 @Composable
 fun PreviewLoopyAssistChip() {
-    Column {
+    Column(Modifier.fillMaxWidth(1f)) {
         LoopyAssistChip(
             "1번째 캐릭터",
             labelStyle = TextStyles.subTitle04,
@@ -86,7 +88,8 @@ fun PreviewLoopyAssistChip() {
             labelColor = ColorPalette.PrimaryBlue500,
             shape = RoundedCornerShape(8.dp),
             trailingIcon = painterResource(R.drawable.ic_arrow_down),
-            trailingIconColor = ColorPalette.Neautral600
+            trailingIconColor = ColorPalette.Neautral600,
+            modifier = Modifier.fillMaxWidth(1f)
         )
     }
 }

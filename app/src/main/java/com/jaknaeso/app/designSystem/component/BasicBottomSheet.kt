@@ -95,7 +95,6 @@ fun BasicBottomSheetPreview() {
             BasicBottomSheet(
                 isVisible = isSheetVisible,
                 onDismiss = { isSheetVisible = false },
-                bottomContent = { Text("Show Bottom Sheet") }
             ) {
                 Column(
                     modifier = Modifier
