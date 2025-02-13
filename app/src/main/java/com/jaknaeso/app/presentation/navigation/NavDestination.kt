@@ -14,9 +14,10 @@ import com.jaknaeso.app.presentation.view.*
 fun NavController.navigateToLogin() = navigate("${Route.Login}")
 fun NavController.navigateToHome() = navigate("${Route.Home}")
 fun NavController.navigateToBalanceRound(bundleIndex: String) = navigate("${Route.BalanceRound}/${bundleIndex}")
+fun NavController.navigateToSliderRound(bundleindex: String) = navigate("${Route.SliderRound}/${bundleindex}")
 fun NavController.navigateToReport() = navigate("${Route.Report}")
 fun NavController.navigateToProfile() = navigate("${Route.Profile}")
-fun NavController.navigateToBalanceRoundComplete() = navigate("${Route.BalanceRoundComplete}")
+fun NavController.navigateToRoundComplete() = navigate("${Route.RoundComplete}")
 
 fun NavGraphBuilder.loginScreen(navigateToHome: () -> Unit) {
     composable(route = "${Route.Login}") {
@@ -59,9 +60,33 @@ fun NavGraphBuilder.balanceRoundScreen(
     }
 }
 
+fun NavGraphBuilder.sliderRoundScreen(
+    navigateToBack: () -> Unit,
+    navigateToRoundComplete: () -> Unit,
+) {
+    composable(
+        route = "${Route.BalanceRound}/{roundIndex}",
+        arguments = listOf(navArgument("roundIndex") { type = NavType.StringType })
+    ) {
+        val roundIndex = it.arguments?.getString("roundIndex")
+
+        if (roundIndex != null) {
+            SliderRoundScreen(
+                navigateToBalanceRoundComplete = navigateToRoundComplete,
+                navigateToBack = navigateToBack,
+                roundIndex = roundIndex,
+            )
+        } else {
+            Text("유효하지 않은 페이지입니다 :(", style = TextStyles.title01, modifier = Modifier.fillMaxSize())
+        }
+    }
+
+}
+
+
 fun NavGraphBuilder.balanceRoundCompleteScreen(navigateToHome: () -> Unit) {
-    composable(route = "${Route.BalanceRoundComplete}") {
-        BalanceRoundCompleteScreen(navigateToHome)
+    composable(route = "${Route.RoundComplete}") {
+        RoundCompleteScreen(navigateToHome)
     }
 }
 

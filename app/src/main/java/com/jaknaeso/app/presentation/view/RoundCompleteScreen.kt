@@ -14,7 +14,7 @@ import com.jaknaeso.app.designSystem.component.LottieImageView
 import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
-fun BalanceRoundCompleteScreen(navigateToHome: () -> Unit) {
+fun RoundCompleteScreen(navigateToHome: () -> Unit) {
     Box(Modifier.fillMaxSize().background(color = Color.White).padding(horizontal = 20.dp)) {
         Column(
             Modifier.fillMaxSize(),

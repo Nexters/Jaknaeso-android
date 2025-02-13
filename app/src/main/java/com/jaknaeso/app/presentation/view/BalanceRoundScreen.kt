@@ -3,7 +3,6 @@ package com.jaknaeso.app.presentation.view
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,8 +33,6 @@ fun BalanceRoundScreen(
     roundIndex: String,
     viewmodel: BalanceRoundViewmodel = hiltViewModel()
 ) {
-    val pagerState = rememberPagerState(pageCount = { 2 })
-    val scope = rememberCoroutineScope()
     val uiState = viewmodel.uiState.collectAsStateWithLifecycle()
     val question = uiState.value.balanceQuestion
     var isModalExpanded by remember { mutableStateOf(false) }

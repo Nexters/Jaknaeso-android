@@ -21,7 +21,7 @@ fun SetUpNavGraph(
         )
         balanceRoundScreen(
             navigateToBack = navController::popBackStack,
-            navigateToBalanceRoundComplete = navController::navigateToBalanceRoundComplete
+            navigateToBalanceRoundComplete = navController::navigateToRoundComplete
         )
         balanceRoundCompleteScreen(navigateToHome = navController::navigateToHome)
         reportScreen(
