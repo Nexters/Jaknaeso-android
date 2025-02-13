@@ -2,7 +2,6 @@ package com.jaknaeso.app.presentation.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,7 +11,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jaknaeso.app.designSystem.component.LoopyFilledButton
 import com.jaknaeso.app.designSystem.component.LottieImageView
-import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
@@ -26,7 +24,7 @@ fun BalanceRoundCompleteScreen(navigateToHome: () -> Unit) {
             Text(text = "오늘의 질문 답변을 완료했어요!", style = TextStyles.title02, softWrap = true)
             Spacer(Modifier.height(20.dp))
             Text(
-                text = "내일도 답변을 완료해 내 캐릭터를 완성해 보세요",
+                text = "캐릭터 완성까지 N회 남았어요",
                 style = TextStyles.subTitle02,
                 textAlign = TextAlign.Center,
                 softWrap = true
@@ -41,7 +39,7 @@ fun BalanceRoundCompleteScreen(navigateToHome: () -> Unit) {
         ) {
             LoopyFilledButton(
                 "완료",
-                iconColor = Color.Black,
+                leadingIconColor = Color.Black,
                 onClick = navigateToHome,
                 modifier = Modifier.fillMaxWidth(1f),
             )

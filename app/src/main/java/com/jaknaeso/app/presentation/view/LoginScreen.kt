@@ -38,8 +38,8 @@ fun LoginScreen(navigateToHome: () -> Unit, viewmodel: LoginViewmodel = hiltView
     ) {
         LoopyFilledButton(
             text = "카카오로 시작하기",
-            icon = painterResource(R.drawable.ic_kakao),
-            iconColor = Color.Black,
+            leadingIcon = painterResource(R.drawable.ic_kakao),
+            leadingIconColor = Color.Black,
             filledColor = ColorPalette.Kakao,
             onClick = { viewmodel.handleEvent(LoginEvent.ClickKakaoLogin) },
             textColor = Color.Black,
