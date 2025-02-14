@@ -4,5 +4,5 @@ data class BalanceQuestion(
     val id: Int,
     val roundIndex: Int,
     val question: String,
-    val options: List<String>
+    val options: List<Option>
 )
