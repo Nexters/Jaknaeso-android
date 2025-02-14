@@ -9,9 +9,11 @@ sealed interface HomeEvent : UiEvent {
 }
 
 data class HomeState(
+    val isLoading: Boolean = true,
+    val isError: Boolean = false,
     val rounds: List<Round>? = null,
     val bundleId: Int? = null,
-    val isEnabledTodayRoundButton: Boolean = true
+    val isEnabledTodayRoundButton: Boolean = true,
 ) : UiState
 
 sealed interface HomeEffect : UiEffect {

@@ -2,6 +2,8 @@ package com.jaknaeso.app.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.jaknaeso.app.data.roomDB.RoundDatabase
+import com.jaknaeso.app.domain.Result
+import com.jaknaeso.app.domain.asResult
 import com.jaknaeso.app.domain.model.QuestionState
 import com.jaknaeso.app.domain.usecase.GetRoundsUseCase
 import com.jaknaeso.app.presentation.contract.HomeEffect
@@ -34,19 +36,31 @@ class HomeViewmodel @Inject constructor(
         when (event) {
             is HomeEvent.ClickRound -> handleQuestionState(event.questionState)
 
-            HomeEvent.TodayRoundButton -> {}
+            HomeEvent.TodayRoundButton -> setEffect(HomeEffect.NavigateToRound(currentState.bundleId.toString()))
         }
     }
 
     suspend fun getRounds() {
-        getRoundsUseCase().collect { rounds ->
-            setState {
-                copy(
-                    bundleId = rounds?.bundleId,
-                    rounds = rounds?.rounds,
-                    isEnabledTodayRoundButton = rounds?.isTodayRoundCompleted ?: false
-                )
+        getRoundsUseCase().asResult().collect {
+            when (it) {
+                is Result.Error -> {
+                    setState { copy(isLoading = false, isError = true) }
+                }
+
+                Result.Loading -> {}
+                is Result.Success -> {
+
+                    setState {
+                        copy(
+                            isLoading = false,
+                            bundleId = it.data.bundleId,
+                            rounds = it.data.rounds,
+                            isEnabledTodayRoundButton = !it.data.isTodayRoundCompleted
+                        )
+                    }
+                }
             }
+
         }
     }
 

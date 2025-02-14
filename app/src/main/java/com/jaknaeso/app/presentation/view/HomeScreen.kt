@@ -30,7 +30,6 @@ import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
 import com.jaknaeso.app.presentation.navigation.Route
 import com.jaknaeso.app.presentation.viewmodel.HomeViewmodel
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -42,6 +41,7 @@ fun HomeScreen(
     val uiState = viewmodel.uiState.collectAsStateWithLifecycle()
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
     LaunchedEffect(Unit) {
         viewmodel.effects.collectLatest { effect ->
             when (effect) {
@@ -59,73 +59,87 @@ fun HomeScreen(
         }
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral50),
-        bottomBar = {
-            LoopyBottomNavBar(
-                navigateToHome = {},
-                navigateToReport = navigateToReport,
-                navigateToProfile = navigateToProfile,
-                currentRoute = Route.Home
-            )
-        },
-        snackbarHost = {
-            Loopysnackbar(snackbarHostState = snackbarHostState) {
-                Text(
-                    "하루에 한 회차씩 답변할 수 있어요",
-                    style = TextStyles.subTitle04,
-                    color = Color.White,
-                    modifier = Modifier.padding(vertical = 25.dp).fillMaxWidth(1f),
-                    textAlign = TextAlign.Center
+    if (uiState.value.isLoading) {
+        Text(text = "로딩중 임시화면", style = TextStyles.title02, modifier = Modifier.fillMaxSize(1f))
+    }
+    if (uiState.value.isError) {
+        ErrorInfoView(
+            title = "오류가 발생했어요!",
+            message = "일시적인 오류가 발생했어요.\n화면을 새로고침 해주세요.",
+            onClickReLoad = {},
+            onClickHome = {})
+    } else {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral50),
+            bottomBar = {
+                LoopyBottomNavBar(
+                    navigateToHome = {},
+                    navigateToReport = navigateToReport,
+                    navigateToProfile = navigateToProfile,
+                    currentRoute = Route.Home
                 )
-            }
-        },
-        content = { paddingValues ->
-            Column(
-                modifier = Modifier.background(color = ColorPalette.Neautral100).fillMaxSize(1f).padding(paddingValues),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                    Spacer(modifier = Modifier.fillMaxWidth().height(50.dp))
-                    LoopySuggestionChip(
-                        "나의 캐릭터",
-                        labelStyle = TextStyles.subTitle04,
-                        filledColor = ColorPalette.Neautral200,
-                        labelColor = ColorPalette.Neautral700,
-                        shape = RoundedCornerShape(8.dp)
+            },
+            snackbarHost = {
+                Loopysnackbar(snackbarHostState = snackbarHostState) {
+                    Text(
+                        "하루에 한 회차씩 답변할 수 있어요",
+                        style = TextStyles.subTitle04,
+                        color = Color.White,
+                        modifier = Modifier.padding(vertical = 25.dp).fillMaxWidth(1f),
+                        textAlign = TextAlign.Center
                     )
-                    Text("{ValueType}\n두 줄인 경우", style = TextStyles.title01, modifier = Modifier.padding(top = 10.dp))
                 }
+            },
+            content = { paddingValues ->
                 Column(
-                    modifier = Modifier.background(
-                        color = Color.Transparent,
-                        shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
-                    )
+                    modifier = Modifier.background(color = ColorPalette.Neautral100).fillMaxSize(1f)
+                        .padding(paddingValues),
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    ExpandingBottomSheet(
-                        floatingContent = { RestRoundsUntilCharacter(14) },
-                        faceContent = {
-                            FaceContent(uiState.value.rounds, onClickRound = {
-                                scope.launch {
-                                    snackbarHostState.showSnackbar(message = "\"하루에 한 회차씩 답변할 수 있어요??\"")
-                                }
-                            })
-                        },
-                        wholeContent = { WholeContent(uiState.value.rounds, {}) },
-                        bottomContent = {
-                            LoopyFilledButton(
-                                enabled = uiState.value.isEnabledTodayRoundButton,
-                                text = "오늘의 질문 답변하기",
-                                textStyle = TextStyles.subTitle01,
-                                onClick = { viewmodel.handleEvent(HomeEvent.TodayRoundButton) },
-                                modifier = Modifier.fillMaxWidth(1f)
-                            )
-                        },
-                    )
+                    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                        Spacer(modifier = Modifier.fillMaxWidth().height(50.dp))
+                        LoopySuggestionChip(
+                            "나의 캐릭터",
+                            labelStyle = TextStyles.subTitle04,
+                            filledColor = ColorPalette.Neautral200,
+                            labelColor = ColorPalette.Neautral700,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        Text(
+                            "{ValueType}\n두 줄인 경우",
+                            style = TextStyles.title01,
+                            modifier = Modifier.padding(top = 10.dp)
+                        )
+                    }
+                    Column(
+                        modifier = Modifier.background(
+                            color = Color.Transparent,
+                            shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+                        )
+                    ) {
+                        ExpandingBottomSheet(
+                            floatingContent = { RestRoundsUntilCharacter(14) },
+                            faceContent = {
+                                FaceContent(
+                                    uiState.value.rounds,
+                                    onClickRound = { viewmodel.handleEvent(HomeEvent.ClickRound(it)) })
+                            },
+                            wholeContent = { WholeContent(uiState.value.rounds, {}) },
+                            bottomContent = {
+                                LoopyFilledButton(
+                                    enabled = uiState.value.isEnabledTodayRoundButton,
+                                    text = "오늘의 질문 답변하기",
+                                    textStyle = TextStyles.subTitle01,
+                                    onClick = { viewmodel.handleEvent(HomeEvent.TodayRoundButton) },
+                                    modifier = Modifier.fillMaxWidth(1f),
+                                )
+                            },
+                        )
+                    }
                 }
             }
-        }
-    )
+        )
+    }
 }
 
 @Composable

@@ -1,5 +1,5 @@
 package com.jaknaeso.app.presentation.navigation
 
 enum class Route {
-    Home, BalanceRound, SliderRound, RoundComplete, Report, Profile, Login
+    Home, Round, RoundComplete, Report, Profile, Login
 }
