@@ -1,8 +1,8 @@
 package com.jaknaeso.app.data.repositoryImpl
 
 import com.jaknaeso.app.data.datastore.CharacterDatastore
-import com.jaknaeso.app.domain.entity.LoopyResult
-import com.jaknaeso.app.domain.entity.response.Characters
+import com.jaknaeso.app.data.entity.LoopyResult
+import com.jaknaeso.app.data.entity.response.Characters
 import com.jaknaeso.app.domain.repository.CharacterRepository
 import javax.inject.Inject
 

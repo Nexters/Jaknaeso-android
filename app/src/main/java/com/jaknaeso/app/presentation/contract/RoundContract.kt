@@ -7,8 +7,7 @@ sealed interface RoundEvent : UiEvent {
     data class GetQuestion(val bundleIndex: String) : RoundEvent
     data class SelectOption(val optionId: String) : RoundEvent
     data class SaveWord(val comment: String) : RoundEvent
-    data object ClickSubmitWordButton : RoundEvent
-    data object ClickPassEnterReason : RoundEvent
+    data object ClickSubmitAnswer : RoundEvent
     data object ClickBackButton : RoundEvent
     data object OpenModal : RoundEvent
     data object CloseModal : RoundEvent

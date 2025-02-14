@@ -1,4 +1,4 @@
-package com.jaknaeso.app.domain.entity
+package com.jaknaeso.app.data.entity
 
 enum class ResponseResult {
     SUCCESS, ERROR

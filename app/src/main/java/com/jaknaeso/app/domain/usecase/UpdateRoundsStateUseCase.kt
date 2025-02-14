@@ -1,36 +1,15 @@
 package com.jaknaeso.app.domain.usecase
 
-import com.jaknaeso.app.domain.repository.RoundRepository
-import kotlinx.coroutines.flow.collectLatest
+import com.jaknaeso.app.data.entity.request.SurveySubmissionRequest
+import com.jaknaeso.app.domain.repository.SurveyRepository
 import javax.inject.Inject
 
-class UpdateRoundsStateUseCase @Inject constructor(private val roundRepository: RoundRepository) {
-    suspend operator fun invoke(roundIndex: Int) {
-        updateCurrentRound(roundIndex)
-        updateNextRound(roundIndex)
-    }
+class UpdateRoundsStateUseCase @Inject constructor(private val surveyRepository: SurveyRepository) {
 
-    private suspend fun updateCurrentRound(roundIndex: Int) {
-        roundRepository.updateRoundByIndex(
-            roundIndex = roundIndex,
-            isLocked = true,
-            isCompleted = true,
-            isTodayQuestion = false
+    suspend operator fun invoke(surveyId: String, optionId: String, comment: String) {
+        surveyRepository.postSurvey(
+            surveyId = surveyId,
+            body = SurveySubmissionRequest(optionId = optionId, comment = comment)
         )
-
-    }
-
-    private suspend fun updateNextRound(roundIndex: Int) {
-        roundRepository.getAllRounds().collectLatest {
-            val last_index = it.size - 1
-            if (roundIndex < last_index) {
-                roundRepository.updateRoundByIndex(
-                    roundIndex = roundIndex + 1,
-                    isLocked = false,
-                    isCompleted = false,
-                    isTodayQuestion = false
-                )
-            }
-        }
     }
 }

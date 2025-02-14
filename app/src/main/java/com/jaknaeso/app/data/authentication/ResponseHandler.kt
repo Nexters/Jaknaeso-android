@@ -1,9 +1,9 @@
 package com.jaknaeso.app.data.authentication
 
 import android.util.Log
+import com.jaknaeso.app.data.entity.ErrorData
+import com.jaknaeso.app.data.entity.LoopyResult
 import com.jaknaeso.app.data.token.TokenManager
-import com.jaknaeso.app.domain.entity.ErrorData
-import com.jaknaeso.app.domain.entity.LoopyResult
 import com.skydoves.sandwich.message
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnSuccess

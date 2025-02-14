@@ -2,10 +2,10 @@ package com.jaknaeso.app.data.authentication
 
 import com.google.gson.GsonBuilder
 import com.jaknaeso.app.BuildConfig
+import com.jaknaeso.app.data.entity.LoopyResult
+import com.jaknaeso.app.data.entity.response.MemberTokenResponse
 import com.jaknaeso.app.data.service.LoginService
 import com.jaknaeso.app.data.token.TokenManager
-import com.jaknaeso.app.domain.entity.LoopyResult
-import com.jaknaeso.app.domain.entity.response.MemberTokenResponse
 import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.adapters.ApiResponseCallAdapterFactory
 import okhttp3.OkHttpClient

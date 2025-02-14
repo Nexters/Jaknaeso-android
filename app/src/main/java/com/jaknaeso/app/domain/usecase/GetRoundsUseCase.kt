@@ -1,6 +1,6 @@
 package com.jaknaeso.app.domain.usecase
 
-import com.jaknaeso.app.domain.entity.ResponseResult
+import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.domain.model.QuestionState
 import com.jaknaeso.app.domain.model.Round
 import com.jaknaeso.app.domain.model.RoundBundle

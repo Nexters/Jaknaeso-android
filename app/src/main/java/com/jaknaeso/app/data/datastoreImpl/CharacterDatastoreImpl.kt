@@ -3,11 +3,11 @@ package com.jaknaeso.app.data.datastoreImpl
 import com.jaknaeso.app.data.authentication.LoopyApiResponse
 import com.jaknaeso.app.data.authentication.ResponseHandler
 import com.jaknaeso.app.data.datastore.CharacterDatastore
+import com.jaknaeso.app.data.entity.ErrorData
+import com.jaknaeso.app.data.entity.LoopyResult
+import com.jaknaeso.app.data.entity.ResponseResult
+import com.jaknaeso.app.data.entity.response.Characters
 import com.jaknaeso.app.data.service.CharacterService
-import com.jaknaeso.app.domain.entity.ErrorData
-import com.jaknaeso.app.domain.entity.LoopyResult
-import com.jaknaeso.app.domain.entity.ResponseResult
-import com.jaknaeso.app.domain.entity.response.Characters
 import javax.inject.Inject
 
 class CharacterDatastoreImpl @Inject constructor(

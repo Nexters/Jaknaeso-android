@@ -3,12 +3,13 @@ package com.jaknaeso.app.data.datastoreImpl
 import com.jaknaeso.app.data.authentication.LoopyApiResponse
 import com.jaknaeso.app.data.authentication.ResponseHandler
 import com.jaknaeso.app.data.datastore.SurveyDataStore
+import com.jaknaeso.app.data.entity.ErrorData
+import com.jaknaeso.app.data.entity.LoopyResult
+import com.jaknaeso.app.data.entity.ResponseResult
+import com.jaknaeso.app.data.entity.request.SurveySubmissionRequest
+import com.jaknaeso.app.data.entity.response.BundleRoundsResponse
+import com.jaknaeso.app.data.entity.response.RoundQuestionResponse
 import com.jaknaeso.app.data.service.SurveyService
-import com.jaknaeso.app.domain.entity.ErrorData
-import com.jaknaeso.app.domain.entity.LoopyResult
-import com.jaknaeso.app.domain.entity.ResponseResult
-import com.jaknaeso.app.domain.entity.response.BundleRoundsResponse
-import com.jaknaeso.app.domain.entity.response.RoundQuestionResponse
 import javax.inject.Inject
 
 class SurveyDataStoreImpl @Inject constructor(
@@ -35,6 +36,22 @@ class SurveyDataStoreImpl @Inject constructor(
         val retryResponse = responseHandler.safeApiCall(apiCall = { surveyService.getSurvey(bundleId) },
             onCompleteTokenRefresh = { null })
         val response = responseHandler.safeApiCall(apiCall = { surveyService.getSurvey(bundleId) },
+            onCompleteTokenRefresh = { retryResponse })
+        return when (response) {
+            is LoopyApiResponse.Error -> LoopyResult(
+                data = null,
+                result = ResponseResult.ERROR.name,
+                error = ErrorData(code = response.code, message = response.message, data = null)
+            )
+
+            is LoopyApiResponse.Success -> response.data
+        }
+    }
+
+    override suspend fun postSurvey(surveyId: String, body: SurveySubmissionRequest): LoopyResult<Nothing> {
+        val retryResponse = responseHandler.safeApiCall(apiCall = { surveyService.postSurvey(surveyId, body) },
+            onCompleteTokenRefresh = { null })
+        val response = responseHandler.safeApiCall(apiCall = { surveyService.postSurvey(surveyId, body) },
             onCompleteTokenRefresh = { retryResponse })
         return when (response) {
             is LoopyApiResponse.Error -> LoopyResult(

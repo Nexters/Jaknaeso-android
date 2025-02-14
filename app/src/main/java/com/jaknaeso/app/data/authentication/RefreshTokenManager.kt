@@ -1,7 +1,7 @@
 package com.jaknaeso.app.data.authentication
 
-import com.jaknaeso.app.domain.entity.LoopyResult
-import com.jaknaeso.app.domain.entity.response.MemberTokenResponse
+import com.jaknaeso.app.data.entity.LoopyResult
+import com.jaknaeso.app.data.entity.response.MemberTokenResponse
 import com.skydoves.sandwich.ApiResponse
 
 interface RefreshTokenManager {

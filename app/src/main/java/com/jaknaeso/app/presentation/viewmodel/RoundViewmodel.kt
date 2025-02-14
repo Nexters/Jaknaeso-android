@@ -8,6 +8,7 @@ import com.jaknaeso.app.presentation.contract.RoundEffect
 import com.jaknaeso.app.presentation.contract.RoundEvent
 import com.jaknaeso.app.presentation.contract.RoundState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,16 +37,8 @@ class RoundViewmodel @Inject constructor(
 
                 is RoundEvent.SaveWord -> setState { copy(enteredComment = event.comment) }
 
-                is RoundEvent.ClickSubmitWordButton -> {
-                    updateRoundsStateUseCase(
-                        surveyId = currentState.surveyId!!,
-                        optionId = currentState.selectedOptionId.toString(),
-                        comment = currentState.enteredComment
-                    )
-                    setEffect(RoundEffect.NavigateToBalanceRoundComplete)
-                }
-
-                is RoundEvent.ClickPassEnterReason -> {
+                is RoundEvent.ClickSubmitAnswer -> {
+                    postAnswer()
                     setEffect(RoundEffect.NavigateToBalanceRoundComplete)
                 }
 
@@ -60,6 +53,16 @@ class RoundViewmodel @Inject constructor(
         getBalanceQuestionUseCase(bundleIndex).collectLatest {
             val isBalanceRound = if (it?.surveyType == SurveyType.BALANCE) true else false
             setState { copy(isLoading = false, question = it, isBalanceRound = isBalanceRound, surveyId = it?.id) }
+        }
+    }
+
+    fun postAnswer() {
+        viewModelScope.launch(Dispatchers.IO) {
+            updateRoundsStateUseCase(
+                surveyId = currentState.surveyId!!,
+                optionId = currentState.selectedOptionId.toString(),
+                comment = currentState.enteredComment
+            )
         }
     }
 }

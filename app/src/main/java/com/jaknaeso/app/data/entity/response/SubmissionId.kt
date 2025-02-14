@@ -1,4 +1,4 @@
-package com.jaknaeso.app.domain.entity.response
+package com.jaknaeso.app.data.entity.response
 
 import kotlinx.serialization.Serializable
 

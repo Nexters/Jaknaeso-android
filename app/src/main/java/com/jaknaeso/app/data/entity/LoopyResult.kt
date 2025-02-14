@@ -1,4 +1,4 @@
-package com.jaknaeso.app.domain.entity
+package com.jaknaeso.app.data.entity
 
 data class LoopyResult<T>(
     var result: String?,

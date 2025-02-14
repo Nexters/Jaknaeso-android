@@ -1,7 +1,7 @@
 package com.jaknaeso.app.data.service
 
-import com.jaknaeso.app.domain.entity.LoopyResult
-import com.jaknaeso.app.domain.entity.response.Characters
+import com.jaknaeso.app.data.entity.LoopyResult
+import com.jaknaeso.app.data.entity.response.Characters
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

@@ -113,7 +113,7 @@ fun UserCommentModal(
             Row(horizontalArrangement = Arrangement.SpaceBetween) {
                 LoopyFilledButton(
                     "작성 완료",
-                    onClick = { handleEvent(RoundEvent.ClickSubmitWordButton) },
+                    onClick = { handleEvent(RoundEvent.ClickSubmitAnswer) },
                     modifier = Modifier.fillMaxWidth(0.5f).padding(horizontal = 4.dp)
                 )
                 LoopyFilledButton(

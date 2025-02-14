@@ -3,9 +3,9 @@ package com.jaknaeso.app.data.repositoryImpl
 import com.jaknaeso.app.data.authentication.LoopyApiResponse
 import com.jaknaeso.app.data.datastore.LoginRemoteDatastore
 import com.jaknaeso.app.data.datastoreImpl.LoginLocalDatastore
-import com.jaknaeso.app.domain.entity.LoopyResult
-import com.jaknaeso.app.domain.entity.request.TokenRequest
-import com.jaknaeso.app.domain.entity.response.MemberTokenResponse
+import com.jaknaeso.app.data.entity.LoopyResult
+import com.jaknaeso.app.data.entity.request.TokenRequest
+import com.jaknaeso.app.data.entity.response.MemberTokenResponse
 import com.jaknaeso.app.domain.repository.LoginRepository
 import javax.inject.Inject
 
