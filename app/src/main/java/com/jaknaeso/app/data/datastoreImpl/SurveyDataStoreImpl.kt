@@ -8,6 +8,7 @@ import com.jaknaeso.app.domain.entity.ErrorData
 import com.jaknaeso.app.domain.entity.LoopyResult
 import com.jaknaeso.app.domain.entity.ResponseResult
 import com.jaknaeso.app.domain.entity.response.BundleRoundsResponse
+import com.jaknaeso.app.domain.entity.response.RoundQuestionResponse
 import javax.inject.Inject
 
 class SurveyDataStoreImpl @Inject constructor(
@@ -18,6 +19,22 @@ class SurveyDataStoreImpl @Inject constructor(
         val retryResponse = responseHandler.safeApiCall(apiCall = { surveyService.getSurveysHistory() },
             onCompleteTokenRefresh = { null })
         val response = responseHandler.safeApiCall(apiCall = { surveyService.getSurveysHistory() },
+            onCompleteTokenRefresh = { retryResponse })
+        return when (response) {
+            is LoopyApiResponse.Error -> LoopyResult(
+                data = null,
+                result = ResponseResult.ERROR.name,
+                error = ErrorData(code = response.code, message = response.message, data = null)
+            )
+
+            is LoopyApiResponse.Success -> response.data
+        }
+    }
+
+    override suspend fun getSurvey(bundleId: String): LoopyResult<RoundQuestionResponse> {
+        val retryResponse = responseHandler.safeApiCall(apiCall = { surveyService.getSurvey(bundleId) },
+            onCompleteTokenRefresh = { null })
+        val response = responseHandler.safeApiCall(apiCall = { surveyService.getSurvey(bundleId) },
             onCompleteTokenRefresh = { retryResponse })
         return when (response) {
             is LoopyApiResponse.Error -> LoopyResult(
