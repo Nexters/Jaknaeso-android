@@ -20,7 +20,7 @@ object ColorPalette {
     val Neautral300 = Color(0xFFDFE3E9)
     val Neautral200 = Color(0xFFEDEFF4)
     val Neautral100 = Color(0xFFF3F4F8)
-    val Neautral50 = Color(0xFFFDFDFF)
+    val Neautral50 = Color(0xFFF8F8FA)
     val Neautral0 = Color(0xFFF7F7F7)
     val Red = Color(0xFFF03E3E)
     val GlassBlack = Color(0xFF444953)

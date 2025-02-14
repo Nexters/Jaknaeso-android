@@ -28,11 +28,12 @@ fun FlipAnimation(
     backwardColor: Color = ColorPalette.Neautral50,
     frontContent: @Composable () -> Unit,
     backContent: @Composable () -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    onFlipped : (isCardFlipped:Boolean)->Unit
 ) {
     var isCardFlipped by remember { mutableStateOf(false) }
     val animDuration = 900
-    val zAxisDistance = 10f // distance between camera and Card
+    val zAxisDistance = 200f // distance between camera and Card
 
     val rotateCardY by animateFloatAsState(
         targetValue = if (isCardFlipped) 180f else 0f,
@@ -47,7 +48,10 @@ fun FlipAnimation(
                 cameraDistance = zAxisDistance
             }
             .clip(RoundedCornerShape(12.dp))
-            .clickable { isCardFlipped = !isCardFlipped }
+            .clickable {
+                onFlipped(!isCardFlipped)
+                isCardFlipped = !isCardFlipped
+            }
             .background(if (isCardFlipped) backwardColor else forwardColor),
     ) {
         if (rotateCardY <= 90f) {
@@ -92,7 +96,8 @@ fun FlipCardPreview() {
                     Text("뒷면 내용", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 }
             },
-            modifier = Modifier.size(300.dp, 300.dp)
+            modifier = Modifier.size(300.dp, 300.dp),
+            onFlipped = {}
         )
     }
 }

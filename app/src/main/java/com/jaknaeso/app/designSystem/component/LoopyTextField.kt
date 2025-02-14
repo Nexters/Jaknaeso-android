@@ -23,10 +23,9 @@ import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
-fun LoopyTextField(onValueChange: (value: String) -> Unit, placeHolderValue: String, modifier: Modifier = Modifier) {
-    val inputText by remember { mutableStateOf("") }
+fun LoopyTextField(value: String, onValueChange: (value: String) -> Unit, placeHolderValue: String, modifier: Modifier = Modifier) {
     TextField(
-        value = inputText,
+        value = value,
         onValueChange = onValueChange,
         textStyle = TextStyles.subTitle04,
         modifier = Modifier.height(200.dp).then(modifier)
@@ -99,6 +98,7 @@ fun LoopyTextField(onValueChange: (value: String) -> Unit, placeHolderValue: Str
 fun PreviewLoopyTextField() {
     Column(Modifier.fillMaxWidth(1f)){
         LoopyTextField(
+            value = "",
             placeHolderValue = "오늘의 나에게 집중해서 적어보세요",
             onValueChange = {},
             modifier = Modifier.fillMaxWidth(1f)

@@ -29,27 +29,46 @@ import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
-fun VerticalSliderForm(answerList: List<String>, onValueChange: (index:Int) -> Unit) {
-    var value by remember { mutableStateOf(0.5f) }
-    var isSelected by remember { mutableStateOf(2) }
+fun VerticalSliderForm(answerList: List<String>, onValueChange: (index: Int) -> Unit) {
+    var value by remember { mutableStateOf(0f) }
+    var isSelected by remember { mutableStateOf(0) }
     val HEIGHT = 278.dp
+    val size = answerList.size
+    var valueRanges = remember {
+        mutableListOf<ClosedFloatingPointRange<Float>>(
+            0f..0.2f,
+            0.21f..0.4f,
+            0.41f..0.6f,
+            0.61f..0.8f,
+            0.81f..1f
+        )
+    }
+
+    fun generateValueRanges(step: Int): List<ClosedFloatingPointRange<Float>> {
+        var start = 0.0f
+        val result = mutableListOf<ClosedFloatingPointRange<Float>>()
+        for (i in 0 until step) {
+            val end = (start + step).coerceAtMost(1f)
+            result.add(start..end)
+            start += step
+        }
+        return result
+    }
+
+    LaunchedEffect(Unit) {
+        valueRanges = generateValueRanges(size).toMutableList()
+    }
 
     LaunchedEffect(value) {
-        if (value in 0f..0.2f) {
-            isSelected = 4
-        } else if (value in 0.21f..0.4f) {
-            isSelected = 3
-        } else if (value in 0.41f..0.6f) {
-            isSelected = 2
-        } else if (value in 0.61f..0.8f) {
-            isSelected = 1
-        } else {
-            isSelected = 0
+        valueRanges.forEachIndexed { index, closedFloatingPointRange ->
+            if(value in closedFloatingPointRange){
+                isSelected = (size-1)-index
+            }
         }
     }
 
-    LaunchedEffect(isSelected){
-        onValueChange(4-isSelected)
+    LaunchedEffect(isSelected) {
+        onValueChange(4 - isSelected)
     }
 
     Row(
@@ -57,7 +76,12 @@ fun VerticalSliderForm(answerList: List<String>, onValueChange: (index:Int) -> U
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        LazyColumn(modifier = Modifier.padding(vertical = 12.dp).fillMaxWidth(0.9f).height(HEIGHT).background(color = Color.Transparent), verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.Start) {
+        LazyColumn(
+            modifier = Modifier.padding(vertical = 12.dp).fillMaxWidth(0.9f).height(HEIGHT)
+                .background(color = Color.Transparent),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.Start
+        ) {
             itemsIndexed(items = answerList) { index, item ->
                 SliderAnswer(isSelected = index == isSelected, answer = item)
             }
@@ -72,7 +96,8 @@ fun VerticalSliderForm(answerList: List<String>, onValueChange: (index:Int) -> U
                 onValueChange = {
                     value = it
                 },
-                valueRanges = listOf(0f..0.2f, 0.21f..0.4f, 041f..0.6f, 061f..0.8f, 0.81f..1f), // 특정 구간 자동 설정
+                steps = answerList.size,
+                valueRanges = valueRanges,
                 modifier = Modifier.fillMaxHeight(1f).background(color = Color.Transparent)
             )
 
@@ -91,7 +116,8 @@ fun SliderAnswer(isSelected: Boolean, answer: String) {
                 painter = painterResource(R.drawable.ic_check),
                 contentDescription = null,
                 tint = Color.White,
-                modifier = Modifier.background(color = ColorPalette.PrimaryBlue500, shape = CircleShape).size(26.dp).padding(5.dp)
+                modifier = Modifier.background(color = ColorPalette.PrimaryBlue500, shape = CircleShape).size(26.dp)
+                    .padding(5.dp)
             )
             Text(
                 answer,
@@ -110,8 +136,8 @@ fun VerticalSlider(
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    valueRanges: List<ClosedFloatingPointRange<Float>> = listOf(0f..1f),
-    steps: Int = 0,
+    steps: Int,
+    valueRanges: List<ClosedFloatingPointRange<Float>>,
     onValueChangeFinished: (() -> Unit)? = null,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
@@ -200,8 +226,6 @@ fun VerticalSlider(
 @Preview
 @Composable
 fun SliderPreview() {
-    var value by remember { mutableStateOf(0.5f) }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -209,6 +233,6 @@ fun SliderPreview() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        VerticalSliderForm(answerList = listOf("매우 동의해요","조금 동의해요","보통이에요","조금 반대해요","매우 반대해요"),{})
+        VerticalSliderForm(answerList = listOf("매우 동의해요", "조금 동의해요", "보통이에요", "조금 반대해요", "매우 반대해요"), {})
     }
 }

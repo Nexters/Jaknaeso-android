@@ -37,9 +37,9 @@ fun LoopyFilledButton(
     disabledColor: Color = ColorPalette.Neautral300,
     textColor: Color = Color.White,
     textStyle: TextStyle = TextStyles.subTitle01,
-    borderColor: Color? = null
+    borderColor: Color = Color.Transparent
 ) {
-    val borderStroke = BorderStroke(width = 1.4.dp, color = if (borderColor != null) borderColor else filledColor)
+    val borderStroke = BorderStroke(width = 1.4.dp, color =borderColor)
     val buttonModifier = Modifier.then(modifier)
     FilledIconButton(
         onClick = onClick,
