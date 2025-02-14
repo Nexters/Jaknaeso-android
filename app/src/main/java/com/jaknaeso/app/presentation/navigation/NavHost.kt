@@ -3,6 +3,7 @@ package com.jaknaeso.app.presentation.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.jaknaeso.app.presentation.view.SliderRoundScreen
 
 @Composable
 fun SetUpNavGraph(
@@ -23,6 +24,7 @@ fun SetUpNavGraph(
             navigateToBack = navController::popBackStack,
             navigateToBalanceRoundComplete = navController::navigateToRoundComplete
         )
+        sliderRoundScreen(navigateToBack = navController::popBackStack, navigateToRoundComplete = navController::navigateToRoundComplete)
         balanceRoundCompleteScreen(navigateToHome = navController::navigateToHome)
         reportScreen(
             navigateToHome = navController::navigateToHome,

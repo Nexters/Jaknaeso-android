@@ -25,7 +25,7 @@ import com.jaknaeso.app.presentation.viewmodel.BalanceRoundViewmodel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SliderRoundScreen(
-    navigateToBalanceRoundComplete: () -> Unit,
+    navigateToRoundComplete: () -> Unit,
     navigateToBack: () -> Unit,
     roundIndex: String,
     viewmodel: BalanceRoundViewmodel = hiltViewModel()

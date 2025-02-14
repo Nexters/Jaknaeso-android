@@ -72,7 +72,7 @@ fun NavGraphBuilder.sliderRoundScreen(
 
         if (roundIndex != null) {
             SliderRoundScreen(
-                navigateToBalanceRoundComplete = navigateToRoundComplete,
+                navigateToRoundComplete = navigateToRoundComplete,
                 navigateToBack = navigateToBack,
                 roundIndex = roundIndex,
             )
