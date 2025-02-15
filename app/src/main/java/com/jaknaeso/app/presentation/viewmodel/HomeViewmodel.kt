@@ -1,7 +1,7 @@
 package com.jaknaeso.app.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.jaknaeso.app.data.roomDB.RoundDatabase
 import com.jaknaeso.app.domain.Result
 import com.jaknaeso.app.domain.asResult
 import com.jaknaeso.app.domain.model.QuestionState
@@ -14,17 +14,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewmodel @Inject constructor(
-    private val getRoundsUseCase: GetRoundsUseCase,
-    private val databaseCallback: RoundDatabase.DatabaseCallback
-) :
+class HomeViewmodel @Inject constructor(private val getRoundsUseCase: GetRoundsUseCase) :
     BaseViewModel<HomeEvent, HomeState, HomeEffect>() {
 
     init {
         viewModelScope.launch {
-            databaseCallback.isDatabaseInitialized.collect { isInitialized ->
-                getRounds()
-            }
+            getRounds()
         }
     }
 
@@ -35,7 +30,6 @@ class HomeViewmodel @Inject constructor(
     override fun handleEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.ClickRound -> handleQuestionState(event.questionState)
-
             HomeEvent.TodayRoundButton -> setEffect(HomeEffect.NavigateToRound(currentState.bundleId.toString()))
         }
     }
@@ -44,6 +38,7 @@ class HomeViewmodel @Inject constructor(
         getRoundsUseCase().asResult().collect {
             when (it) {
                 is Result.Error -> {
+                    Log.d("Error", "${it.exception.message}")
                     setState { copy(isLoading = false, isError = true) }
                 }
 
@@ -54,7 +49,8 @@ class HomeViewmodel @Inject constructor(
                         copy(
                             isLoading = false,
                             bundleId = it.data.bundleId,
-                            rounds = it.data.rounds,
+                            wholeRounds = it.data.wholeRounds,
+                            faceRound = it.data.faceRounds,
                             isEnabledTodayRoundButton = !it.data.isTodayRoundCompleted
                         )
                     }

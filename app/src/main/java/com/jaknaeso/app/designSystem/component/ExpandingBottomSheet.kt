@@ -5,9 +5,7 @@ import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,13 +14,21 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jaknaeso.app.R
+import com.jaknaeso.app.designSystem.theme.TextStyles
+import com.jaknaeso.app.domain.model.QuestionState
+import com.jaknaeso.app.domain.model.Round
+import com.jaknaeso.app.presentation.view.FaceContent
+import com.jaknaeso.app.presentation.view.RestRoundsUntilCharacter
+import com.jaknaeso.app.presentation.view.WholeContent
 import kotlinx.coroutines.launch
 
 @Composable
@@ -42,15 +48,13 @@ fun ExpandingBottomSheet(
     var wholeContentHeight by remember {
         mutableStateOf(screenHeight)
     }
-    var maxSheetHeight = remember { mutableStateOf(screenHeight * 0.9f) } // 최대 높이 (화면의 90%)
-    var minSheetHeight = remember { mutableStateOf(screenHeight * 0.35f) } // 최소 높이 (화면의 30%)
-    val sheetHeight = remember { mutableStateOf(minSheetHeight.value) } // 시트의 높이 (초기: 최소 높이)
+    var maxSheetHeight by remember { mutableStateOf(451.dp) } // 최대 높이 (화면의 90%)
+    var minSheetHeight by remember { mutableStateOf(225.dp) } // 최소 높이 (화면의 30%)
+    val sheetHeight = remember { mutableStateOf(minSheetHeight) } // 시트의 높이 (초기: 최소 높이)
     val coroutineScope = rememberCoroutineScope()
     var isModalOpen by remember { mutableStateOf(false) }
 
     LaunchedEffect(faceContentHeight, wholeContentHeight) {
-        minSheetHeight.value = faceContentHeight.value.dp
-        maxSheetHeight.value = wholeContentHeight.value.dp
     }
 
     Column(
@@ -68,7 +72,7 @@ fun ExpandingBottomSheet(
                 .background(Color.Transparent)
                 .clickable {
                     coroutineScope.launch {
-                        animateToClose(sheetHeight, minSheetHeight.value)
+                        animateToClose(sheetHeight, minSheetHeight)
                     }
                 }
         ) {
@@ -79,28 +83,27 @@ fun ExpandingBottomSheet(
                     .fillMaxWidth()
                     .height(sheetHeight.value)
                     .background(Color.Transparent)
-                    .draggable(
-                        orientation = Orientation.Vertical,
-                        state = rememberDraggableState { delta ->
-                            val newHeight =
-                                (sheetHeight.value - delta.dp).coerceIn(
-                                    minimumValue = minSheetHeight.value,
-                                    maximumValue = maxSheetHeight.value
-                                )
-                            sheetHeight.value = newHeight
-                        },
-                        onDragStopped = {
-                            coroutineScope.launch {
-                                if (sheetHeight.value < (maxSheetHeight.value.value.dp + minSheetHeight.value) / 2) {
-                                    animateToClose(sheetHeight, minSheetHeight.value)
-                                } else {
-                                    animateToOpen(sheetHeight, maxSheetHeight.value)
+                    .pointerInput(Unit) {
+                        detectVerticalDragGestures(
+                            onDragStart = {
+                                isModalOpen = !isModalOpen
+                            },
+                            onDragEnd = {
+                                coroutineScope.launch {
+                                    if (sheetHeight.value < (maxSheetHeight + minSheetHeight) / 2) {
+                                        animateToClose(sheetHeight, minSheetHeight)
+                                    } else {
+                                        animateToOpen(sheetHeight, maxSheetHeight)
+                                    }
                                 }
+                            },
+                            onVerticalDrag = { _, dragAmount ->
+                                sheetHeight.value = (sheetHeight.value - dragAmount.dp).coerceIn(
+                                    minSheetHeight, maxSheetHeight
+                                )
                             }
-                        },
-                        onDragStarted = { isModalOpen = !isModalOpen },
-                        reverseDirection = true
-                    )
+                        )
+                    }
             ) {
                 Column(
                     modifier = Modifier
@@ -116,10 +119,10 @@ fun ExpandingBottomSheet(
                     DragHandle(icon = painterResource(R.drawable.ic_arrow_up)) {
                         coroutineScope.launch {
                             if (isModalOpen) {
-                                animateToClose(sheetHeight, minSheetHeight.value)
+                                animateToClose(sheetHeight, minSheetHeight)
                                 isModalOpen = !isModalOpen
                             } else {
-                                animateToOpen(sheetHeight, maxSheetHeight.value)
+                                animateToOpen(sheetHeight, maxSheetHeight)
                                 isModalOpen = !isModalOpen
                             }
                         }
@@ -176,5 +179,56 @@ private suspend fun animateToClose(sheetHeight: MutableState<Dp>, minSheetHeight
         animationSpec = tween(durationMillis = 300, easing = LinearEasing)
     ) { value, _ ->
         sheetHeight.value = value.dp
+    }
+}
+
+
+@Composable
+@Preview
+fun ExpandingBottomSheetPreview() {
+    Column(Modifier.fillMaxSize().background(color = Color.DarkGray)) {
+        ExpandingBottomSheet(
+            floatingContent = { RestRoundsUntilCharacter(14) },
+            faceContent = {
+                FaceContent(
+                    listOf(
+                        Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                        Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                        Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                        Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                        Round(submissionId = null, index = 0, state = QuestionState.PAST)
+                    ),
+                    onClickRound = {}
+                )
+            },
+            wholeContent = {
+                WholeContent(listOf(
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST),
+                    Round(submissionId = null, index = 0, state = QuestionState.PAST)
+                ), {})
+            },
+            bottomContent = {
+                LoopyFilledButton(
+                    enabled = true,
+                    text = "오늘의 질문 답변하기",
+                    textStyle = TextStyles.subTitle01,
+                    onClick = { },
+                    modifier = Modifier.fillMaxWidth(1f),
+                )
+            },
+        )
     }
 }

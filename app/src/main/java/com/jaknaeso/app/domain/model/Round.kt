@@ -1,6 +1,7 @@
 package com.jaknaeso.app.domain.model
 
 data class Round(
-    val roundId: Int?,
+    val submissionId: Int?,
+    val index: Int,
     val state: QuestionState
 )

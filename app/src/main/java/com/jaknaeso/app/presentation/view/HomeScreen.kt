@@ -12,7 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -39,7 +38,6 @@ fun HomeScreen(
     viewmodel: HomeViewmodel = hiltViewModel(),
 ) {
     val uiState = viewmodel.uiState.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
@@ -97,12 +95,12 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                        Spacer(modifier = Modifier.fillMaxWidth().height(50.dp))
+                        Spacer(modifier = Modifier.fillMaxWidth().height(34.dp))
                         LoopySuggestionChip(
                             "나의 캐릭터",
                             labelStyle = TextStyles.subTitle04,
-                            filledColor = ColorPalette.Neautral200,
-                            labelColor = ColorPalette.Neautral700,
+                            filledColor = ColorPalette.PrimaryBlue100,
+                            labelColor = ColorPalette.PrimaryBlue500,
                             shape = RoundedCornerShape(8.dp)
                         )
                         Text(
@@ -121,10 +119,14 @@ fun HomeScreen(
                             floatingContent = { RestRoundsUntilCharacter(14) },
                             faceContent = {
                                 FaceContent(
-                                    uiState.value.rounds,
+                                    uiState.value.faceRound,
                                     onClickRound = { viewmodel.handleEvent(HomeEvent.ClickRound(it)) })
                             },
-                            wholeContent = { WholeContent(uiState.value.rounds, {}) },
+                            wholeContent = {
+                                WholeContent(
+                                    uiState.value.wholeRounds,
+                                    { viewmodel.handleEvent(HomeEvent.ClickRound(it)) })
+                            },
                             bottomContent = {
                                 LoopyFilledButton(
                                     enabled = uiState.value.isEnabledTodayRoundButton,
@@ -177,7 +179,7 @@ fun FaceContent(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         items(faceRounds ?: emptyList()) { round ->
-            QuestionItem(round, onClickItem = { onClickRound(it) })
+            QuestionItem(round = round, index = round.index, onClickItem = { onClickRound(it) })
         }
     }
 }
@@ -187,37 +189,22 @@ fun WholeContent(
     rounds: List<Round>?,
     onClickRound: (state: QuestionState) -> Unit
 ) {
-    if (rounds?.size ?: 0 > 0) {
+    if (!rounds.isNullOrEmpty()) {
         val ROW = 5
-        val chunkedRounds = rounds!!.chunked(ROW)
-        val firstRowRound = chunkedRounds[0]
+        val chunkedRounds = rounds.chunked(ROW)
         Column(
             modifier = Modifier.background(
                 color = Color.White,
             ).fillMaxWidth(1f)
         ) {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                items(firstRowRound) { round ->
-                    QuestionItem(round, onClickItem = { onClickRound(it) })
-                }
-            }
-            LazyRow(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 14.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                items(firstRowRound) { round ->
-                    QuestionItem(round, onClickItem = { onClickRound(it) })
-                }
-            }
-            LazyRow(
-                modifier = Modifier.fillMaxWidth().padding(top = 14.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                items(firstRowRound) { round ->
-                    QuestionItem(round, onClickItem = { onClickRound(it) })
+            chunkedRounds.forEach { rounds ->
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    items(rounds) { round ->
+                        QuestionItem(round = round, index = round.index, onClickItem = { onClickRound(it) })
+                    }
                 }
             }
         }

@@ -33,7 +33,7 @@ private data class QuestionItemState(
 
 
 @Composable
-fun QuestionItem(round: Round, onClickItem: (state: QuestionState) -> Unit) {
+fun QuestionItem(round: Round, onClickItem: (state: QuestionState) -> Unit, index: Int) {
     val ROW = 5
     val size = (LocalConfiguration.current.screenWidthDp - (6 * 20)).div(ROW)
     val item = round.state.let {
@@ -68,10 +68,10 @@ fun QuestionItem(round: Round, onClickItem: (state: QuestionState) -> Unit) {
             QuestionState.TODAY_COMPLETED -> QuestionItemState(
                 isEnabled = true,
                 icon = painterResource(R.drawable.ic_check),
-                iconColor = ColorPalette.Neautral600,
-                filledColor = ColorPalette.Neautral200,
-                textColor = ColorPalette.Neautral600,
-                textStyle = TextStyles.subTitle04
+                iconColor = ColorPalette.PrimaryBlue500,
+                filledColor = ColorPalette.PrimaryBlue100,
+                textColor = Color.Black,
+                textStyle = TextStyles.subTitle03
             )
         }
     }
@@ -92,7 +92,7 @@ fun QuestionItem(round: Round, onClickItem: (state: QuestionState) -> Unit) {
             filledColor = item.filledColor,
         )
         Text(
-            "${round.roundId ?: 0 + 1}회차",
+            "${index + 1}회차",
             style = item.textStyle,
             modifier = Modifier.padding(top = 6.dp),
             color = item.textColor
