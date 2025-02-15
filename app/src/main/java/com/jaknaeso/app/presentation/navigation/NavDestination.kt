@@ -13,7 +13,7 @@ import com.jaknaeso.app.presentation.view.*
 
 fun NavController.navigateToLogin() = navigate("${Route.Login}")
 fun NavController.navigateToHome() = navigate("${Route.Home}")
-fun NavController.navigateToRound(bundleIndex: String) = navigate("${Route.Round}/${bundleIndex}")
+fun NavController.navigateToRound(roundIndex: String) = navigate("${Route.Round}/${roundIndex}")
 fun NavController.navigateToReport(bundleIndex: String) = navigate("${Route.Report}/${bundleIndex}")
 fun NavController.navigateToProfile() = navigate("${Route.Profile}")
 fun NavController.navigateToRoundComplete() = navigate("${Route.RoundComplete}")
@@ -84,7 +84,7 @@ fun NavGraphBuilder.reportScreen(
 
 fun NavGraphBuilder.profileScreen(
     navigateToHome: () -> Unit,
-    navigateToReport: (bundleIndex:String) -> Unit,
+    navigateToReport: (bundleIndex: String) -> Unit,
 ) {
     composable(route = "${Route.Profile}") {
         ProfileScreen(
