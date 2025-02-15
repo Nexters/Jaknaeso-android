@@ -10,13 +10,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.jaknaeso.app.designSystem.component.DragHandle
-import com.jaknaeso.app.designSystem.component.ErrorInfoView
-import com.jaknaeso.app.designSystem.component.LoopyFilledButton
-import com.jaknaeso.app.designSystem.component.LoopyTextField
+import com.jaknaeso.app.R
+import com.jaknaeso.app.designSystem.component.*
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.presentation.contract.RoundEffect
@@ -61,16 +60,29 @@ fun RoundScreen(
                 question = uiState.value.question,
                 handleEvent = { viewmodel.handleEvent(it) },
                 isModalExpanded = isModalExpanded,
-                surveyId = uiState.value.question?.id,
+                surveyId = uiState.value.question?.surveyId,
                 enteredComment = uiState.value.enteredComment,
                 onChangedCommentValue = { viewmodel.handleEvent(RoundEvent.SaveWord(it)) }
             )
         } else {
             SliderRoundScreen(
+                headerContent = {
+                    LoopyTopBar(
+                        title = "오늘의 질문",
+                        icon = painterResource(R.drawable.ic_back),
+                        onClickIcon = { viewmodel.handleEvent(RoundEvent.ClickBackButton) })
+                },
+                footerContent = {
+                    LoopyFilledButton(
+                        "작성 완료",
+                        onClick = { viewmodel.handleEvent(RoundEvent.OpenModal) },
+                        modifier = Modifier.fillMaxWidth(1f)
+                    )
+                },
                 question = uiState.value.question,
                 handleEvent = { viewmodel.handleEvent(it) },
                 isModalExpanded = isModalExpanded,
-                surveyId = uiState.value.question?.id,
+                surveyId = uiState.value.question?.surveyId,
                 enteredComment = uiState.value.enteredComment,
                 onChangedCommentValue = { viewmodel.handleEvent(RoundEvent.SaveWord(it)) },
             )

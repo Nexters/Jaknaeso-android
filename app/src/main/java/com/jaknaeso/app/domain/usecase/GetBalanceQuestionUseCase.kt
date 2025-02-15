@@ -18,7 +18,7 @@ class GetBalanceQuestionUseCase @Inject constructor(
         return flow {
             if (data.result == ResponseResult.SUCCESS.name) {
                 val result = RoundQuestion(
-                    id = data.data?.id.toString(),
+                    surveyId = data.data?.id.toString(),
                     surveyType = data.data?.surveyType.mapToSurveyType(),
                     content = data.data?.contents ?: "",
                     options = data.data?.options?.map {

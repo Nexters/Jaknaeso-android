@@ -16,7 +16,7 @@ class GetOnBoardingQuestionUseCase @Inject constructor(private val surveyReposit
             if (response.result == ResponseResult.SUCCESS.name) {
                 response.data?.surveyResponses?.map {
                     RoundQuestion(
-                        id = it.id.toString(),
+                        surveyId = it.id.toString(),
                         surveyType = it.surveyType.mapToSurveyType(),
                         content = it.contents,
                         options = it.options.map {
