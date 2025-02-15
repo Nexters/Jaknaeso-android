@@ -6,6 +6,7 @@ import com.jaknaeso.app.data.datastore.SurveyDataStore
 import com.jaknaeso.app.data.entity.ErrorData
 import com.jaknaeso.app.data.entity.LoopyResult
 import com.jaknaeso.app.data.entity.ResponseResult
+import com.jaknaeso.app.data.entity.request.OnboardingSubmissionsInfoRequest
 import com.jaknaeso.app.data.entity.request.SurveySubmissionRequest
 import com.jaknaeso.app.data.entity.response.BundleRoundsResponse
 import com.jaknaeso.app.data.entity.response.RoundQuestionResponse
@@ -102,6 +103,26 @@ class SurveyDataStoreImpl @Inject constructor(
             onCompleteTokenRefresh = { null })
         val response = responseHandler.safeApiCall(apiCall = {
             surveyService.getOnboarding()
+        },
+            onCompleteTokenRefresh = { retryResponse })
+        return when (response) {
+            is LoopyApiResponse.Error -> LoopyResult(
+                data = null,
+                result = ResponseResult.ERROR.name,
+                error = ErrorData(code = response.code, message = response.message, data = null)
+            )
+
+            is LoopyApiResponse.Success -> response.data
+        }
+    }
+
+    override suspend fun postOnboardingAnswers(body: OnboardingSubmissionsInfoRequest): LoopyResult<Nothing> {
+        val retryResponse = responseHandler.safeApiCall(apiCall = {
+            surveyService.postOnboardingAnswer(body)
+        },
+            onCompleteTokenRefresh = { null })
+        val response = responseHandler.safeApiCall(apiCall = {
+            surveyService.postOnboardingAnswer(body)
         },
             onCompleteTokenRefresh = { retryResponse })
         return when (response) {

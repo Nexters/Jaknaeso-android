@@ -1,6 +1,7 @@
 package com.jaknaeso.app.domain.repository
 
 import com.jaknaeso.app.data.entity.LoopyResult
+import com.jaknaeso.app.data.entity.request.OnboardingSubmissionsInfoRequest
 import com.jaknaeso.app.data.entity.request.SurveySubmissionRequest
 import com.jaknaeso.app.data.entity.response.BundleRoundsResponse
 import com.jaknaeso.app.data.entity.response.RoundQuestionResponse
@@ -13,4 +14,5 @@ interface SurveyRepository {
     suspend fun postSurvey(surveyId: String, body: SurveySubmissionRequest): LoopyResult<Nothing>
     suspend fun getSubmissionsReport(memberId: String, bundleId: String): LoopyResult<SurveyRecordsResponse>
     suspend fun getOnboarding(): LoopyResult<SurveyResponses>
+    suspend fun postOnboardingAnswers(body: OnboardingSubmissionsInfoRequest): LoopyResult<Nothing>
 }

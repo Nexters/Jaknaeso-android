@@ -1,6 +1,7 @@
 package com.jaknaeso.app.data.service
 
 import com.jaknaeso.app.data.entity.LoopyResult
+import com.jaknaeso.app.data.entity.request.OnboardingSubmissionsInfoRequest
 import com.jaknaeso.app.data.entity.request.SurveySubmissionRequest
 import com.jaknaeso.app.data.entity.response.BundleRoundsResponse
 import com.jaknaeso.app.data.entity.response.RoundQuestionResponse
@@ -30,4 +31,7 @@ interface SurveyService {
 
     @GET("/api/v1/surveys/onboarding")
     suspend fun getOnboarding(): Response<LoopyResult<SurveyResponses>>
+
+    @POST("/api/v1/surveys/onboarding/submission")
+    suspend fun postOnboardingAnswer(@Body body: OnboardingSubmissionsInfoRequest): Response<LoopyResult<Nothing>>
 }
