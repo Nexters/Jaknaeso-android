@@ -21,12 +21,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jaknaeso.app.R
 import com.jaknaeso.app.designSystem.component.*
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.domain.model.Character
+import com.jaknaeso.app.domain.model.RoundResult
 import com.jaknaeso.app.presentation.contract.ReportEffect
+import com.jaknaeso.app.presentation.contract.ReportEvent
 import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
 import com.jaknaeso.app.presentation.navigation.Route
 import com.jaknaeso.app.presentation.viewmodel.ReportViewmodel
@@ -38,15 +41,16 @@ import kotlinx.coroutines.launch
 fun ReportScreen(
     navigateToHome: () -> Unit,
     navigateToProfile: () -> Unit,
-    viewmodel: ReportViewmodel = hiltViewModel()
+    viewmodel: ReportViewmodel = hiltViewModel(),
+    bundleId: String?
 ) {
-//    val scrollState = rememberScrollState()
-//    val uistate = viewmodel.uiState.collectAsStateWithLifecycle()
+    val uistate = viewmodel.uiState.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(pageCount = { 2 })
     var isModalExpanded by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
+        viewmodel.handleEvent(ReportEvent.GetInitialData(bundleId ?: "1"))
         viewmodel.effects.collectLatest { effect ->
             when (effect) {
                 ReportEffect.NavigateToHome -> navigateToHome()
@@ -78,13 +82,12 @@ fun ReportScreen(
                     ) {
                         CharacterSelectModalContent(
                             onModalTitleClick = { isModalExpanded = false },
-                            onSelectionChanged = {},
-                            characters = listOf(
-                                Character("첫", 1),
-                                Character("두", 2),
-                                Character("세", 3),
-                                Character("네", 4)
-                            )
+                            onSelectionChanged = { bundleId: Int, selectedValue: String ->
+                                viewmodel.handleEvent(
+                                    ReportEvent.SelectCharacterBundle(bundleId.toString(), selectedValue)
+                                )
+                            },
+                            characters = uistate.value.characters
                         )
                     }
                 }
@@ -92,7 +95,7 @@ fun ReportScreen(
                 Column(Modifier.padding(horizontal = 20.dp)) {
                     LoopyAssistChip(
                         onClick = { isModalExpanded = !isModalExpanded },
-                        label = "첫번째 캐릭터",
+                        label = uistate.value.reportTitle,
                         labelStyle = TextStyles.title03,
                         filledColor = Color.Transparent,
                         labelColor = Color.Black,
@@ -110,7 +113,7 @@ fun ReportScreen(
                 HorizontalPager(state = pagerState, userScrollEnabled = false) { page ->
                     when (page) {
                         0 -> CharacterAnalysisView()
-                        1 -> MyAnswersView()
+                        1 -> MyAnswersView(uistate.value.submissionsResult)
                     }
                 }
             }
@@ -121,7 +124,7 @@ fun ReportScreen(
 @Composable
 fun CharacterSelectModalContent(
     onModalTitleClick: () -> Unit,
-    onSelectionChanged: (bundleId: Int) -> Unit,
+    onSelectionChanged: (bundleId: Int, selectedValue: String) -> Unit,
     characters: List<Character>
 ) {
     Column(
@@ -147,14 +150,16 @@ fun CharacterSelectModalContent(
                 )
             }
         }
-        RadioButtons(characters = characters, onChanged = { index -> onSelectionChanged(characters[index].bundleId) })
+        RadioButtons(
+            characters = characters,
+            onChanged = { index, selectedValue -> onSelectionChanged(characters[index].bundleId, selectedValue) })
     }
 }
 
 @Composable
 fun RadioButtons(
     characters: List<Character>,
-    onChanged: (index: Int) -> Unit,
+    onChanged: (index: Int, selectedValue: String) -> Unit,
 ) {
     var selectedIndex by remember { mutableStateOf(-1) } // 하나만 선택 가능하도록 변경
 
@@ -167,7 +172,7 @@ fun RadioButtons(
                 onClick = { isSelected ->
                     if (!isSelected) { // 선택되지 않은 경우만 변경
                         selectedIndex = index
-                        onChanged(index) // 선택 변경 이벤트 전달
+                        onChanged(index, "${item.ordinalWord}번째 캐릭터") // 선택 변경 이벤트 전달
                     }
                 },
                 trailingIcon = painterResource(R.drawable.ic_check),
@@ -350,18 +355,18 @@ fun CharacterAnalysisView() {
 }
 
 @Composable
-fun MyAnswersView() {
+fun MyAnswersView(submissionResult: List<RoundResult>) {
     Column {
         Spacer(Modifier.fillMaxWidth().height(40.dp))
         LazyColumn(Modifier.padding(horizontal = 20.dp)) {
-            items(items = listOf(0, 1, 2, 3)) {
+            items(items = submissionResult) { data ->
                 DropdownCard(shellContent = {
                     Row(
                         modifier = Modifier.fillMaxWidth(1f),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "3회차", style = TextStyles.subTitle03)
+                        Text(text = "${data.index + 1}회차", style = TextStyles.subTitle03)
                         Icon(
                             painter = painterResource(R.drawable.ic_arrow_down),
                             contentDescription = null,
@@ -372,7 +377,7 @@ fun MyAnswersView() {
                     Column {
                         Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
                         LoopyAssistChip(
-                            "2025.1.2",
+                            label = data.submittedAt,
                             labelStyle = TextStyles.body02,
                             filledColor = ColorPalette.Neautral200,
                             labelColor = ColorPalette.Neautral700,
@@ -387,7 +392,7 @@ fun MyAnswersView() {
                         ) {
                             Text("Q.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
                             Text(
-                                "커리어를 향상시킬 수 있는 일자리이지만 가까운 사람들과 멀어져야한다면, 이 일자리를 선택하실 건가요?",
+                                data.question,
                                 style = TextStyles.body01,
                                 softWrap = true
                             )
@@ -402,7 +407,7 @@ fun MyAnswersView() {
                         ) {
                             Text("A.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
                             Text(
-                                "주변 사람과 물리적으로 멀어지더라도, 커리어를 선택한다.",
+                                data.answer,
                                 style = TextStyles.body01,
                                 softWrap = true
                             )
@@ -421,7 +426,7 @@ fun MyAnswersView() {
                                 softWrap = true
                             )
                             Text(
-                                "가까운 사람들과 물리적으로 멀어지더라도 그 관계가 사라지진 않음. 내 노력에 따라 관계는 달라질 수 있지만 커리어 기회는 원할 때 오는 게 아님",
+                                data.word,
                                 style = TextStyles.body01, color = ColorPalette.Neautral700, softWrap = true
                             )
                         }
@@ -442,5 +447,5 @@ fun CharacterAnalysisPreview() {
 @Preview
 @Composable
 fun MyAnswersReportPreview() {
-    MyAnswersView()
+    MyAnswersView(emptyList())
 }

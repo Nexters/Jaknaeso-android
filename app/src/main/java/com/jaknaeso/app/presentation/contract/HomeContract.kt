@@ -19,6 +19,6 @@ data class HomeState(
 
 sealed interface HomeEffect : UiEffect {
     data class NavigateToRound(val bundleIndex: String) : HomeEffect
-    data object NavigateToRoundHistory : HomeEffect
+    data class NavigateToRoundHistory(val bundleIndex: String) : HomeEffect
     data object ShowSnackbar : HomeEffect
 }

@@ -30,7 +30,7 @@ import com.jaknaeso.app.presentation.navigation.Route
 @Composable
 fun ProfileScreen(
     navigateToHome: () -> Unit,
-    navigateToReport: () -> Unit,
+    navigateToReport: (bundleIndex: String) -> Unit,
 ) {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {}
@@ -59,7 +59,7 @@ fun ProfileScreen(
         bottomBar = {
             LoopyBottomNavBar(
                 navigateToHome = { navigateToHome() },
-                navigateToReport = { navigateToReport() },
+                navigateToReport = { navigateToReport("1") },//bundleIndex 임시값 주의
                 navigateToProfile = { },
                 currentRoute = Route.Profile
             )

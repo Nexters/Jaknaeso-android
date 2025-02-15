@@ -14,7 +14,7 @@ import com.jaknaeso.app.presentation.view.*
 fun NavController.navigateToLogin() = navigate("${Route.Login}")
 fun NavController.navigateToHome() = navigate("${Route.Home}")
 fun NavController.navigateToRound(bundleIndex: String) = navigate("${Route.Round}/${bundleIndex}")
-fun NavController.navigateToReport() = navigate("${Route.Report}")
+fun NavController.navigateToReport(bundleIndex: String) = navigate("${Route.Report}/${bundleIndex}")
 fun NavController.navigateToProfile() = navigate("${Route.Profile}")
 fun NavController.navigateToRoundComplete() = navigate("${Route.RoundComplete}")
 
@@ -25,7 +25,7 @@ fun NavGraphBuilder.loginScreen(navigateToHome: () -> Unit) {
 }
 
 fun NavGraphBuilder.homeScreen(
-    navigateToReport: () -> Unit,
+    navigateToReport: (bundleIndex: String) -> Unit,
     navigateToProfile: () -> Unit,
     navigateToBalanceRound: (roundIndex: String) -> Unit
 ) {
@@ -69,17 +69,22 @@ fun NavGraphBuilder.reportScreen(
     navigateToHome: () -> Unit,
     navigateToProfile: () -> Unit,
 ) {
-    composable(route = "${Route.Report}") {
+    composable(
+        route = "${Route.Report}/{bundleIndex}",
+        arguments = listOf(navArgument("bundleIndex") { type = NavType.StringType })
+    ) {
+        val bundleIndex = it.arguments?.getString("bundleIndex")
         ReportScreen(
             navigateToHome = navigateToHome,
             navigateToProfile = navigateToProfile,
+            bundleId = bundleIndex
         )
     }
 }
 
 fun NavGraphBuilder.profileScreen(
     navigateToHome: () -> Unit,
-    navigateToReport: () -> Unit,
+    navigateToReport: (bundleIndex:String) -> Unit,
 ) {
     composable(route = "${Route.Profile}") {
         ProfileScreen(

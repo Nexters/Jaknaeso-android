@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun HomeScreen(
-    navigateToReport: () -> Unit,
+    navigateToReport: (bundleIndex: String) -> Unit,
     navigateToProfile: () -> Unit,
     navigateToBalanceRound: (roundIndex: String) -> Unit,
     viewmodel: HomeViewmodel = hiltViewModel(),
@@ -52,7 +52,7 @@ fun HomeScreen(
                     duration = SnackbarDuration.Short
                 )
 
-                HomeEffect.NavigateToRoundHistory -> navigateToReport()
+                is HomeEffect.NavigateToRoundHistory -> navigateToReport(effect.bundleIndex)
             }
         }
     }
@@ -72,7 +72,7 @@ fun HomeScreen(
             bottomBar = {
                 LoopyBottomNavBar(
                     navigateToHome = {},
-                    navigateToReport = navigateToReport,
+                    navigateToReport = { navigateToReport(uiState.value.bundleId.toString()) },
                     navigateToProfile = navigateToProfile,
                     currentRoute = Route.Home
                 )
