@@ -36,6 +36,7 @@ class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context)
     companion object {
         private val ACCESS_TOKEN_KEY = stringPreferencesKey("AUTH_TOKEN")
         private val REFRESH_TOKEN_KEY = stringPreferencesKey("REMEMBERED_TOKEN")
+        private val MEMBER_ID_KEY = stringPreferencesKey("MEMBER_ID")
     }
 
     override fun getAuthTokenForHeader(): String {
@@ -61,6 +62,13 @@ class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context)
         }
     }
 
+    override suspend fun getMemberId(): Flow<String?> {
+        return dataStore.data.map { preferences ->
+            preferences[MEMBER_ID_KEY]
+        }
+
+    }
+
     override suspend fun saveAccessToken(token: String) {
         dataStore.edit { preferences ->
             preferences[ACCESS_TOKEN_KEY] = token
@@ -73,6 +81,12 @@ class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context)
         }
     }
 
+    override suspend fun saveMemberId(memberId: String) {
+        dataStore.edit { preferences ->
+            preferences[MEMBER_ID_KEY] = memberId
+        }
+    }
+
     override suspend fun deleteAccessToken() {
         dataStore.edit { preferences ->
             preferences.remove(ACCESS_TOKEN_KEY)
@@ -82,6 +96,12 @@ class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context)
     override suspend fun deleteRefreshToken() {
         dataStore.edit { preferences ->
             preferences.remove(REFRESH_TOKEN_KEY)
+        }
+    }
+
+    override suspend fun deleteMemberId() {
+        dataStore.edit { preferences ->
+            preferences.remove(MEMBER_ID_KEY)
         }
     }
 }
