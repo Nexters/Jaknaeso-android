@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MemberTokenResponse(
     val memberId: Int,
-    val accessToken: String,
-    val refreshToken: String
+    val isCompletedOnboarding: Boolean,
+    val tokenInfo: TokenInfo
 )
