@@ -64,8 +64,8 @@ class HomeViewmodel @Inject constructor(private val getRoundsUseCase: GetRoundsU
         when (questionState) {
             QuestionState.FUTURE -> setEffect(HomeEffect.ShowSnackbar)
             QuestionState.TODAY_LOCKED -> setEffect(HomeEffect.NavigateToRound(currentState.bundleId.toString()))
-            QuestionState.PAST -> setEffect(HomeEffect.NavigateToRoundHistory)
-            QuestionState.TODAY_COMPLETED -> setEffect(HomeEffect.NavigateToRoundHistory)
+            QuestionState.PAST -> setEffect(HomeEffect.NavigateToRoundHistory(currentState.bundleId.toString()))
+            QuestionState.TODAY_COMPLETED -> setEffect(HomeEffect.NavigateToRoundHistory(currentState.bundleId.toString()))
         }
     }
 }
