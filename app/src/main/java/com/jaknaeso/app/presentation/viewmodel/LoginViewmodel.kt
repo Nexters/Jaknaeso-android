@@ -23,7 +23,7 @@ import javax.inject.Inject
 class LoginViewmodel @Inject constructor(
     private val application: Application,
     private val loginRepository: LoginRepository,
-    private val postAccessTokenUseCase: PostAccessTokenUseCase
+    private val postAccessTokenUseCase: PostAccessTokenUseCase,
 ) :
     BaseViewModel<LoginEvent, LoginState, LoginEffect>() {
     private val context = application.applicationContext
@@ -74,8 +74,8 @@ class LoginViewmodel @Inject constructor(
         viewModelScope.launch {
             postAccessTokenUseCase(token).asResult().collect {
                 when (it) {
-                    is Result.Error -> TODO()
-                    Result.Loading -> TODO()
+                    is Result.Error -> {}
+                    Result.Loading -> {}
                     is Result.Success -> {
                         Log.d(
                             "LoginViewmodel",
@@ -83,9 +83,18 @@ class LoginViewmodel @Inject constructor(
                         )
                         loginRepository.saveAccessToken(it.data.accessToken)
                         loginRepository.saveRefreshToken(it.data.refreshToken)
+                        navigateNextScreen(it.data.isCompletedOnboarding)
                     }
                 }
             }
+        }
+    }
+
+    fun navigateNextScreen(isOnboardingCompleted: Boolean) {
+        if (isOnboardingCompleted) {
+            setEffect(LoginEffect.NavigateToHome)
+        } else {
+            setEffect(LoginEffect.NavigateToOnboarding)
         }
     }
 }

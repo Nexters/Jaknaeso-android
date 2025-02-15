@@ -17,10 +17,17 @@ fun NavController.navigateToRound(roundIndex: String) = navigate("${Route.Round}
 fun NavController.navigateToReport(bundleIndex: String) = navigate("${Route.Report}/${bundleIndex}")
 fun NavController.navigateToProfile() = navigate("${Route.Profile}")
 fun NavController.navigateToRoundComplete() = navigate("${Route.RoundComplete}")
+fun NavController.navigateToOnboarding() = navigate("${Route.Onboarding}")
 
-fun NavGraphBuilder.loginScreen(navigateToHome: () -> Unit) {
+fun NavGraphBuilder.loginScreen(navigateToHome: () -> Unit, navigateToOnboarding: () -> Unit) {
     composable(route = "${Route.Login}") {
-        LoginScreen(navigateToHome = navigateToHome)
+        LoginScreen(navigateToHome = navigateToHome, navigateToOnBoarding = navigateToOnboarding)
+    }
+}
+
+fun NavGraphBuilder.onboardingScreen(navigateToHome: () -> Unit) {
+    composable(route = "${Route.Onboarding}") {
+        OnBoardingScreen(navigateToHome = navigateToHome)
     }
 }
 

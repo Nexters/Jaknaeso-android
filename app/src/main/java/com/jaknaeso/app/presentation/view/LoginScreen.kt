@@ -1,6 +1,5 @@
 package com.jaknaeso.app.presentation.view
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,14 +17,21 @@ import com.jaknaeso.app.presentation.contract.LoginEvent
 import com.jaknaeso.app.presentation.viewmodel.LoginViewmodel
 
 @Composable
-fun LoginScreen(navigateToHome: () -> Unit, viewmodel: LoginViewmodel = hiltViewModel()) {
+fun LoginScreen(
+    navigateToOnBoarding: () -> Unit,
+    navigateToHome: () -> Unit,
+    viewmodel: LoginViewmodel = hiltViewModel()
+) {
 
     LaunchedEffect(Unit) {
         viewmodel.effects.collect { effects ->
             when (effects) {
                 LoginEffect.NavigateToHome -> {
-                    Log.d("LoginScreen", "navigateToHome")
                     navigateToHome()
+                }
+
+                LoginEffect.NavigateToOnboarding -> {
+                    navigateToOnBoarding()
                 }
             }
         }

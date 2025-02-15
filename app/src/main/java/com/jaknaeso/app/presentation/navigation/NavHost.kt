@@ -13,7 +13,11 @@ fun SetUpNavGraph(
         navController = navController,
         startDestination = startDestination
     ) {
-        loginScreen(navigateToHome = navController::navigateToHome)
+        loginScreen(
+            navigateToHome = navController::navigateToHome,
+            navigateToOnboarding = navController::navigateToOnboarding
+        )
+        onboardingScreen(navigateToHome = navController::navigateToHome)
         homeScreen(
             navigateToReport = navController::navigateToReport,
             navigateToProfile = navController::navigateToProfile,
