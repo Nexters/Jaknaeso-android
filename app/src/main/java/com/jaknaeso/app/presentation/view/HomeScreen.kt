@@ -52,7 +52,7 @@ fun HomeScreen(
                     duration = SnackbarDuration.Short
                 )
 
-                HomeEffect.NavigateToRoundHistory -> {}
+                HomeEffect.NavigateToRoundHistory -> navigateToReport()
             }
         }
     }
