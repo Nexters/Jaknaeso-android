@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.jaknaeso.app.domain.model.SurveyType
 import com.jaknaeso.app.domain.usecase.GetBalanceQuestionUseCase
 import com.jaknaeso.app.domain.usecase.UpdateRoundsStateUseCase
+import com.jaknaeso.app.presentation.contract.OnBoardingEvent
 import com.jaknaeso.app.presentation.contract.RoundEffect
 import com.jaknaeso.app.presentation.contract.RoundEvent
 import com.jaknaeso.app.presentation.contract.RoundState
@@ -52,7 +53,14 @@ class RoundViewmodel @Inject constructor(
     suspend fun getRoundQuestion(bundleIndex: String) {
         getBalanceQuestionUseCase(bundleIndex).collectLatest {
             val isBalanceRound = if (it?.surveyType == SurveyType.BALANCE) true else false
-            setState { copy(isLoading = false, question = it, isBalanceRound = isBalanceRound, surveyId = it?.id) }
+            setState {
+                copy(
+                    isLoading = false,
+                    question = it,
+                    isBalanceRound = isBalanceRound,
+                    surveyId = it?.surveyId
+                )
+            }
         }
     }
 
