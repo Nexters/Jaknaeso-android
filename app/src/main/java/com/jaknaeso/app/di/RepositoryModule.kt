@@ -30,4 +30,8 @@ interface RepositoryModule {
     @Binds
     @Singleton
     fun bindCharacterRepositoryImpl(characterRepositoryImpl: CharacterRepositoryImpl): CharacterRepository
+
+    @Binds
+    @Singleton
+    fun bindMemberRepositoryImpl(memberRepositoryImpl: MemberRepositoryImpl): MemberRepository
 }

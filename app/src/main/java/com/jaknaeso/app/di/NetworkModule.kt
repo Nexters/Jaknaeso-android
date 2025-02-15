@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.jaknaeso.app.BuildConfig
 import com.jaknaeso.app.data.service.CharacterService
 import com.jaknaeso.app.data.service.LoginService
+import com.jaknaeso.app.data.service.MemberService
 import com.jaknaeso.app.data.service.SurveyService
 import com.jaknaeso.app.data.token.TokenManager
 import dagger.Module
@@ -69,5 +70,11 @@ object NetworkModule {
     @Provides
     fun provideCharacterService(retrofit: Retrofit): CharacterService {
         return retrofit.create(CharacterService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideMemberService(retrofit: Retrofit): MemberService {
+        return retrofit.create(MemberService::class.java)
     }
 }

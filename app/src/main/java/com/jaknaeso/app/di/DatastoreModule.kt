@@ -2,6 +2,7 @@ package com.jaknaeso.app.di
 
 import com.jaknaeso.app.data.datastore.CharacterDatastore
 import com.jaknaeso.app.data.datastore.LoginRemoteDatastore
+import com.jaknaeso.app.data.datastore.MemberDatastore
 import com.jaknaeso.app.data.datastore.SurveyDataStore
 import com.jaknaeso.app.data.datastoreImpl.*
 import dagger.Binds
@@ -28,4 +29,8 @@ interface DatastoreModule {
     @Singleton
     @Binds
     fun provideCharacterDatastore(characterDatastoreImpl: CharacterDatastoreImpl): CharacterDatastore
+
+    @Singleton
+    @Binds
+    fun provideMemberDatastore(memberDatastoreImpl: MemberDatastoreImpl): MemberDatastore
 }
