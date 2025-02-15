@@ -13,7 +13,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jaknaeso.app.R
-import com.jaknaeso.app.designSystem.component.LoopyFilledButton
 import com.jaknaeso.app.designSystem.component.LoopyTopBar
 import com.jaknaeso.app.designSystem.component.VerticalSliderForm
 import com.jaknaeso.app.designSystem.theme.ColorPalette
@@ -25,6 +24,8 @@ import com.jaknaeso.app.presentation.contract.RoundEvent
 
 @Composable
 fun SliderRoundScreen(
+    headerContent: @Composable () -> Unit,
+    footerContent: @Composable () -> Unit,
     question: RoundQuestion?,
     handleEvent: (RoundEvent) -> Unit,
     isModalExpanded: Boolean,
@@ -47,14 +48,11 @@ fun SliderRoundScreen(
                 Modifier.fillMaxSize(1f).padding(paddingValue).background(color = ColorPalette.Neautral50),
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                LoopyTopBar(
-                    title = "오늘의 질문",
-                    icon = painterResource(R.drawable.ic_back),
-                    onClickIcon = { handleEvent(RoundEvent.ClickBackButton) })
+                headerContent()
                 SliderContent(question = question, onChangedOption = { roundIndex ->
                     val selectedOption = question.options[roundIndex]
                     handleEvent(RoundEvent.SelectOption(selectedOption.id))
-                }, handleEvent = handleEvent)
+                }, handleEvent = handleEvent, footerContent = footerContent)
             }
         }
     }
@@ -64,7 +62,8 @@ fun SliderRoundScreen(
 fun SliderContent(
     question: RoundQuestion,
     onChangedOption: (roundIndex: Int) -> Unit,
-    handleEvent: (RoundEvent) -> Unit
+    handleEvent: (RoundEvent) -> Unit,
+    footerContent: @Composable () -> Unit
 ) {
     var selectedIndex by remember { mutableStateOf(0) } //0이 VerticalSliderForm 디폴트 값
     Column(
@@ -88,11 +87,7 @@ fun SliderContent(
                     onChangedOption(index)
                 })
         }
-        LoopyFilledButton(
-            "작성 완료",
-            onClick = { handleEvent(RoundEvent.OpenModal) },
-            modifier = Modifier.fillMaxWidth(1f)
-        )
+        footerContent()
     }
 }
 
@@ -112,7 +107,7 @@ fun SliderRoundPreview() {
                 onClickIcon = {})
             SliderContent(
                 question = RoundQuestion(
-                    id = "0",
+                    surveyId = "0",
                     surveyType = SurveyType.MULTIPLE_CHOICE,
                     content = "짜장면과 짬뽕 뭐가 더 좋아?",
                     options = listOf(
@@ -122,7 +117,7 @@ fun SliderRoundPreview() {
                         Option("1", "짬뽕"),
                         Option("0", "짜장")
                     )
-                ), onChangedOption = {}, handleEvent = {})
+                ), onChangedOption = {}, handleEvent = {}, footerContent = {})
         }
     }
 }
