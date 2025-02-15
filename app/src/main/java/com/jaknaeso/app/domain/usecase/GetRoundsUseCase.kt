@@ -49,17 +49,19 @@ class GetRoundsUseCase @Inject constructor(
 
         if (!surveyData.isCompleted) {
             // 오늘 라운드 업데이트
-            rounds[todayRoundIndex] = Round(
-                submissionId = surveyData.nextSurveyIndex,
-                index = todayRoundIndex,
-                state = QuestionState.TODAY_LOCKED
+            rounds.add(
+                Round(
+                    submissionId = null,
+                    index = todayRoundIndex,
+                    state = QuestionState.TODAY_LOCKED
+                )
             )
         } else {
             // 오늘 라운드가 완료되었을 경우
             rounds.add(
                 Round(
                     submissionId = null,
-                    index = surveyData.nextSurveyIndex!!,
+                    index = todayRoundIndex,
                     state = QuestionState.TODAY_COMPLETED
                 )
             )

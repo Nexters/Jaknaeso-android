@@ -38,7 +38,7 @@ class HomeViewmodel @Inject constructor(private val getRoundsUseCase: GetRoundsU
         getRoundsUseCase().asResult().collect {
             when (it) {
                 is Result.Error -> {
-                    Log.d("Error", "${it.exception.message}")
+                    Log.e("HomeViewmodel", "getRounds: ${it.exception}")
                     setState { copy(isLoading = false, isError = true) }
                 }
 
