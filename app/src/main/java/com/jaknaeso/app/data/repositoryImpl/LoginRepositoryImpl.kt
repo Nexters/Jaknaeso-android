@@ -1,6 +1,5 @@
 package com.jaknaeso.app.data.repositoryImpl
 
-import com.jaknaeso.app.data.authentication.LoopyApiResponse
 import com.jaknaeso.app.data.datastore.LoginRemoteDatastore
 import com.jaknaeso.app.data.datastoreImpl.LoginLocalDatastore
 import com.jaknaeso.app.data.entity.LoopyResult
@@ -14,7 +13,7 @@ class LoginRepositoryImpl @Inject constructor(
     private val loginLocalDatastore: LoginLocalDatastore
 ) :
     LoginRepository {
-    override suspend fun getMemberToken(request: TokenRequest): LoopyApiResponse<LoopyResult<MemberTokenResponse>> {
+    override suspend fun getMemberToken(request: TokenRequest): LoopyResult<MemberTokenResponse> {
         val result = loginRemoteDatastore.getMemberToken(request)
         return result
     }

@@ -3,9 +3,10 @@ package com.jaknaeso.app.presentation.viewmodel
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.jaknaeso.app.data.authentication.LoopyApiResponse
-import com.jaknaeso.app.data.entity.request.TokenRequest
+import com.jaknaeso.app.domain.Result
+import com.jaknaeso.app.domain.asResult
 import com.jaknaeso.app.domain.repository.LoginRepository
+import com.jaknaeso.app.domain.usecase.PostAccessTokenUseCase
 import com.jaknaeso.app.presentation.contract.LoginEffect
 import com.jaknaeso.app.presentation.contract.LoginEvent
 import com.jaknaeso.app.presentation.contract.LoginState
@@ -21,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewmodel @Inject constructor(
     private val application: Application,
-    private val loginRepository: LoginRepository
+    private val loginRepository: LoginRepository,
+    private val postAccessTokenUseCase: PostAccessTokenUseCase
 ) :
     BaseViewModel<LoginEvent, LoginState, LoginEffect>() {
     private val context = application.applicationContext
@@ -70,19 +72,18 @@ class LoginViewmodel @Inject constructor(
 
     fun postAccessToken(token: String) {
         viewModelScope.launch {
-            val result = loginRepository.getMemberToken(TokenRequest(token))
-            when (result) {
-                is LoopyApiResponse.Error -> TODO()
-                is LoopyApiResponse.Success -> {
-                    if (result.data.data != null) {
+            postAccessTokenUseCase(token).asResult().collect {
+                when (it) {
+                    is Result.Error -> TODO()
+                    Result.Loading -> TODO()
+                    is Result.Success -> {
                         Log.d(
                             "LoginViewmodel",
-                            "accessToken:${result.data.data!!.accessToken}, refreshToken:${result.data.data!!.refreshToken}"
+                            "accessToken:${it.data.accessToken}, refreshToken:${it.data.refreshToken}, isCompletedOnboarding:${it.data.isCompletedOnboarding}"
                         )
-                        loginRepository.saveAccessToken(result.data.data!!.accessToken)
-                        loginRepository.saveRefreshToken(result.data.data!!.refreshToken)
+                        loginRepository.saveAccessToken(it.data.accessToken)
+                        loginRepository.saveRefreshToken(it.data.refreshToken)
                     }
-                    setEffect(LoginEffect.NavigateToHome)
                 }
             }
         }

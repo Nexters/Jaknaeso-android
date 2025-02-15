@@ -76,8 +76,8 @@ class ResponseHandler @Inject constructor(
                     if (responseBody != null) {
                         Log.d("Authenticator", "토큰 리프레싱 성공")
                         updateAllTokens(
-                            accessToken = responseBody.data?.accessToken ?: "",
-                            refreshToken = responseBody.data?.refreshToken ?: ""
+                            accessToken = responseBody.data?.tokenInfo?.accessToken ?: "",
+                            refreshToken = responseBody.data?.tokenInfo?.refreshToken ?: ""
                         )
                         onRefreshSuccess()
                     }
