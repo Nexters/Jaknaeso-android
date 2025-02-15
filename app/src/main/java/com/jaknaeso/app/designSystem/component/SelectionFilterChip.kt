@@ -1,7 +1,6 @@
 package com.jaknaeso.app.designSystem.component
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -76,7 +75,6 @@ fun SelectionFilterChip(
         selected = isSelected,
         leadingIcon = null,
         elevation = null,
-        interactionSource = MutableInteractionSource()
     )
 }
 
