@@ -4,11 +4,9 @@ import com.jaknaeso.app.data.entity.LoopyResult
 import com.jaknaeso.app.data.entity.request.SurveySubmissionRequest
 import com.jaknaeso.app.data.entity.response.BundleRoundsResponse
 import com.jaknaeso.app.data.entity.response.RoundQuestionResponse
+import com.jaknaeso.app.data.entity.response.SurveyRecordsResponse
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface SurveyService {
     @GET("/api/v1/surveys/history")
@@ -22,4 +20,10 @@ interface SurveyService {
         @Path("surveyId") surveyId: String,
         @Body body: SurveySubmissionRequest
     ): Response<LoopyResult<Nothing>>
+
+    @GET("/api/v1/surveys/members/{memberId}/submissions")
+    suspend fun getSubmissionsReport(
+        @Path("memberId") memberId: String,
+        @Query("bundleId") bundleId: String
+    ): Response<LoopyResult<SurveyRecordsResponse>>
 }
