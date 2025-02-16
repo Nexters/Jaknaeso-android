@@ -42,34 +42,27 @@ class GetRoundsUseCase @Inject constructor(
 
         // 과거 라운드 추가
         surveyData.surveyHistoryDetails?.forEachIndexed { index, item ->
-            rounds.add(Round(item.submissionId, index, QuestionState.PAST))
+            if (surveyData.isCompleted && surveyData.surveyHistoryDetails.lastIndex == index) { //오늘 완료된 것
+                rounds.add(Round(item.submissionId, index + 1, QuestionState.TODAY_COMPLETED))
+            } else {
+                rounds.add(Round(item.submissionId, index + 1, QuestionState.PAST))
+            }
         }
 
-        val todayRoundIndex = surveyData.nextSurveyIndex!! - 1
-
         if (!surveyData.isCompleted) {
-            // 오늘 라운드 업데이트
+            // 오늘의 미완료 라운드 업데이트
             rounds.add(
                 Round(
                     submissionId = null,
-                    index = todayRoundIndex,
+                    index = surveyData.nextSurveyIndex!!,
                     state = QuestionState.TODAY_LOCKED
-                )
-            )
-        } else {
-            // 오늘 라운드가 완료되었을 경우
-            rounds.add(
-                Round(
-                    submissionId = null,
-                    index = todayRoundIndex,
-                    state = QuestionState.TODAY_COMPLETED
                 )
             )
         }
 
         // 미래 라운드 추가
         for (index in surveyData.nextSurveyIndex!! + 1 until ROUNDS + 1) {
-            rounds.add(Round(submissionId = null, index = index - 1, state = QuestionState.FUTURE))
+            rounds.add(Round(submissionId = null, index = index, state = QuestionState.FUTURE))
         }
 
         return rounds

@@ -92,7 +92,7 @@ fun QuestionItem(round: Round, onClickItem: (state: QuestionState) -> Unit, inde
             filledColor = item.filledColor,
         )
         Text(
-            "${index + 1}회차",
+            "${index}회차",
             style = item.textStyle,
             modifier = Modifier.padding(top = 6.dp),
             color = item.textColor
