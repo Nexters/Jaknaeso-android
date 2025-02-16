@@ -198,7 +198,7 @@ fun ExpandingBottomSheetPreview() {
                         Round(submissionId = null, index = 0, state = QuestionState.PAST),
                         Round(submissionId = null, index = 0, state = QuestionState.PAST)
                     ),
-                    onClickRound = {}
+                    onClickRound = {state, questionIndex ->  }
                 )
             },
             wholeContent = {
@@ -218,7 +218,7 @@ fun ExpandingBottomSheetPreview() {
                     Round(submissionId = null, index = 0, state = QuestionState.PAST),
                     Round(submissionId = null, index = 0, state = QuestionState.PAST),
                     Round(submissionId = null, index = 0, state = QuestionState.PAST)
-                ), {})
+                ), {state, questionIndex -> })
             },
             bottomContent = {
                 LoopyFilledButton(

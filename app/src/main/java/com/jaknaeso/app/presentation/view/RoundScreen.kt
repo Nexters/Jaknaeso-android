@@ -16,7 +16,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jaknaeso.app.R
 import com.jaknaeso.app.designSystem.component.*
-import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.presentation.contract.RoundEffect
 import com.jaknaeso.app.presentation.contract.RoundEvent
@@ -126,14 +125,7 @@ fun UserCommentModal(
                 LoopyFilledButton(
                     "작성 완료",
                     onClick = { handleEvent(RoundEvent.ClickSubmitAnswer) },
-                    modifier = Modifier.fillMaxWidth(0.5f).padding(horizontal = 4.dp)
-                )
-                LoopyFilledButton(
-                    "넘어가기",
-                    onClick = { handleEvent(RoundEvent.ClickBackButton) },
-                    modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 4.dp),
-                    filledColor = ColorPalette.Neautral200,
-                    textColor = ColorPalette.Neautral600
+                    modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 4.dp)
                 )
             }
             Spacer(modifier = Modifier.fillMaxWidth().height(62.dp))

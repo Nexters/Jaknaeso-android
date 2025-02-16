@@ -15,7 +15,7 @@ import com.jaknaeso.app.designSystem.component.LottieImageView
 import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
-fun RoundCompleteScreen(navigateToHome: () -> Unit) {
+fun RoundCompleteScreen(navigateToHome: () -> Unit, remaingRounds: Int) {
     Box(Modifier.fillMaxSize().background(color = Color.White).padding(horizontal = 20.dp)) {
         Column(
             Modifier.fillMaxSize(),
@@ -25,7 +25,7 @@ fun RoundCompleteScreen(navigateToHome: () -> Unit) {
             Text(text = "오늘의 질문 답변을 완료했어요!", style = TextStyles.title02, softWrap = true)
             Spacer(Modifier.height(20.dp))
             Text(
-                text = "캐릭터 완성까지 N회 남았어요",
+                text = "캐릭터 완성까지 ${remaingRounds}회 남았어요",
                 style = TextStyles.subTitle02,
                 textAlign = TextAlign.Center,
                 softWrap = true

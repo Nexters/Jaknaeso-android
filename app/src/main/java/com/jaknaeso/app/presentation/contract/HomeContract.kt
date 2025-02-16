@@ -4,7 +4,7 @@ import com.jaknaeso.app.domain.model.QuestionState
 import com.jaknaeso.app.domain.model.Round
 
 sealed interface HomeEvent : UiEvent {
-    data class ClickRound(val questionState: QuestionState) : HomeEvent
+    data class ClickRound(val questionState: QuestionState, val questionIndex:Int) : HomeEvent
     data object TodayRoundButton : HomeEvent
 }
 
@@ -22,7 +22,7 @@ data class HomeState(
 ) : UiState
 
 sealed interface HomeEffect : UiEffect {
-    data class NavigateToRound(val bundleIndex: String) : HomeEffect
-    data class NavigateToRoundHistory(val bundleIndex: String) : HomeEffect
+    data class NavigateToRound(val bundleIndex: String, val remainingRounds: String) : HomeEffect
+    data class NavigateToRoundHistory(val bundleIndex: String, val surveyIndex: String) : HomeEffect
     data object ShowSnackbar : HomeEffect
 }

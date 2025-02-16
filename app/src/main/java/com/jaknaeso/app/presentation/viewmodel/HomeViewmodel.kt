@@ -35,8 +35,13 @@ class HomeViewmodel @Inject constructor(
 
     override fun handleEvent(event: HomeEvent) {
         when (event) {
-            is HomeEvent.ClickRound -> handleQuestionState(event.questionState)
-            HomeEvent.TodayRoundButton -> setEffect(HomeEffect.NavigateToRound(currentState.bundleId.toString()))
+            is HomeEvent.ClickRound -> handleQuestionState(event.questionState, event.questionIndex.toString())
+            HomeEvent.TodayRoundButton -> setEffect(
+                HomeEffect.NavigateToRound(
+                    currentState.bundleId.toString(),
+                    currentState.remainRounds.toString()
+                )
+            )
         }
     }
 
@@ -88,12 +93,29 @@ class HomeViewmodel @Inject constructor(
         }
     }
 
-    fun handleQuestionState(questionState: QuestionState) {
+    fun handleQuestionState(questionState: QuestionState, questionIndex:String) {
         when (questionState) {
             QuestionState.FUTURE -> setEffect(HomeEffect.ShowSnackbar)
-            QuestionState.TODAY_LOCKED -> setEffect(HomeEffect.NavigateToRound(currentState.bundleId.toString()))
-            QuestionState.PAST -> setEffect(HomeEffect.NavigateToRoundHistory(currentState.bundleId.toString()))
-            QuestionState.TODAY_COMPLETED -> setEffect(HomeEffect.NavigateToRoundHistory(currentState.bundleId.toString()))
+            QuestionState.TODAY_LOCKED -> setEffect(
+                HomeEffect.NavigateToRound(
+                    currentState.bundleId.toString(),
+                    currentState.remainRounds.toString()
+                )
+            )
+
+            QuestionState.PAST -> setEffect(
+                HomeEffect.NavigateToRoundHistory(
+                    currentState.bundleId.toString(),
+                    questionIndex
+                )
+            )
+
+            QuestionState.TODAY_COMPLETED -> setEffect(
+                HomeEffect.NavigateToRoundHistory(
+                    currentState.bundleId.toString(),
+                    questionIndex
+                )
+            )
         }
     }
 }
