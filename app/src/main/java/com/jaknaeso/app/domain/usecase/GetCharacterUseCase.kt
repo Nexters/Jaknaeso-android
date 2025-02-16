@@ -53,12 +53,11 @@ class GetCharacterUseCase @Inject constructor(
                 val unitText = units[unitPart]
 
                 when {
-                    tenPart == 0 -> "${unitText} 번째"
-                    unitPart == 0 -> "${tenText} 번째"
-                    else -> "${tenText}${unitText} 번째"
+                    tenPart == 0 -> "${unitText}"
+                    unitPart == 0 -> "${tenText}"
+                    else -> "${tenText}${unitText}"
                 }
             }
         }
     }
-
 }
