@@ -1,5 +1,6 @@
 package com.jaknaeso.app.domain.usecase
 
+import android.util.Log
 import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.data.entity.request.OnboardingSubmissionsInfoRequest
 import com.jaknaeso.app.data.entity.request.SurveyOptionSubmission
@@ -15,10 +16,11 @@ class PostOnBoardingRoundUseCase @Inject constructor(private val surveyRepositor
         val body = OnboardingSubmissionsInfoRequest(submissionsInfo = answers.mapToSurveyOptionSubmission())
         val response = surveyRepository.postOnboardingAnswers(body = body)
         return flow {
-            if (response.result == ResponseResult.SUCCESS.name) {
-                emit(response.data)
-            } else {
+            Log.d("PostOnBoardingRoundUseCase", "response: ${response}")
+            if (response?.result == ResponseResult.ERROR.name) {
                 throw Exception(response.error?.message)
+            } else {
+                emit(response?.data)
             }
         }
     }

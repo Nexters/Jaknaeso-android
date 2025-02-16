@@ -12,20 +12,22 @@ import javax.inject.Inject
 class GetOnBoardingQuestionUseCase @Inject constructor(private val surveyRepository: SurveyRepository) {
     suspend operator fun invoke(): Flow<List<RoundQuestion>> {
         val response = surveyRepository.getOnboarding()
-        return flow {
-            if (response.result == ResponseResult.SUCCESS.name) {
-                response.data?.surveyResponses?.map {
-                    RoundQuestion(
-                        surveyId = it.id.toString(),
-                        surveyType = it.surveyType.mapToSurveyType(),
-                        content = it.contents,
-                        options = it.options.map {
-                            Option(it.id.toString(), it.optionContents)
-                        }
-                    )
-                }
-            } else {
-                throw Exception(response.error?.message)
+        if (response?.result == ResponseResult.ERROR.name) {
+            return flow { throw Exception(response.error?.message) }
+        } else {
+            return flow {
+                emit(
+                    response?.data?.surveyResponses?.map {
+                        RoundQuestion(
+                            surveyId = it.id.toString(),
+                            surveyType = it.surveyType.mapToSurveyType(),
+                            content = it.contents,
+                            options = it.options.map {
+                                Option(it.id.toString(), it.optionContents)
+                            }
+                        )
+                    } ?: emptyList()
+                )
             }
         }
     }

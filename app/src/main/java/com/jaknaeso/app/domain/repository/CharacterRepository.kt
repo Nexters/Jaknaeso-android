@@ -4,5 +4,5 @@ import com.jaknaeso.app.data.entity.LoopyResult
 import com.jaknaeso.app.data.entity.response.Characters
 
 interface CharacterRepository {
-    suspend fun getCharacters(memberId: Int): LoopyResult<Characters>
+    suspend fun getCharacters(memberId: Int): LoopyResult<Characters>?
 }

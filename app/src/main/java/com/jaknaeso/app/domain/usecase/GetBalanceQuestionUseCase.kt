@@ -16,18 +16,18 @@ class GetBalanceQuestionUseCase @Inject constructor(
     suspend operator fun invoke(bundleId: String): Flow<RoundQuestion?> {
         val data = surveyRepository.getSurvey(bundleId)
         return flow {
-            if (data.result == ResponseResult.SUCCESS.name) {
+            if (data?.result == ResponseResult.ERROR.name) {
+                throw Exception(data?.error?.message)
+            } else {
                 val result = RoundQuestion(
-                    surveyId = data.data?.id.toString(),
-                    surveyType = data.data?.surveyType.mapToSurveyType(),
-                    content = data.data?.contents ?: "",
-                    options = data.data?.options?.map {
+                    surveyId = data?.data?.id.toString(),
+                    surveyType = data?.data?.surveyType.mapToSurveyType(),
+                    content = data?.data?.contents ?: "",
+                    options = data?.data?.options?.map {
                         Option(it.id.toString(), it.optionContents)
                     } ?: emptyList()
                 )
                 emit(result)
-            } else {
-                throw Exception(data.error?.message)
             }
         }
     }

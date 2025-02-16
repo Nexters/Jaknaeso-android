@@ -18,8 +18,10 @@ class GetMemberSubmissionsResultUseCase @Inject constructor(
         return flow {
             if (memberId != null) {
                 val response = surveyRepository.getSubmissionsReport(bundleId = bundleId, memberId = memberId)
-                if (response.result == ResponseResult.SUCCESS.name) {
-                    val roundResult = response.data?.surveyRecords?.mapIndexed { index, surveyRecord ->
+                if (response?.result == ResponseResult.ERROR.name) {
+                    throw Exception(response.error?.message)
+                } else {
+                    val roundResult = response?.data?.surveyRecords?.mapIndexed { index, surveyRecord ->
                         RoundResult(
                             index = index,
                             question = surveyRecord.question,
@@ -29,8 +31,6 @@ class GetMemberSubmissionsResultUseCase @Inject constructor(
                         )
                     } ?: emptyList()
                     emit(roundResult)
-                } else {
-                    throw Exception(response.error?.message)
                 }
             }
         }

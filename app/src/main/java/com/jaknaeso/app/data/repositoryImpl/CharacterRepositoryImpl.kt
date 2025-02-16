@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class CharacterRepositoryImpl @Inject constructor(private val characterDatastore: CharacterDatastore) :
     CharacterRepository {
-    override suspend fun getCharacters(memberId: Int): LoopyResult<Characters> {
+    override suspend fun getCharacters(memberId: Int): LoopyResult<Characters>? {
         return characterDatastore.getCharacters(memberId)
     }
 }

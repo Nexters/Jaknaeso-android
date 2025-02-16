@@ -13,7 +13,7 @@ class LoginRepositoryImpl @Inject constructor(
     private val loginLocalDatastore: LoginLocalDatastore
 ) :
     LoginRepository {
-    override suspend fun getMemberToken(request: TokenRequest): LoopyResult<MemberTokenResponse> {
+    override suspend fun getMemberToken(request: TokenRequest): LoopyResult<MemberTokenResponse>? {
         val result = loginRemoteDatastore.getMemberToken(request)
         return result
     }

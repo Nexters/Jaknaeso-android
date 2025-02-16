@@ -14,7 +14,7 @@ class CharacterDatastoreImpl @Inject constructor(
     private val characterService: CharacterService,
     private val responseHandler: ResponseHandler
 ) : CharacterDatastore {
-    override suspend fun getCharacters(memberId: Int): LoopyResult<Characters> {
+    override suspend fun getCharacters(memberId: Int): LoopyResult<Characters>? {
         val retryResponse = responseHandler.safeApiCall(apiCall = { characterService.getCharacters(memberId) },
             onCompleteTokenRefresh = { null })
         val response = responseHandler.safeApiCall(apiCall = { characterService.getCharacters(memberId) },

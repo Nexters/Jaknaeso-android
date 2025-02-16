@@ -19,7 +19,7 @@ class SurveyDataStoreImpl @Inject constructor(
     private val surveyService: SurveyService,
     private val responseHandler: ResponseHandler
 ) : SurveyDataStore {
-    override suspend fun getSurveysHistory(): LoopyResult<BundleRoundsResponse> {
+    override suspend fun getSurveysHistory(): LoopyResult<BundleRoundsResponse>? {
         val retryResponse = responseHandler.safeApiCall(apiCall = { surveyService.getSurveysHistory() },
             onCompleteTokenRefresh = { null })
         val response = responseHandler.safeApiCall(apiCall = { surveyService.getSurveysHistory() },
@@ -35,7 +35,7 @@ class SurveyDataStoreImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSurvey(bundleId: String): LoopyResult<RoundQuestionResponse> {
+    override suspend fun getSurvey(bundleId: String): LoopyResult<RoundQuestionResponse>? {
         val retryResponse = responseHandler.safeApiCall(apiCall = { surveyService.getSurvey(bundleId) },
             onCompleteTokenRefresh = { null })
         val response = responseHandler.safeApiCall(apiCall = { surveyService.getSurvey(bundleId) },
@@ -51,7 +51,7 @@ class SurveyDataStoreImpl @Inject constructor(
         }
     }
 
-    override suspend fun postSurvey(surveyId: String, body: SurveySubmissionRequest): LoopyResult<Nothing> {
+    override suspend fun postSurvey(surveyId: String, body: SurveySubmissionRequest): LoopyResult<Nothing>? {
         val retryResponse = responseHandler.safeApiCall(apiCall = { surveyService.postSurvey(surveyId, body) },
             onCompleteTokenRefresh = { null })
         val response = responseHandler.safeApiCall(apiCall = { surveyService.postSurvey(surveyId, body) },
@@ -70,7 +70,7 @@ class SurveyDataStoreImpl @Inject constructor(
     override suspend fun getSubmissionsReport(
         memberId: String,
         bundleId: String
-    ): LoopyResult<SurveyRecordsResponse> {
+    ): LoopyResult<SurveyRecordsResponse>? {
         val retryResponse = responseHandler.safeApiCall(apiCall = {
             surveyService.getSubmissionsReport(
                 memberId = memberId,
@@ -96,7 +96,7 @@ class SurveyDataStoreImpl @Inject constructor(
         }
     }
 
-    override suspend fun getOnboarding(): LoopyResult<SurveyResponses> {
+    override suspend fun getOnboarding(): LoopyResult<SurveyResponses>? {
         val retryResponse = responseHandler.safeApiCall(apiCall = {
             surveyService.getOnboarding()
         },
@@ -116,7 +116,7 @@ class SurveyDataStoreImpl @Inject constructor(
         }
     }
 
-    override suspend fun postOnboardingAnswers(body: OnboardingSubmissionsInfoRequest): LoopyResult<Nothing> {
+    override suspend fun postOnboardingAnswers(body: OnboardingSubmissionsInfoRequest): LoopyResult<Nothing>? {
         val retryResponse = responseHandler.safeApiCall(apiCall = {
             surveyService.postOnboardingAnswer(body)
         },

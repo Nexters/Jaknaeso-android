@@ -12,11 +12,24 @@ class MemberRepositoryImpl @Inject constructor(
     private val memberDatastore: MemberDatastore,
     private val tokenManager: TokenManager
 ) : MemberRepository {
-    override suspend fun getMember(memberId: String): LoopyResult<MemberResponse> {
+    override suspend fun getMember(memberId: String): LoopyResult<MemberResponse>? {
         return memberDatastore.getMember(memberId)
     }
 
     override suspend fun getMemberId(): Flow<String?> {
         return tokenManager.getMemberId()
+    }
+
+    override suspend fun saveMemberId(memberId: String) {
+        memberDatastore.saveMemberId(memberId)
+    }
+
+    override suspend fun deleteMemberId() {
+        memberDatastore.deleteMemberId()
+    }
+
+
+    override suspend fun deleteMember(memberId: String): LoopyResult<Nothing?>? {
+        return memberDatastore.deleteMember(memberId)
     }
 }

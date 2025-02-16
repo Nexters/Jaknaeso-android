@@ -20,7 +20,7 @@ val UNKNOWN_CODE = 500
 val UNKNOWN_MESSAGE = "예기치 못한 오류입니다:("
 
 sealed class LoopyApiResponse<out T> {
-    data class Success<T>(val data: T) : LoopyApiResponse<T>()
+    data class Success<T>(val data: T?) : LoopyApiResponse<T>()
     data class Error(val code: Int, val message: String) : LoopyApiResponse<Nothing>()
 }
 
@@ -39,6 +39,8 @@ class ResponseHandler @Inject constructor(
                 val body = response.body()
                 if (body != null) {
                     return LoopyApiResponse.Success(body)
+                } else if (response.code() == 204) {
+                    return LoopyApiResponse.Success(null)
                 } else {
                     return LoopyApiResponse.Error(response.code(), "Response body is null")
                 }

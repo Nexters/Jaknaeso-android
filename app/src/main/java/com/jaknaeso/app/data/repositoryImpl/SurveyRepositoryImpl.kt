@@ -12,27 +12,27 @@ import com.jaknaeso.app.domain.repository.SurveyRepository
 import javax.inject.Inject
 
 class SurveyRepositoryImpl @Inject constructor(private val surveyDataStore: SurveyDataStore) : SurveyRepository {
-    override suspend fun getSurveysHistory(): LoopyResult<BundleRoundsResponse> {
+    override suspend fun getSurveysHistory(): LoopyResult<BundleRoundsResponse>? {
         return surveyDataStore.getSurveysHistory()
     }
 
-    override suspend fun getSurvey(bundleId: String): LoopyResult<RoundQuestionResponse> {
+    override suspend fun getSurvey(bundleId: String): LoopyResult<RoundQuestionResponse>? {
         return surveyDataStore.getSurvey(bundleId)
     }
 
-    override suspend fun postSurvey(surveyId: String, body: SurveySubmissionRequest): LoopyResult<Nothing> {
+    override suspend fun postSurvey(surveyId: String, body: SurveySubmissionRequest): LoopyResult<Nothing>? {
         return surveyDataStore.postSurvey(surveyId, body)
     }
 
-    override suspend fun getSubmissionsReport(memberId: String, bundleId: String): LoopyResult<SurveyRecordsResponse> {
+    override suspend fun getSubmissionsReport(memberId: String, bundleId: String): LoopyResult<SurveyRecordsResponse>? {
         return surveyDataStore.getSubmissionsReport(memberId, bundleId)
     }
 
-    override suspend fun getOnboarding(): LoopyResult<SurveyResponses> {
+    override suspend fun getOnboarding(): LoopyResult<SurveyResponses>? {
         return surveyDataStore.getOnboarding()
     }
 
-    override suspend fun postOnboardingAnswers(body: OnboardingSubmissionsInfoRequest): LoopyResult<Nothing> {
+    override suspend fun postOnboardingAnswers(body: OnboardingSubmissionsInfoRequest): LoopyResult<Nothing>? {
         return surveyDataStore.postOnboardingAnswers(body)
     }
 }

@@ -15,7 +15,7 @@ class LoginRemoteDatastoreImpl @Inject constructor(
     private val loginService: LoginService,
     private val responseHandler: ResponseHandler
 ) : LoginRemoteDatastore {
-    override suspend fun getMemberToken(request: TokenRequest): LoopyResult<MemberTokenResponse> {
+    override suspend fun getMemberToken(request: TokenRequest): LoopyResult<MemberTokenResponse>? {
         val retryResponse =
             responseHandler.safeApiCall(
                 apiCall = { loginService.getMemberToken(request) },

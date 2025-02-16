@@ -34,7 +34,8 @@ fun SetUpNavGraph(
         )
         profileScreen(
             navigateToHome = navController::navigateToHome,
-            navigateToReport = navController::navigateToReport
+            navigateToReport = navController::navigateToReport,
+            navigateToLogin = navController::navigateToLogin
         )
     }
 }

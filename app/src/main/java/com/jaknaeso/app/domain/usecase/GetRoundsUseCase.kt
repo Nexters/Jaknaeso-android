@@ -19,13 +19,12 @@ class GetRoundsUseCase @Inject constructor(
         val data = surveyRepository.getSurveysHistory()
 
         return flow {
-            if (data.result != ResponseResult.SUCCESS.name) {
-                throw Exception(data.error?.message)
+            if (data?.result == ResponseResult.ERROR.name) {
+                throw Exception(data?.error?.message)
             }
 
-            val surveyData = data.data ?: return@flow
+            val surveyData = data?.data ?: return@flow
             val rounds = prepareRounds(surveyData)
-
             emit(
                 RoundBundle(
                     bundleId = surveyData.bundleId,

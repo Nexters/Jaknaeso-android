@@ -18,13 +18,13 @@ class GetCharacterUseCase @Inject constructor(
         return flow {
             if (memberId != null) {
                 val response = characterRepository.getCharacters(memberId = memberId.toInt())
-                if (response.result == ResponseResult.SUCCESS.name) {
-                    val result = response.data?.characters?.map {
+                if (response?.result == ResponseResult.ERROR.name) {
+                    throw Exception(response.error?.message)
+                } else {
+                    val result = response?.data?.characters?.map {
                         Character(ordinalWord = it.oridinalNumber.toKoreanOrdinal(), bundleId = it.bundleId)
                     } ?: emptyList()
                     emit(result)
-                } else {
-                    throw Exception(response.error?.message)
                 }
             }
         }

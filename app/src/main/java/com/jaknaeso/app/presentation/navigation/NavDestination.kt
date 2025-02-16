@@ -92,11 +92,13 @@ fun NavGraphBuilder.reportScreen(
 fun NavGraphBuilder.profileScreen(
     navigateToHome: () -> Unit,
     navigateToReport: (bundleIndex: String) -> Unit,
+    navigateToLogin: () -> Unit
 ) {
     composable(route = "${Route.Profile}") {
         ProfileScreen(
             navigateToHome = navigateToHome,
             navigateToReport = navigateToReport,
+            navigateToLogin = navigateToLogin
         )
     }
 }
