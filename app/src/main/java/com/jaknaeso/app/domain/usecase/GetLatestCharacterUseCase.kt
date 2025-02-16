@@ -1,5 +1,6 @@
 package com.jaknaeso.app.domain.usecase
 
+import com.jaknaeso.app.R
 import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.domain.model.LatestCharacterBrief
 import com.jaknaeso.app.domain.repository.CharacterRepository
@@ -13,7 +14,7 @@ class GetLatestCharacterUseCase @Inject constructor(
     private val characterRepository: CharacterRepository,
     private val memberRepository: MemberRepository
 ) {
-    suspend operator fun invoke(memberId: String): Flow<LatestCharacterBrief> {
+    suspend operator fun invoke(): Flow<LatestCharacterBrief> {
         val memberId = memberRepository.getMemberId().first()
         if (memberId != null) {
             val response = characterRepository.getLatestCharacter(memberId)
@@ -24,7 +25,8 @@ class GetLatestCharacterUseCase @Inject constructor(
                     emit(
                         LatestCharacterBrief(
                             characterNo = response?.data?.characterNo ?: "",
-                            characterType = response?.data?.characterType ?: ""
+                            characterType = response?.data?.characterType ?: "",
+                            lottieRawFile = R.raw.balance //임시
                         )
                     )
                 }
@@ -32,5 +34,9 @@ class GetLatestCharacterUseCase @Inject constructor(
         } else {
             return flow { throw Exception("memberId를 찾을 수 없습니다.") }
         }
+    }
+
+    fun mapCharacterTypeToLottieRawFile(characterType: String) {
+
     }
 }
