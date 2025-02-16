@@ -24,14 +24,14 @@ import com.jaknaeso.app.designSystem.theme.ColorPalette
 
 @Composable
 fun FlipAnimation(
+    isCardFlipped: Boolean,
     forwardColor: Color = Color.White,
     backwardColor: Color = ColorPalette.Neautral50,
     frontContent: @Composable () -> Unit,
     backContent: @Composable () -> Unit,
     modifier: Modifier,
-    onFlipped : (isCardFlipped:Boolean)->Unit
+    onFlipped : (isCardFlipped:Boolean)->Unit,
 ) {
-    var isCardFlipped by remember { mutableStateOf(false) }
     val animDuration = 900
     val zAxisDistance = 200f // distance between camera and Card
 
@@ -50,7 +50,6 @@ fun FlipAnimation(
             .clip(RoundedCornerShape(12.dp))
             .clickable {
                 onFlipped(!isCardFlipped)
-                isCardFlipped = !isCardFlipped
             }
             .background(if (isCardFlipped) backwardColor else forwardColor),
     ) {
@@ -76,6 +75,7 @@ fun FlipCardPreview() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         FlipAnimation(
+            isCardFlipped = false,
             forwardColor = Color.White,
             backwardColor = ColorPalette.PrimaryBlue100,
             frontContent = {
