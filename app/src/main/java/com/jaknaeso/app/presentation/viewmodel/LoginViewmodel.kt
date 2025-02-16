@@ -81,8 +81,6 @@ class LoginViewmodel @Inject constructor(
                             "LoginViewmodel",
                             "accessToken:${it.data.accessToken}, refreshToken:${it.data.refreshToken}, isCompletedOnboarding:${it.data.isCompletedOnboarding}"
                         )
-                        loginRepository.saveAccessToken(it.data.accessToken)
-                        loginRepository.saveRefreshToken(it.data.refreshToken)
                         navigateNextScreen(it.data.isCompletedOnboarding)
                     }
                 }
