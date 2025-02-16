@@ -28,15 +28,17 @@ import com.jaknaeso.app.domain.model.Round
 import com.jaknaeso.app.presentation.contract.HomeEffect
 import com.jaknaeso.app.presentation.contract.HomeEvent
 import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
+import com.jaknaeso.app.presentation.navigation.NO_BUNDLE_ID
+import com.jaknaeso.app.presentation.navigation.NO_SURVEY_INDEX
 import com.jaknaeso.app.presentation.navigation.Route
 import com.jaknaeso.app.presentation.viewmodel.HomeViewmodel
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun HomeScreen(
-    navigateToReport: (bundleIndex: String) -> Unit,
+    navigateToReport: (bundleId: String, surveyIndex: String) -> Unit,
     navigateToProfile: () -> Unit,
-    navigateToBalanceRound: (roundIndex: String) -> Unit,
+    navigateToBalanceRound: (bundleIndex: String, remainingRounds: String) -> Unit,
     viewmodel: HomeViewmodel = hiltViewModel(),
 ) {
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
@@ -46,7 +48,7 @@ fun HomeScreen(
         viewmodel.effects.collectLatest { effect ->
             when (effect) {
                 is HomeEffect.NavigateToRound -> {
-                    navigateToBalanceRound(effect.bundleIndex)
+                    navigateToBalanceRound(effect.bundleIndex, effect.remainingRounds)
                 }
 
                 HomeEffect.ShowSnackbar -> snackbarHostState.showSnackbar(
@@ -54,7 +56,7 @@ fun HomeScreen(
                     duration = SnackbarDuration.Short
                 )
 
-                is HomeEffect.NavigateToRoundHistory -> navigateToReport(effect.bundleIndex)
+                is HomeEffect.NavigateToRoundHistory -> navigateToReport(effect.bundleIndex, effect.surveyIndex)
             }
         }
     }
@@ -74,7 +76,7 @@ fun HomeScreen(
             bottomBar = {
                 LoopyBottomNavBar(
                     navigateToHome = {},
-                    navigateToReport = { navigateToReport(uiState.bundleId.toString()) },
+                    navigateToReport = { navigateToReport(NO_BUNDLE_ID, NO_SURVEY_INDEX) }, //캐릭터 분석으로 넘어감
                     navigateToProfile = navigateToProfile,
                     currentRoute = Route.Home
                 )
@@ -126,12 +128,26 @@ fun HomeScreen(
                             faceContent = {
                                 FaceContent(
                                     uiState.faceRound,
-                                    onClickRound = { viewmodel.handleEvent(HomeEvent.ClickRound(it)) })
+                                    onClickRound = { state, questionIndex ->
+                                        viewmodel.handleEvent(
+                                            HomeEvent.ClickRound(
+                                                state,
+                                                questionIndex
+                                            )
+                                        )
+                                    })
                             },
                             wholeContent = {
                                 WholeContent(
                                     uiState.wholeRounds,
-                                    { viewmodel.handleEvent(HomeEvent.ClickRound(it)) })
+                                    { state, questionIndex ->
+                                        viewmodel.handleEvent(
+                                            HomeEvent.ClickRound(
+                                                state,
+                                                questionIndex
+                                            )
+                                        )
+                                    })
                             },
                             bottomContent = {
                                 LoopyFilledButton(
@@ -177,7 +193,7 @@ fun RestRoundsUntilCharacter(count: Int) {
 @Composable
 fun FaceContent(
     rounds: List<Round>?,
-    onClickRound: (state: QuestionState) -> Unit
+    onClickRound: (state: QuestionState, questionIndex: Int) -> Unit
 ) {
     val faceRounds = rounds?.subList(0, 5)
     LazyRow(
@@ -185,7 +201,7 @@ fun FaceContent(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         items(faceRounds ?: emptyList()) { round ->
-            QuestionItem(round = round, index = round.index, onClickItem = { onClickRound(it) })
+            QuestionItem(round = round, index = round.index, onClickItem = { onClickRound(it, round.index) })
         }
     }
 }
@@ -193,7 +209,7 @@ fun FaceContent(
 @Composable
 fun WholeContent(
     rounds: List<Round>?,
-    onClickRound: (state: QuestionState) -> Unit
+    onClickRound: (state: QuestionState, questionIndex: Int) -> Unit
 ) {
     if (!rounds.isNullOrEmpty()) {
         val ROW = 5
@@ -209,7 +225,10 @@ fun WholeContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     items(rounds) { round ->
-                        QuestionItem(round = round, index = round.index, onClickItem = { onClickRound(it) })
+                        QuestionItem(
+                            round = round,
+                            index = round.index,
+                            onClickItem = { onClickRound(it, round.index) })
                     }
                 }
             }

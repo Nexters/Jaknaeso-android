@@ -21,6 +21,8 @@ import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.presentation.contract.ProfileEffect
 import com.jaknaeso.app.presentation.contract.ProfileEvent
 import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
+import com.jaknaeso.app.presentation.navigation.NO_BUNDLE_ID
+import com.jaknaeso.app.presentation.navigation.NO_SURVEY_INDEX
 import com.jaknaeso.app.presentation.navigation.Route
 import com.jaknaeso.app.presentation.viewmodel.ProfileViewmodel
 
@@ -28,7 +30,7 @@ import com.jaknaeso.app.presentation.viewmodel.ProfileViewmodel
 fun ProfileScreen(
     navigateToHome: () -> Unit,
     navigateToLogin: () -> Unit,
-    navigateToReport: (bundleIndex: String) -> Unit,
+    navigateToReport: (bundleIndex: String, surveyIndex:String) -> Unit,
     viewModel: ProfileViewmodel = hiltViewModel()
 ) {
 
@@ -46,7 +48,7 @@ fun ProfileScreen(
         bottomBar = {
             LoopyBottomNavBar(
                 navigateToHome = { navigateToHome() },
-                navigateToReport = { navigateToReport("1") },//bundleIndex 임시값 주의
+                navigateToReport = { navigateToReport(NO_BUNDLE_ID, NO_SURVEY_INDEX) },
                 navigateToProfile = { },
                 currentRoute = Route.Profile
             )
@@ -73,5 +75,5 @@ fun ProfileScreen(
 @Preview
 @Composable
 fun PreviewProfileScreen() {
-    ProfileScreen({}, {}, {})
+    ProfileScreen({}, {}, {bundleIndex, surveyIndex ->  })
 }
