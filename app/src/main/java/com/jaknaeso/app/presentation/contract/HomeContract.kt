@@ -15,6 +15,10 @@ data class HomeState(
     val wholeRounds: List<Round>? = null,
     val bundleId: Int? = null,
     val isEnabledTodayRoundButton: Boolean = true,
+    val remainRounds: Int = 0,
+    val characterNo: String = "",
+    val characterType: String = "",
+    val lottieRawFile: Int? = null
 ) : UiState
 
 sealed interface HomeEffect : UiEffect {

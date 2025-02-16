@@ -11,7 +11,9 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -37,7 +39,7 @@ fun HomeScreen(
     navigateToBalanceRound: (roundIndex: String) -> Unit,
     viewmodel: HomeViewmodel = hiltViewModel(),
 ) {
-    val uiState = viewmodel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
@@ -57,10 +59,10 @@ fun HomeScreen(
         }
     }
 
-    if (uiState.value.isLoading) {
+    if (uiState.isLoading) {
         Text(text = "로딩중 임시화면", style = TextStyles.title02, modifier = Modifier.fillMaxSize(1f))
     }
-    if (uiState.value.isError) {
+    if (uiState.isError) {
         ErrorInfoView(
             title = "오류가 발생했어요!",
             message = "일시적인 오류가 발생했어요.\n화면을 새로고침 해주세요.",
@@ -72,7 +74,7 @@ fun HomeScreen(
             bottomBar = {
                 LoopyBottomNavBar(
                     navigateToHome = {},
-                    navigateToReport = { navigateToReport(uiState.value.bundleId.toString()) },
+                    navigateToReport = { navigateToReport(uiState.bundleId.toString()) },
                     navigateToProfile = navigateToProfile,
                     currentRoute = Route.Home
                 )
@@ -89,25 +91,29 @@ fun HomeScreen(
                 }
             },
             content = { paddingValues ->
-                Column(
+                Box(
                     modifier = Modifier.background(color = ColorPalette.Neautral100).fillMaxSize(1f)
                         .padding(paddingValues),
-                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
                         Spacer(modifier = Modifier.fillMaxWidth().height(34.dp))
                         LoopySuggestionChip(
-                            "나의 캐릭터",
+                            uiState.characterNo,
                             labelStyle = TextStyles.subTitle04,
                             filledColor = ColorPalette.PrimaryBlue100,
                             labelColor = ColorPalette.PrimaryBlue500,
                             shape = RoundedCornerShape(8.dp)
                         )
                         Text(
-                            "{ValueType}\n두 줄인 경우",
+                            uiState.characterType,
                             style = TextStyles.title01,
-                            modifier = Modifier.padding(top = 10.dp)
+                            modifier = Modifier.padding(top = 10.dp).fillMaxWidth(0.5f),
+                            softWrap = true
                         )
+                        Column(
+                            modifier = Modifier.fillMaxWidth(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) { LottieImageView(uiState.lottieRawFile) }
                     }
                     Column(
                         modifier = Modifier.background(
@@ -116,20 +122,20 @@ fun HomeScreen(
                         )
                     ) {
                         ExpandingBottomSheet(
-                            floatingContent = { RestRoundsUntilCharacter(14) },
+                            floatingContent = { RestRoundsUntilCharacter(uiState.remainRounds) },
                             faceContent = {
                                 FaceContent(
-                                    uiState.value.faceRound,
+                                    uiState.faceRound,
                                     onClickRound = { viewmodel.handleEvent(HomeEvent.ClickRound(it)) })
                             },
                             wholeContent = {
                                 WholeContent(
-                                    uiState.value.wholeRounds,
+                                    uiState.wholeRounds,
                                     { viewmodel.handleEvent(HomeEvent.ClickRound(it)) })
                             },
                             bottomContent = {
                                 LoopyFilledButton(
-                                    enabled = uiState.value.isEnabledTodayRoundButton,
+                                    enabled = uiState.isEnabledTodayRoundButton,
                                     text = "오늘의 질문 답변하기",
                                     textStyle = TextStyles.subTitle01,
                                     onClick = { viewmodel.handleEvent(HomeEvent.TodayRoundButton) },
