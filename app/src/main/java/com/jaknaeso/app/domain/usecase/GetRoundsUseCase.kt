@@ -30,7 +30,8 @@ class GetRoundsUseCase @Inject constructor(
                     bundleId = surveyData.bundleId,
                     wholeRounds = rounds,
                     faceRounds = getFaceRounds(rounds.toList(), surveyData.nextSurveyIndex!!),
-                    isTodayRoundCompleted = surveyData.isCompleted
+                    isTodayRoundCompleted = surveyData.isCompleted,
+                    remainRound = calculateRemainRounds(surveyData.nextSurveyIndex, surveyData.isCompleted)
                 )
             )
         }
@@ -68,7 +69,7 @@ class GetRoundsUseCase @Inject constructor(
 
         // 미래 라운드 추가
         for (index in surveyData.nextSurveyIndex!! + 1 until ROUNDS) {
-            rounds.add(Round(submissionId = null, index = index, state = QuestionState.FUTURE))
+            rounds.add(Round(submissionId = null, index = index - 1, state = QuestionState.FUTURE))
         }
 
         return rounds
@@ -77,6 +78,11 @@ class GetRoundsUseCase @Inject constructor(
     fun getFaceRounds(rounds: List<Round>, nextSurveyIndex: Int): List<Round> {
         if (nextSurveyIndex in 1..5) return rounds.subList(1, 6)
         if (nextSurveyIndex in 6..10) return rounds.subList(6, 11)
-        else return rounds.subList(11, 16)
+        else return rounds.subList(11, 15)
+    }
+
+    fun calculateRemainRounds(nextSurveyIndex: Int, isCompleted: Boolean): Int {
+        if (isCompleted) return 15 - nextSurveyIndex
+        else return 15 - nextSurveyIndex + 1
     }
 }

@@ -4,5 +4,6 @@ data class RoundBundle(
     val bundleId: Int?,
     val wholeRounds: List<Round>,
     val faceRounds: List<Round>,
-    val isTodayRoundCompleted: Boolean
+    val isTodayRoundCompleted: Boolean,
+    val remainRound: Int
 )
