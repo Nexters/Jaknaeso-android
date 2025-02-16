@@ -5,5 +5,5 @@ data class RoundBundle(
     val wholeRounds: List<Round>,
     val faceRounds: List<Round>,
     val isTodayRoundCompleted: Boolean,
-    val remainRound: Int
+    val remainRound: Int,
 )

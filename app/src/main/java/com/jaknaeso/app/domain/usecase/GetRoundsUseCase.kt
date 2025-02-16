@@ -68,7 +68,7 @@ class GetRoundsUseCase @Inject constructor(
         }
 
         // 미래 라운드 추가
-        for (index in surveyData.nextSurveyIndex!! + 1 until ROUNDS) {
+        for (index in surveyData.nextSurveyIndex!! + 1 until ROUNDS + 1) {
             rounds.add(Round(submissionId = null, index = index - 1, state = QuestionState.FUTURE))
         }
 
@@ -76,9 +76,9 @@ class GetRoundsUseCase @Inject constructor(
     }
 
     fun getFaceRounds(rounds: List<Round>, nextSurveyIndex: Int): List<Round> {
-        if (nextSurveyIndex in 1..5) return rounds.subList(1, 6)
-        if (nextSurveyIndex in 6..10) return rounds.subList(6, 11)
-        else return rounds.subList(11, 15)
+        if (nextSurveyIndex in 1..5) return rounds.subList(0, 5)
+        if (nextSurveyIndex in 6..10) return rounds.subList(5, 10)
+        else return rounds.subList(10, 15)
     }
 
     fun calculateRemainRounds(nextSurveyIndex: Int, isCompleted: Boolean): Int {
