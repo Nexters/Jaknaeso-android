@@ -1,10 +1,10 @@
 package com.jaknaeso.app.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.jaknaeso.app.domain.model.SurveyType
 import com.jaknaeso.app.domain.usecase.GetBalanceQuestionUseCase
 import com.jaknaeso.app.domain.usecase.UpdateRoundsStateUseCase
-import com.jaknaeso.app.presentation.contract.OnBoardingEvent
 import com.jaknaeso.app.presentation.contract.RoundEffect
 import com.jaknaeso.app.presentation.contract.RoundEvent
 import com.jaknaeso.app.presentation.contract.RoundState
@@ -33,6 +33,7 @@ class RoundViewmodel @Inject constructor(
                 }
 
                 is RoundEvent.SelectOption -> {
+                    Log.d("RoundViewmodel", "event.optionId:${event.optionId}")
                     setState { copy(selectedOptionId = event.optionId) }
                 }
 

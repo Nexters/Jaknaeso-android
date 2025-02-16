@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +30,8 @@ fun BalanceRoundScreen(
     enteredComment: String,
     onChangedCommentValue: (value: String) -> Unit
 ) {
+    var isCardFlipped by remember { mutableStateOf(false) }
+
     if (question != null && surveyId != null) {
         Scaffold(
             modifier = Modifier.fillMaxSize().background(color = ColorPalette.Neautral0)
@@ -50,7 +52,7 @@ fun BalanceRoundScreen(
                     icon = painterResource(R.drawable.ic_back),
                     onClickIcon = { handleEvent(RoundEvent.ClickBackButton) })
                 Column(
-                    Modifier.padding(horizontal = 20.dp).padding(top = 54.dp, bottom = 28.dp).fillMaxSize(1f),
+                    Modifier.padding(horizontal = 40.dp).padding(top = 54.dp, bottom = 28.dp).fillMaxSize(1f),
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -64,22 +66,31 @@ fun BalanceRoundScreen(
                         )
                         Spacer(Modifier.fillMaxWidth(1f).height(20.dp))
                         FlipAnimation(
+                            isCardFlipped = isCardFlipped,
                             forwardColor = Color.White,
                             backwardColor = Color.White,
                             frontContent = {
-                                BalanceContent(title = "첫번째 선택지", option = question.options[0].optionContents)
+                                BalanceContent(
+                                    title = "첫번째 선택지",
+                                    option = question.options[0].optionContents,
+                                    onClickFlip = {
+                                        isCardFlipped = !isCardFlipped
+                                        handleEvent(RoundEvent.SelectOption(question.options[0].id))
+                                    }
+                                )
                             },
                             backContent = {
-                                BalanceContent(title = "두번째 선택지", option = question.options[1].optionContents)
+                                BalanceContent(
+                                    title = "두번째 선택지",
+                                    option = question.options[1].optionContents,
+                                    onClickFlip = {
+                                        isCardFlipped = !isCardFlipped
+                                        handleEvent(RoundEvent.SelectOption(question.options[1].id))
+                                    }
+                                )
                             },
-                            modifier = Modifier.fillMaxWidth(1f).padding(40.dp).aspectRatio(0.94f),
-                            onFlipped = { isCardFlipped ->
-                                if (isCardFlipped) {
-                                    handleEvent(RoundEvent.SelectOption(question.options[1].id))
-                                } else {
-                                    handleEvent(RoundEvent.SelectOption(question.options[0].id))
-                                }
-                            }
+                            modifier = Modifier.fillMaxWidth(1f).aspectRatio(0.94f).fillMaxHeight(1f),
+                            onFlipped = {}
                         )
                     }
                     LoopyFilledButton(
@@ -94,7 +105,7 @@ fun BalanceRoundScreen(
 }
 
 @Composable
-fun BalanceContent(title: String, option: String) {
+fun BalanceContent(title: String, option: String, onClickFlip: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(1f).padding(horizontal = 20.dp).padding(bottom = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -120,7 +131,7 @@ fun BalanceContent(title: String, option: String) {
         }
         LoopyFilledButton(
             "카드 뒤집기",
-            onClick = {},
+            onClick = onClickFlip,
             modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 4.dp),
             height = 50.dp,
             filledColor = Color.White,
@@ -162,13 +173,14 @@ private fun BalanceRoundPreview() {
                     )
                     Spacer(Modifier.fillMaxWidth(1f).height(20.dp))
                     FlipAnimation(
+                        isCardFlipped = false,
                         forwardColor = Color.White,
                         backwardColor = ColorPalette.PrimaryBlue100,
                         frontContent = {
-                            BalanceContent(title = "첫번째 선택지", option = "주변 사람과 물리적으로 멀어지더라도, 커리어를 선택한다.")
+                            BalanceContent(title = "첫번째 선택지", option = "주변 사람과 물리적으로 멀어지더라도, 커리어를 선택한다.",{})
                         },
                         backContent = {
-                            BalanceContent(title = "두번째 선택지", option = "가족과 함께 살며 따뜻한 식사와 생활비 걱정 없는 일상을 선택한다.")
+                            BalanceContent(title = "두번째 선택지", option = "가족과 함께 살며 따뜻한 식사와 생활비 걱정 없는 일상을 선택한다.",{})
                         },
                         modifier = Modifier.fillMaxWidth(1f).padding(40.dp).aspectRatio(0.94f),
                         onFlipped = {}
