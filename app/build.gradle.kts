@@ -69,6 +69,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.airbnb.lottie.compose)
     implementation(libs.kakao.all)
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.analytics)
@@ -76,7 +77,6 @@ dependencies {
     kapt(libs.hilt.viewmodel)
     kapt(libs.hilt.android.compiler)
     implementation(libs.open.licenses)
-    kapt(libs.room.compiler)
     implementation(libs.datastore)
     implementation(libs.bundles.basic)
     implementation(libs.bundles.hilt)
