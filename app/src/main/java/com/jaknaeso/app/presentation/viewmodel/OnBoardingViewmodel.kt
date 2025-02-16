@@ -18,8 +18,10 @@ import javax.inject.Inject
 class OnBoardingViewmodel @Inject constructor(
     private val getOnBoardingQuestionUseCase: GetOnBoardingQuestionUseCase,
     private val postOnBoardingRoundUseCase: PostOnBoardingRoundUseCase
-) :
-    BaseViewModel<OnBoardingEvent, OnBoardingState, OnBoardingEffect>() {
+) : BaseViewModel<OnBoardingEvent, OnBoardingState, OnBoardingEffect>() {
+    val ONBOARD_INFO_PAGE = 4
+    val ONBOARD_COMPLETED_PAGE = 1
+
     override fun createInitialState(): OnBoardingState {
         return OnBoardingState()
     }
@@ -43,7 +45,13 @@ class OnBoardingViewmodel @Inject constructor(
 
                     Result.Loading -> {}
                     is Result.Success -> {
-                        setState { copy(isLoading = false, questions = it.data) }
+                        setState {
+                            copy(
+                                isLoading = false,
+                                questions = it.data,
+                                pageCount = it.data.size + ONBOARD_INFO_PAGE + ONBOARD_COMPLETED_PAGE
+                            )
+                        }
                     }
                 }
             }

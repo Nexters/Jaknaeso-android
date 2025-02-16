@@ -14,6 +14,7 @@ data class OnBoardingState(
     val isLoading: Boolean = true,
     val isError: Boolean = false,
     val questions: List<RoundQuestion> = emptyList(),
+    val pageCount: Int = 0,
     val answersForSubmission: MutableMap<SurveyId, OptionId> = mutableMapOf()//key값을 surveyId로 갖는 해시로 수정하기.
 ) : UiState
 
