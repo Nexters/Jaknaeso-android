@@ -6,6 +6,7 @@ import com.jaknaeso.app.domain.Result
 import com.jaknaeso.app.domain.asResult
 import com.jaknaeso.app.domain.usecase.GetCharacterUseCase
 import com.jaknaeso.app.domain.usecase.GetMemberSubmissionsResultUseCase
+import com.jaknaeso.app.domain.usecase.MapToKoreanOrdinalWordUseCase
 import com.jaknaeso.app.presentation.contract.ReportEffect
 import com.jaknaeso.app.presentation.contract.ReportEvent
 import com.jaknaeso.app.presentation.contract.ReportState
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ReportViewmodel @Inject constructor(
     private val getCharacterUseCase: GetCharacterUseCase,
-    private val getMemberSubmissionsResultUseCase: GetMemberSubmissionsResultUseCase
+    private val getMemberSubmissionsResultUseCase: GetMemberSubmissionsResultUseCase,
+    private val mapToKoreanOrdinalWord: MapToKoreanOrdinalWordUseCase
 ) :
     BaseViewModel<ReportEvent, ReportState, ReportEffect>() {
 
@@ -27,21 +29,38 @@ class ReportViewmodel @Inject constructor(
 
     override fun handleEvent(event: ReportEvent) {
         when (event) {
-            is ReportEvent.GetInitialData -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    getCharacters()
-                    getSubmissionsResult(event.bundleId, currentState.reportTitle)
-                }
+            ReportEvent.GetInitialData -> {
+                getInitialAnswersHistory()
+            }
+
+            is ReportEvent.GetParticularBundle -> {
+                getParticularAnswersHistory(event.bundleId)
             }
 
             is ReportEvent.SelectCharacterBundle -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    getSubmissionsResult(event.bundleId, event.ordinalWord)
+                    getSubmissionsResult(event.bundleId)
                 }
             }
 
             ReportEvent.ClickHome -> setEffect(ReportEffect.NavigateToHome)
             ReportEvent.ClickProfile -> setEffect(ReportEffect.NavigateToProfile)
+
+        }
+    }
+
+    fun getInitialAnswersHistory() {
+        viewModelScope.launch(Dispatchers.IO) {
+            getCharacters()
+            getSubmissionsResult("1")
+        }
+    }
+
+    private fun getParticularAnswersHistory(bundleId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getCharacters()
+            getSubmissionsResult(bundleId)
+            setState { copy(reportTitle = mapToKoreanOrdinalWord(bundleId.toInt()) + "번째 캐릭터") }
         }
     }
 
@@ -59,7 +78,7 @@ class ReportViewmodel @Inject constructor(
         }
     }
 
-    private suspend fun getSubmissionsResult(bundleId: String, ordinalWord: String) {
+    private suspend fun getSubmissionsResult(bundleId: String) {
         getMemberSubmissionsResultUseCase(bundleId).asResult().collect {
             when (it) {
                 is Result.Error -> {
@@ -68,7 +87,7 @@ class ReportViewmodel @Inject constructor(
                 }
 
                 Result.Loading -> {}
-                is Result.Success -> setState { copy(submissionsResult = it.data, reportTitle = ordinalWord) }
+                is Result.Success -> setState { copy(submissionsResult = it.data) }
             }
         }
     }

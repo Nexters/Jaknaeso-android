@@ -19,8 +19,8 @@ import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
-fun DropdownCard(shellContent: @Composable () -> Unit, mainContent: @Composable () -> Unit) {
-    var expanded by remember { mutableStateOf(false) }
+fun DropdownCard(shellContent: @Composable () -> Unit, mainContent: @Composable () -> Unit, initialExpanded:Boolean) {
+    var expanded by remember { mutableStateOf(initialExpanded) }
 
     Column(
         modifier = Modifier.wrapContentSize(Alignment.TopStart)
@@ -42,7 +42,7 @@ fun DropdownCard(shellContent: @Composable () -> Unit, mainContent: @Composable 
 @Preview
 @Composable
 fun PreviewDropdownCard() {
-    DropdownCard(shellContent = {
+    DropdownCard(initialExpanded = true, shellContent = {
         Row(
             modifier = Modifier.fillMaxWidth(1f),
             verticalAlignment = Alignment.CenterVertically,

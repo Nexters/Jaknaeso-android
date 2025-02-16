@@ -20,10 +20,9 @@ import androidx.compose.ui.unit.dp
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoopyTabBar(onPage: (index: Int) -> Unit, tabBarTitles: List<String>) {
-    var selectedIndex by remember { mutableStateOf(0) }
+fun LoopyTabBar(initialPage:Int, onPage: (index: Int) -> Unit, tabBarTitles: List<String>) {
+    var selectedIndex by remember { mutableStateOf(initialPage) }
 
     Column(horizontalAlignment = Alignment.Start) {
         ScrollableTabRow(
@@ -66,9 +65,8 @@ fun LoopyTabBar(onPage: (index: Int) -> Unit, tabBarTitles: List<String>) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun LoopTabRowPreview() {
-    LoopyTabBar({}, listOf("캐릭터 분석", "나의 답변 모아보기"))
+    LoopyTabBar(0,{}, listOf("캐릭터 분석", "나의 답변 모아보기"))
 }

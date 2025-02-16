@@ -31,6 +31,8 @@ import com.jaknaeso.app.domain.model.RoundResult
 import com.jaknaeso.app.presentation.contract.ReportEffect
 import com.jaknaeso.app.presentation.contract.ReportEvent
 import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
+import com.jaknaeso.app.presentation.navigation.NO_BUNDLE_ID
+import com.jaknaeso.app.presentation.navigation.NO_SURVEY_INDEX
 import com.jaknaeso.app.presentation.navigation.Route
 import com.jaknaeso.app.presentation.viewmodel.ReportViewmodel
 import kotlinx.coroutines.flow.collectLatest
@@ -42,15 +44,22 @@ fun ReportScreen(
     navigateToHome: () -> Unit,
     navigateToProfile: () -> Unit,
     viewmodel: ReportViewmodel = hiltViewModel(),
-    bundleId: String?
+    bundleId: String,
+    surveyIndex: String
 ) {
+    val initialTabPage by remember { mutableStateOf(if (surveyIndex != NO_SURVEY_INDEX && bundleId != NO_BUNDLE_ID) 1 else 0) }
     val uistate = viewmodel.uiState.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(pageCount = { 2 })
     var isModalExpanded by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        viewmodel.handleEvent(ReportEvent.GetInitialData(bundleId ?: "1"))
+        if (surveyIndex == NO_SURVEY_INDEX && bundleId == NO_BUNDLE_ID) {
+            viewmodel.handleEvent(ReportEvent.GetInitialData)
+        } else {
+            pagerState.animateScrollToPage(1)
+            viewmodel.handleEvent(ReportEvent.GetParticularBundle(bundleId))
+        }
         viewmodel.effects.collectLatest { effect ->
             when (effect) {
                 ReportEffect.NavigateToHome -> navigateToHome()
@@ -105,15 +114,18 @@ fun ReportScreen(
                     )
                     Spacer(modifier = Modifier.fillMaxWidth(1f).height(20.dp))
                 }
-                LoopyTabBar(tabBarTitles = listOf("캐릭터 분석", "나의 답변 모아보기"), onPage = { index ->
-                    scope.launch {
-                        pagerState.animateScrollToPage((pagerState.currentPage + 1) % 2)
-                    }
-                })
+                LoopyTabBar(
+                    initialPage = initialTabPage,
+                    tabBarTitles = listOf("캐릭터 분석", "나의 답변 모아보기"),
+                    onPage = { index ->
+                        scope.launch {
+                            pagerState.animateScrollToPage((pagerState.currentPage + 1) % 2)
+                        }
+                    })
                 HorizontalPager(state = pagerState, userScrollEnabled = false) { page ->
                     when (page) {
                         0 -> CharacterAnalysisView()
-                        1 -> MyAnswersView(uistate.value.submissionsResult)
+                        1 -> MyAnswersView(uistate.value.submissionsResult, surveyIndex)
                     }
                 }
             }
@@ -288,7 +300,7 @@ fun CharacterAnalysisView() {
                                 tint = Color.Black
                             )
                         }
-                    }, mainContent = {
+                    }, initialExpanded = false, mainContent = {
                         Column {
                             Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
                             LoopyAssistChip(
@@ -355,83 +367,86 @@ fun CharacterAnalysisView() {
 }
 
 @Composable
-fun MyAnswersView(submissionResult: List<RoundResult>) {
+fun MyAnswersView(submissionResults: List<RoundResult>, expandedSurveyItemAtInitialized: String) {
     Column {
         Spacer(Modifier.fillMaxWidth().height(40.dp))
         LazyColumn(Modifier.padding(horizontal = 20.dp)) {
-            items(items = submissionResult) { data ->
-                DropdownCard(shellContent = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(1f),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = "${data.index + 1}회차", style = TextStyles.subTitle03)
-                        Icon(
-                            painter = painterResource(R.drawable.ic_arrow_down),
-                            contentDescription = null,
-                            tint = Color.Black
-                        )
-                    }
-                }, mainContent = {
-                    Column {
-                        Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
-                        LoopyAssistChip(
-                            label = data.submittedAt,
-                            labelStyle = TextStyles.body02,
-                            filledColor = ColorPalette.Neautral200,
-                            labelColor = ColorPalette.Neautral700,
-                            shape = RoundedCornerShape(6.dp),
-                            enabled = false
-                        )
-                        Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
+            itemsIndexed(items = submissionResults, key = { index, item -> item.index }) { index, data ->
+                DropdownCard(
+                    initialExpanded = expandedSurveyItemAtInitialized == (index + 1).toString(),
+                    shellContent = {
                         Row(
-                            verticalAlignment = Alignment.Top,
-                            horizontalArrangement = Arrangement.Start,
-                            modifier = Modifier.padding(bottom = 16.dp)
+                            modifier = Modifier.fillMaxWidth(1f),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("Q.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
-                            Text(
-                                data.question,
-                                style = TextStyles.body01,
-                                softWrap = true
+                            Text(text = "${data.index + 1}회차", style = TextStyles.subTitle03)
+                            Icon(
+                                painter = painterResource(R.drawable.ic_arrow_down),
+                                contentDescription = null,
+                                tint = Color.Black
                             )
                         }
-                        Spacer(
-                            modifier = Modifier.fillMaxWidth().height(1.dp)
-                                .background(color = ColorPalette.Neautral300)
-                        )
-                        Row(
-                            verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Start,
-                            modifier = Modifier.padding(top = 16.dp, bottom = 12.dp)
-                        ) {
-                            Text("A.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
-                            Text(
-                                data.answer,
-                                style = TextStyles.body01,
-                                softWrap = true
+                    },
+                    mainContent = {
+                        Column {
+                            Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
+                            LoopyAssistChip(
+                                label = data.submittedAt,
+                                labelStyle = TextStyles.body02,
+                                filledColor = ColorPalette.Neautral200,
+                                labelColor = ColorPalette.Neautral700,
+                                shape = RoundedCornerShape(6.dp),
+                                enabled = false
                             )
+                            Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
+                            Row(
+                                verticalAlignment = Alignment.Top,
+                                horizontalArrangement = Arrangement.Start,
+                                modifier = Modifier.padding(bottom = 16.dp)
+                            ) {
+                                Text("Q.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
+                                Text(
+                                    data.question,
+                                    style = TextStyles.body01,
+                                    softWrap = true
+                                )
+                            }
+                            Spacer(
+                                modifier = Modifier.fillMaxWidth().height(1.dp)
+                                    .background(color = ColorPalette.Neautral300)
+                            )
+                            Row(
+                                verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Start,
+                                modifier = Modifier.padding(top = 16.dp, bottom = 12.dp)
+                            ) {
+                                Text("A.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
+                                Text(
+                                    data.answer,
+                                    style = TextStyles.body01,
+                                    softWrap = true
+                                )
+                            }
+                            Column(
+                                modifier = Modifier.background(
+                                    color = ColorPalette.Neautral100,
+                                    shape = RoundedCornerShape(12.dp)
+                                ).padding(vertical = 12.dp).padding(horizontal = 16.dp).fillMaxWidth(1f)
+                            ) {
+                                Text(
+                                    "회고",
+                                    style = TextStyles.body01,
+                                    color = ColorPalette.Neautral800,
+                                    modifier = Modifier.padding(bottom = 8.dp),
+                                    softWrap = true
+                                )
+                                Text(
+                                    data.word,
+                                    style = TextStyles.body01, color = ColorPalette.Neautral700, softWrap = true
+                                )
+                            }
                         }
-                        Column(
-                            modifier = Modifier.background(
-                                color = ColorPalette.Neautral100,
-                                shape = RoundedCornerShape(12.dp)
-                            ).padding(vertical = 12.dp).padding(horizontal = 16.dp)
-                        ) {
-                            Text(
-                                "회고",
-                                style = TextStyles.body01,
-                                color = ColorPalette.Neautral800,
-                                modifier = Modifier.padding(bottom = 8.dp),
-                                softWrap = true
-                            )
-                            Text(
-                                data.word,
-                                style = TextStyles.body01, color = ColorPalette.Neautral700, softWrap = true
-                            )
-                        }
-                    }
-                })
+                    })
                 Spacer(modifier = Modifier.fillMaxWidth().height(18.dp))
             }
         }
@@ -447,5 +462,5 @@ fun CharacterAnalysisPreview() {
 @Preview
 @Composable
 fun MyAnswersReportPreview() {
-    MyAnswersView(emptyList())
+    MyAnswersView(emptyList(), "1")
 }
