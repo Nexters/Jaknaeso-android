@@ -1,6 +1,6 @@
 package com.jaknaeso.app.data.entity.response
 
-data class CharacterDetail(
+data class CharacterDetailResponse(
     val characterNo: String,
     val characterType: String,
     val description: String,
