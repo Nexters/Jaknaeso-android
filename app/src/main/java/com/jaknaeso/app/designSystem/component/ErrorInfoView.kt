@@ -8,12 +8,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jaknaeso.app.R
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
 fun ErrorInfoView(title: String, message: String, onClickReLoad: () -> Unit, onClickHome: () -> Unit) {
     Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()) {
+        LottieImageView(R.raw.warning, width = 100.dp, height = 100.dp)
+        Spacer(modifier = Modifier.fillMaxWidth(1f).height(24.dp))
         Text(title, style = TextStyles.title02)
         Spacer(modifier = Modifier.fillMaxWidth(1f).height(12.dp))
         Text(message, style = TextStyles.subTitle03, color = ColorPalette.Neautral600)

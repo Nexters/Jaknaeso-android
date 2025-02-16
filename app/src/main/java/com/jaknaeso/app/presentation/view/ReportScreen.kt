@@ -204,7 +204,7 @@ fun CharacterAnalysisView() {
                         verticalArrangement = Arrangement.Center,
                         modifier = Modifier.padding(bottom = 40.dp).padding(horizontal = 20.dp)
                     ) {
-                        LottieImageView()
+                        LottieImageView(null)
                         Text(
                             text = "{valueType}",
                             style = TextStyles.title03,

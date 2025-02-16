@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.jaknaeso.app.R
 import com.jaknaeso.app.designSystem.component.LoopyFilledButton
 import com.jaknaeso.app.designSystem.component.LottieImageView
 import com.jaknaeso.app.designSystem.theme.TextStyles
@@ -30,7 +31,7 @@ fun RoundCompleteScreen(navigateToHome: () -> Unit) {
                 softWrap = true
             )
             Spacer(Modifier.height(40.dp))
-            LottieImageView()
+            LottieImageView(R.raw.paper_pollen)
         }
         Column(
             Modifier.fillMaxSize().padding(bottom = 62.dp),

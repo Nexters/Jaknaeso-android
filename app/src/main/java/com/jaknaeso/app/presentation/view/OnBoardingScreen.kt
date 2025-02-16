@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jaknaeso.app.R
 import com.jaknaeso.app.designSystem.component.ErrorInfoView
 import com.jaknaeso.app.designSystem.component.LoopyFilledButton
 import com.jaknaeso.app.designSystem.component.LottieImageView
@@ -168,7 +169,7 @@ fun OnBoardingCompletedView(navigateToHome: () -> Unit) {
                 softWrap = true
             )
             Spacer(Modifier.height(40.dp))
-            LottieImageView()
+            LottieImageView(R.raw.paper_pollen)
         }
 
         Column(
