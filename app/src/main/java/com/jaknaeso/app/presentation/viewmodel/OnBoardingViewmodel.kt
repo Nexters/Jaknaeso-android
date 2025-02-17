@@ -2,6 +2,7 @@ package com.jaknaeso.app.presentation.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.domain.Result
 import com.jaknaeso.app.domain.asResult
 import com.jaknaeso.app.domain.usecase.GetOnBoardingQuestionUseCase
@@ -39,6 +40,9 @@ class OnBoardingViewmodel @Inject constructor(
             getOnBoardingQuestionUseCase().asResult().collect {
                 when (it) {
                     is Result.Error -> {
+                        if (it.exception.message == ResponseResult.REFRESH_FAILED.name) {
+                            setEffect(OnBoardingEffect.NavigateToLogin)
+                        }
                         Log.e("OnBoardingViewmodel", "getOnBoardingQuestion:${it.exception}")
                         setState { copy(isLoading = false, isError = true) }
                     }
@@ -68,7 +72,13 @@ class OnBoardingViewmodel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             postOnBoardingRoundUseCase(currentState.answersForSubmission.toMap()).asResult().collect {
                 when (it) {
-                    is Result.Error -> setState { copy(isLoading = false, isError = true) }
+                    is Result.Error -> {
+                        if (it.exception.message == ResponseResult.REFRESH_FAILED.name) {
+                            setEffect(OnBoardingEffect.NavigateToLogin)
+                        }
+                        setState { copy(isLoading = false, isError = true) }
+                    }
+
                     Result.Loading -> {}
                     is Result.Success -> setEffect(OnBoardingEffect.NavigateToHome)
                 }

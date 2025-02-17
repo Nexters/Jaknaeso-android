@@ -24,6 +24,7 @@ data class RoundState(
 ) : UiState
 
 sealed interface RoundEffect : UiEffect {
+    data object NavigateToLogin : RoundEffect
     data object NavigateToBack : RoundEffect
     data object NavigateToBalanceRoundComplete : RoundEffect
     data object OpenModal : RoundEffect

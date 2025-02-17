@@ -2,6 +2,7 @@ package com.jaknaeso.app.presentation.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.domain.Result
 import com.jaknaeso.app.domain.asResult
 import com.jaknaeso.app.domain.model.QuestionState
@@ -49,6 +50,9 @@ class HomeViewmodel @Inject constructor(
         getRoundsUseCase().asResult().collect {
             when (it) {
                 is Result.Error -> {
+                    if (it.exception.message == ResponseResult.REFRESH_FAILED.name) {
+                        setEffect(HomeEffect.NavigateToLogin)
+                    }
                     Log.e("HomeViewmodel", "getRounds: ${it.exception}")
                     setState { copy(isLoading = false, isError = true) }
                 }

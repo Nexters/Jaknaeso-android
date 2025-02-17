@@ -1,6 +1,7 @@
 package com.jaknaeso.app.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.domain.Result
 import com.jaknaeso.app.domain.asResult
 import com.jaknaeso.app.domain.usecase.DeleteMemberUseCase
@@ -33,6 +34,9 @@ class ProfileViewmodel @Inject constructor(private val deleteMemberUseCase: Dele
             deleteMemberUseCase().asResult().collect {
                 when (it) {
                     is Result.Error -> {
+                        if (it.exception.message == ResponseResult.REFRESH_FAILED.name) {
+                            setEffect(ProfileEffect.NavigateToLogin)
+                        }
                     }
 
                     Result.Loading -> {}

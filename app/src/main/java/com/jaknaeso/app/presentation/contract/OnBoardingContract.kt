@@ -19,5 +19,6 @@ data class OnBoardingState(
 ) : UiState
 
 sealed interface OnBoardingEffect : UiEffect {
+    data object NavigateToLogin : OnBoardingEffect
     data object NavigateToHome : OnBoardingEffect
 }

@@ -6,7 +6,7 @@ import com.jaknaeso.app.domain.model.RoundResult
 
 sealed interface ReportEvent : UiEvent {
     data object GetInitialData : ReportEvent
-    data class GetParticularBundle(val bundleId: String):ReportEvent
+    data class GetParticularBundle(val bundleId: String) : ReportEvent
     data class SelectCharacterBundle(val bundleId: String, val ordinalWord: String) : ReportEvent
     data object ClickHome : ReportEvent
     data object ClickProfile : ReportEvent
@@ -22,6 +22,7 @@ data class ReportState(
 ) : UiState
 
 sealed interface ReportEffect : UiEffect {
+    data object NavigateToLogin : ReportEffect
     data object NavigateToHome : ReportEffect
     data object NavigateToProfile : ReportEffect
 }

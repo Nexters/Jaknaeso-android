@@ -2,6 +2,9 @@ package com.jaknaeso.app.presentation.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.jaknaeso.app.data.entity.ResponseResult
+import com.jaknaeso.app.domain.Result
+import com.jaknaeso.app.domain.asResult
 import com.jaknaeso.app.domain.model.SurveyType
 import com.jaknaeso.app.domain.usecase.GetBalanceQuestionUseCase
 import com.jaknaeso.app.domain.usecase.UpdateRoundsStateUseCase
@@ -41,7 +44,6 @@ class RoundViewmodel @Inject constructor(
 
                 is RoundEvent.ClickSubmitAnswer -> {
                     postAnswer()
-                    setEffect(RoundEffect.NavigateToBalanceRoundComplete)
                 }
 
                 RoundEvent.ClickBackButton -> setEffect(RoundEffect.NavigateToBack)
@@ -71,7 +73,18 @@ class RoundViewmodel @Inject constructor(
                 surveyId = currentState.surveyId!!,
                 optionId = currentState.selectedOptionId.toString(),
                 comment = currentState.enteredComment
-            )
+            ).asResult().collect {
+                when (it) {
+                    is Result.Error -> {
+                        if (it.exception.message == ResponseResult.REFRESH_FAILED.name) {
+                            setEffect(RoundEffect.NavigateToLogin)
+                        }
+                    }
+
+                    Result.Loading -> TODO()
+                    is Result.Success -> setEffect(RoundEffect.NavigateToBalanceRoundComplete)
+                }
+            }
         }
     }
 }
