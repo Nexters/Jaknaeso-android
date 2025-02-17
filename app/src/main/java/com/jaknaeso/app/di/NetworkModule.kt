@@ -45,9 +45,10 @@ object NetworkModule {
         okHttpClientBuilder.connectTimeout(60, TimeUnit.SECONDS)
         okHttpClientBuilder.readTimeout(60, TimeUnit.SECONDS)
         okHttpClientBuilder.addInterceptor(headerInterceptor)
+        okHttpClientBuilder.addInterceptor(loggingInterceptor)
         return okHttpClientBuilder.build()
     }
-    
+
     @Provides
     fun provideHeaderInterceptor(tokenManager: TokenManager): Interceptor {
         return Interceptor { chain ->

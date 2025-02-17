@@ -49,6 +49,16 @@ class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context)
         return token ?: ""
     }
 
+    override fun getRefreshTokenForHeader(): String {
+        val token: String? = runBlocking {
+            getRefreshToken().first()
+        }
+        if (token != null) {
+            Log.d("TokenManagerImpl", "getRefreshTokenForHeader: RefreshToken(refreshToken):${token}")
+        }
+        return token ?: ""
+    }
+
     override suspend fun getAccessToken(): Flow<String?> {
         return dataStore.data.map { preferences ->
             Log.d("TokenManagerImpl", "getAuthToken: AuthToken(accessToken):${preferences[ACCESS_TOKEN_KEY]}")

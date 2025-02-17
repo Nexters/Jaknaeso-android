@@ -10,6 +10,7 @@ import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.adapters.ApiResponseCallAdapterFactory
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnSuccess
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -26,10 +27,20 @@ fun createWebService(baseUrl: String, okHttp: OkHttpClient): Retrofit {
         .build()
 }
 
+
 class RefreshTokenManagerImpl @Inject constructor(private val tokenManager: TokenManager) : RefreshTokenManager {
     val httpLoggingInterceptor = HttpLoggingInterceptor()
+    val interceptor = Interceptor { chain ->
+        with(chain) {
+            val token = tokenManager.getRefreshTokenForHeader()
+            val newRequest = request().newBuilder()
+                .header("Authorization", "Bearer ${token}")
+                .build()
+            proceed(newRequest)
+        }
+    }
     private val okHttp =
-        OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS).addInterceptor(httpLoggingInterceptor)
+        OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS).addInterceptor(httpLoggingInterceptor).addInterceptor(interceptor)
             .readTimeout(60, TimeUnit.SECONDS).build()
 
     override suspend fun handleTokenRefresh(
