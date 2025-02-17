@@ -17,12 +17,14 @@ class GetRoundsUseCase @Inject constructor(
 
     operator fun invoke(): Flow<RoundBundle> {
         return flow {
-            val data = surveyRepository.getSurveysHistory()
-            if (data?.result == ResponseResult.ERROR.name) {
-                throw Exception(data.error?.message)
+            val response = surveyRepository.getSurveysHistory()
+            if (response?.result == ResponseResult.ERROR.name) {
+                throw Exception(response.error?.message)
+            } else if (response?.result == ResponseResult.REFRESH_FAILED.name) {
+                throw Exception(response.result)
             }
 
-            val surveyData = data?.data ?: return@flow
+            val surveyData = response?.data ?: return@flow
             val rounds = prepareRounds(surveyData)
             emit(
                 RoundBundle(

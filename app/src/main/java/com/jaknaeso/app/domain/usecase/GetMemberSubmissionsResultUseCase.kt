@@ -20,6 +20,8 @@ class GetMemberSubmissionsResultUseCase @Inject constructor(
                 val response = surveyRepository.getSubmissionsReport(bundleId = bundleId, memberId = memberId)
                 if (response?.result == ResponseResult.ERROR.name) {
                     throw Exception(response.error?.message)
+                } else if (response?.result == ResponseResult.REFRESH_FAILED.name) {
+                    throw Exception(response.result)
                 } else {
                     val roundResult = response?.data?.surveyRecords?.mapIndexed { index, surveyRecord ->
                         RoundResult(

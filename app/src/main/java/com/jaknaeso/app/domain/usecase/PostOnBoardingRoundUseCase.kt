@@ -19,6 +19,8 @@ class PostOnBoardingRoundUseCase @Inject constructor(private val surveyRepositor
             Log.d("PostOnBoardingRoundUseCase", "response: ${response}")
             if (response?.result == ResponseResult.ERROR.name) {
                 throw Exception(response.error?.message)
+            } else if (response?.result == ResponseResult.REFRESH_FAILED.name) {
+                throw Exception(response.result)
             } else {
                 emit(response?.data)
             }

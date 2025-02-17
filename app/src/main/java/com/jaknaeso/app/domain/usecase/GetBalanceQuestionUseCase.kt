@@ -14,16 +14,18 @@ class GetBalanceQuestionUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(bundleId: String): Flow<RoundQuestion?> {
-        val data = surveyRepository.getSurvey(bundleId)
+        val response = surveyRepository.getSurvey(bundleId)
         return flow {
-            if (data?.result == ResponseResult.ERROR.name) {
-                throw Exception(data?.error?.message)
+            if (response?.result == ResponseResult.ERROR.name) {
+                throw Exception(response?.error?.message)
+            } else if (response?.result == ResponseResult.REFRESH_FAILED.name) {
+                throw Exception(response.result)
             } else {
                 val result = RoundQuestion(
-                    surveyId = data?.data?.id.toString(),
-                    surveyType = data?.data?.surveyType.mapToSurveyType(),
-                    content = data?.data?.contents ?: "",
-                    options = data?.data?.options?.map {
+                    surveyId = response?.data?.id.toString(),
+                    surveyType = response?.data?.surveyType.mapToSurveyType(),
+                    content = response?.data?.contents ?: "",
+                    options = response?.data?.options?.map {
                         Option(it.id.toString(), it.optionContents)
                     } ?: emptyList()
                 )

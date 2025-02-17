@@ -20,6 +20,8 @@ class GetLatestCharacterUseCase @Inject constructor(
             val response = characterRepository.getLatestCharacter(memberId)
             if (response?.result == ResponseResult.ERROR.name) {
                 return flow { throw Exception(response.error?.message) }
+            } else if (response?.result == ResponseResult.REFRESH_FAILED.name) {
+                return flow { throw Exception(response.result) }
             } else {
                 return flow {
                     emit(

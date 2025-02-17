@@ -18,6 +18,8 @@ class PostAccessTokenUseCase @Inject constructor(
         return flow {
             if (response?.result == ResponseResult.ERROR.name) {
                 throw Exception(response.error?.message)
+            } else if (response?.result == ResponseResult.REFRESH_FAILED.name) {
+                throw Exception(response.result)
             } else {
                 loginRepository.saveAccessToken(response?.data!!.tokenInfo.accessToken)
                 loginRepository.saveRefreshToken(response.data!!.tokenInfo.refreshToken)

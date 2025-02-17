@@ -14,6 +14,8 @@ class GetOnBoardingQuestionUseCase @Inject constructor(private val surveyReposit
         val response = surveyRepository.getOnboarding()
         if (response?.result == ResponseResult.ERROR.name) {
             return flow { throw Exception(response.error?.message) }
+        } else if (response?.result == ResponseResult.REFRESH_FAILED.name) {
+            return flow { throw Exception(response.result) }
         } else {
             return flow {
                 emit(

@@ -20,6 +20,8 @@ class GetCharacterUseCase @Inject constructor(
                 val response = characterRepository.getCharacters(memberId = memberId.toInt())
                 if (response?.result == ResponseResult.ERROR.name) {
                     throw Exception(response.error?.message)
+                } else if (response?.result == ResponseResult.REFRESH_FAILED.name) {
+                    throw Exception(response.result)
                 } else {
                     val result = response?.data?.characters?.map {
                         Character(ordinalWord = it.oridinalNumber.toKoreanOrdinal(), bundleId = it.bundleId)
