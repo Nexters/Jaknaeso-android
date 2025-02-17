@@ -63,16 +63,12 @@ fun HomeScreen(
         }
     }
 
-    if (uiState.isLoading) {
-        Text(text = "로딩중 임시화면", style = TextStyles.title02, modifier = Modifier.fillMaxSize(1f))
-    }
     if (uiState.isError) {
-        ErrorInfoView(
-            title = "오류가 발생했어요!",
-            message = "일시적인 오류가 발생했어요.\n화면을 새로고침 해주세요.",
-            onClickReLoad = {},
-            onClickHome = {})
+        Column(modifier = Modifier.fillMaxSize().background(color = ColorPalette.Neautral50)) { }
     } else {
+        if (uiState.isLoading) {
+            Text(text = "로딩중 임시화면", style = TextStyles.title02, modifier = Modifier.fillMaxSize(1f))
+        }
         Scaffold(
             modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral50),
             bottomBar = {
@@ -102,14 +98,14 @@ fun HomeScreen(
                     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
                         Spacer(modifier = Modifier.fillMaxWidth().height(34.dp))
                         LoopySuggestionChip(
-                            uiState.characterNo,
+                            "${uiState.characterNo} 캐릭터",
                             labelStyle = TextStyles.subTitle04,
                             filledColor = ColorPalette.PrimaryBlue100,
                             labelColor = ColorPalette.PrimaryBlue500,
                             shape = RoundedCornerShape(8.dp)
                         )
                         Text(
-                            uiState.characterType,
+                            uiState.characterName,
                             style = TextStyles.title01,
                             modifier = Modifier.padding(top = 10.dp).fillMaxWidth(0.5f),
                             softWrap = true
@@ -223,7 +219,7 @@ fun WholeContent(
         ) {
             chunkedRounds.forEach { rounds ->
                 LazyRow(
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 14.dp),
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 28.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     items(rounds) { round ->

@@ -17,7 +17,7 @@ data class HomeState(
     val isEnabledTodayRoundButton: Boolean = true,
     val remainRounds: Int = 0,
     val characterNo: String = "",
-    val characterType: String = "",
+    val characterName: String = "",
     val lottieRawFile: Int? = null
 ) : UiState
 

@@ -26,7 +26,7 @@ class HomeViewmodel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             getRounds()
-            //getLatestCharacter()
+            getLatestCharacter()
         }
     }
 
@@ -88,7 +88,7 @@ class HomeViewmodel @Inject constructor(
                     setState {
                         copy(
                             characterNo = it.data.characterNo,
-                            characterType = it.data.characterType,
+                            characterName = it.data.characterName,
                             lottieRawFile = it.data.lottieRawFile
                         )
                     }
