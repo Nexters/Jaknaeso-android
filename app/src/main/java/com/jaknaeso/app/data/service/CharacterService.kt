@@ -2,9 +2,11 @@ package com.jaknaeso.app.data.service
 
 import com.jaknaeso.app.data.entity.LoopyResult
 import com.jaknaeso.app.data.entity.response.CharacterDetailResponse
+import com.jaknaeso.app.data.entity.response.CharacterReportResponse
 import com.jaknaeso.app.data.entity.response.Characters
 import com.skydoves.sandwich.ApiResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface CharacterService {
@@ -13,4 +15,10 @@ interface CharacterService {
 
     @GET("/api/v1/characters/latest")
     suspend fun getLatestCharacter(@Query("memberId") memberId: String): ApiResponse<LoopyResult<CharacterDetailResponse>>
+
+    @GET("/api/v1/characters/{characterId}/report")
+    suspend fun getCharacterReport(
+        @Path("characterId") characterId: String,
+        @Query("memberId") memberId: String
+    ): ApiResponse<LoopyResult<CharacterReportResponse>>
 }

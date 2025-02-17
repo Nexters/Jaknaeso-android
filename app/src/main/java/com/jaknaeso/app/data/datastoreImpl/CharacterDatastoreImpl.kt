@@ -5,6 +5,7 @@ import com.jaknaeso.app.data.datastore.CharacterDatastore
 import com.jaknaeso.app.data.entity.LoopyResult
 import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.data.entity.response.CharacterDetailResponse
+import com.jaknaeso.app.data.entity.response.CharacterReportResponse
 import com.jaknaeso.app.data.entity.response.Characters
 import com.jaknaeso.app.data.service.CharacterService
 import com.skydoves.sandwich.exceptions.NoContentException
@@ -58,6 +59,39 @@ class CharacterDatastoreImpl @Inject constructor(
             }
 
             characterService.getLatestCharacter(memberId).suspendOnSuccess {
+                result = this.data
+            }.suspendOnError {
+                result = this.response.body()
+                if (this.response.code() == 401) {
+                    refreshTokenManager.handleTokenRefresh(
+                        retryCall = suspend { retryCall() },
+                        onRefreshFailed = {
+                            result = LoopyResult(result = ResponseResult.REFRESH_FAILED.name, data = null, error = null)
+                        }
+                    )
+                }
+            }
+        } catch (e: NoContentException) {
+            result = LoopyResult(result = ResponseResult.SUCCESS.name, null, null)
+        }
+        return result
+    }
+
+    override suspend fun getCharacterReport(
+        characterId: String,
+        memberId: String
+    ): LoopyResult<CharacterReportResponse>? {
+        var result: LoopyResult<CharacterReportResponse>? = LoopyResult(result = null, data = null, error = null)
+        try {
+            suspend fun retryCall() {
+                characterService.getCharacterReport(characterId, memberId).suspendOnSuccess {
+                    result = this.data
+                }.suspendOnError {
+                    result = this.response.body()
+                }
+            }
+
+            characterService.getCharacterReport(characterId, memberId).suspendOnSuccess {
                 result = this.data
             }.suspendOnError {
                 result = this.response.body()
