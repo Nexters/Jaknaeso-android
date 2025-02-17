@@ -1,9 +1,7 @@
 package com.jaknaeso.app.data.datastoreImpl
 
-import com.jaknaeso.app.data.authentication.LoopyApiResponse
-import com.jaknaeso.app.data.authentication.ResponseHandler
+import com.jaknaeso.app.data.authentication.RefreshTokenManager
 import com.jaknaeso.app.data.datastore.SurveyDataStore
-import com.jaknaeso.app.data.entity.ErrorData
 import com.jaknaeso.app.data.entity.LoopyResult
 import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.data.entity.request.OnboardingSubmissionsInfoRequest
@@ -13,126 +11,166 @@ import com.jaknaeso.app.data.entity.response.RoundQuestionResponse
 import com.jaknaeso.app.data.entity.response.SurveyRecordsResponse
 import com.jaknaeso.app.data.entity.response.SurveyResponses
 import com.jaknaeso.app.data.service.SurveyService
+import com.skydoves.sandwich.suspendOnError
+import com.skydoves.sandwich.suspendOnSuccess
 import javax.inject.Inject
 
 class SurveyDataStoreImpl @Inject constructor(
     private val surveyService: SurveyService,
-    private val responseHandler: ResponseHandler
+    private val refreshTokenManager: RefreshTokenManager
 ) : SurveyDataStore {
-    override suspend fun getSurveysHistory(): LoopyResult<BundleRoundsResponse>? {
-        val retryResponse = responseHandler.safeApiCall(apiCall = { surveyService.getSurveysHistory() },
-            onCompleteTokenRefresh = { null })
-        val response = responseHandler.safeApiCall(apiCall = { surveyService.getSurveysHistory() },
-            onCompleteTokenRefresh = { retryResponse })
-        return when (response) {
-            is LoopyApiResponse.Error -> LoopyResult(
-                data = null,
-                result = ResponseResult.ERROR.name,
-                error = ErrorData(code = response.code, message = response.message, data = null)
-            )
 
-            is LoopyApiResponse.Success -> response.data
+
+    override suspend fun getSurveysHistory(): LoopyResult<BundleRoundsResponse>? {
+        var result: LoopyResult<BundleRoundsResponse>? = LoopyResult(result = null, data = null, error = null)
+        suspend fun retryCall() {
+            surveyService.getSurveysHistory().suspendOnSuccess {
+                result = this.data
+            }.suspendOnError {
+                result = this.response.body()
+            }
         }
+
+        surveyService.getSurveysHistory().suspendOnSuccess {
+            result = this.data
+        }.suspendOnError {
+            result = this.response.body()
+            if (this.response.code() == 401) {
+                refreshTokenManager.handleTokenRefresh(
+                    retryCall = suspend { retryCall() },
+                    onRefreshFailed = {
+                        result = LoopyResult(result = ResponseResult.REFRESH_FAILED.name, data = null, error = null)
+                    }
+                )
+            }
+        }
+        return result
     }
 
     override suspend fun getSurvey(bundleId: String): LoopyResult<RoundQuestionResponse>? {
-        val retryResponse = responseHandler.safeApiCall(apiCall = { surveyService.getSurvey(bundleId) },
-            onCompleteTokenRefresh = { null })
-        val response = responseHandler.safeApiCall(apiCall = { surveyService.getSurvey(bundleId) },
-            onCompleteTokenRefresh = { retryResponse })
-        return when (response) {
-            is LoopyApiResponse.Error -> LoopyResult(
-                data = null,
-                result = ResponseResult.ERROR.name,
-                error = ErrorData(code = response.code, message = response.message, data = null)
-            )
-
-            is LoopyApiResponse.Success -> response.data
+        var result: LoopyResult<RoundQuestionResponse>? = LoopyResult(result = null, data = null, error = null)
+        suspend fun retryCall() {
+            surveyService.getSurvey(bundleId).suspendOnSuccess {
+                result = this.data
+            }.suspendOnError {
+                result = this.response.body()
+            }
         }
+
+        surveyService.getSurvey(bundleId).suspendOnSuccess {
+            result = this.data
+        }.suspendOnError {
+            result = this.response.body()
+            if (this.response.code() == 401) {
+                refreshTokenManager.handleTokenRefresh(
+                    retryCall = suspend { retryCall() },
+                    onRefreshFailed = {
+                        result = LoopyResult(result = ResponseResult.REFRESH_FAILED.name, data = null, error = null)
+                    }
+                )
+            }
+        }
+        return result
     }
 
     override suspend fun postSurvey(surveyId: String, body: SurveySubmissionRequest): LoopyResult<Nothing>? {
-        val retryResponse = responseHandler.safeApiCall(apiCall = { surveyService.postSurvey(surveyId, body) },
-            onCompleteTokenRefresh = { null })
-        val response = responseHandler.safeApiCall(apiCall = { surveyService.postSurvey(surveyId, body) },
-            onCompleteTokenRefresh = { retryResponse })
-        return when (response) {
-            is LoopyApiResponse.Error -> LoopyResult(
-                data = null,
-                result = ResponseResult.ERROR.name,
-                error = ErrorData(code = response.code, message = response.message, data = null)
-            )
-
-            is LoopyApiResponse.Success -> response.data
+        var result: LoopyResult<Nothing>? = LoopyResult(result = null, data = null, error = null)
+        suspend fun retryCall() {
+            surveyService.postSurvey(surveyId, body).suspendOnSuccess {
+                result = this.data
+            }.suspendOnError {
+                result = this.response.body()
+            }
         }
+
+        surveyService.postSurvey(surveyId, body).suspendOnSuccess {
+            result = this.data
+        }.suspendOnError {
+            result = this.response.body()
+            if (this.response.code() == 401) {
+                refreshTokenManager.handleTokenRefresh(
+                    retryCall = suspend { retryCall() },
+                    onRefreshFailed = {
+                        result = LoopyResult(result = ResponseResult.REFRESH_FAILED.name, data = null, error = null)
+                    }
+                )
+            }
+        }
+        return result
     }
 
-    override suspend fun getSubmissionsReport(
-        memberId: String,
-        bundleId: String
-    ): LoopyResult<SurveyRecordsResponse>? {
-        val retryResponse = responseHandler.safeApiCall(apiCall = {
-            surveyService.getSubmissionsReport(
-                memberId = memberId,
-                bundleId = bundleId
-            )
-        },
-            onCompleteTokenRefresh = { null })
-        val response = responseHandler.safeApiCall(apiCall = {
-            surveyService.getSubmissionsReport(
-                memberId = memberId,
-                bundleId = bundleId
-            )
-        },
-            onCompleteTokenRefresh = { retryResponse })
-        return when (response) {
-            is LoopyApiResponse.Error -> LoopyResult(
-                data = null,
-                result = ResponseResult.ERROR.name,
-                error = ErrorData(code = response.code, message = response.message, data = null)
-            )
-
-            is LoopyApiResponse.Success -> response.data
+    override suspend fun getSubmissionsReport(memberId: String, bundleId: String): LoopyResult<SurveyRecordsResponse>? {
+        var result: LoopyResult<SurveyRecordsResponse>? = LoopyResult(result = null, data = null, error = null)
+        suspend fun retryCall() {
+            surveyService.getSubmissionsReport(memberId = memberId, bundleId = bundleId).suspendOnSuccess {
+                result = this.data
+            }.suspendOnError {
+                result = this.response.body()
+            }
         }
+
+        surveyService.getSubmissionsReport(memberId = memberId, bundleId = bundleId)
+            .suspendOnSuccess { result = this.data }.suspendOnError {
+                result = this.response.body()
+                if (this.response.code() == 401) {
+                    refreshTokenManager.handleTokenRefresh(
+                        retryCall = suspend { retryCall() },
+                        onRefreshFailed = {
+                            result = LoopyResult(result = ResponseResult.REFRESH_FAILED.name, data = null, error = null)
+                        }
+                    )
+                }
+            }
+        return result
     }
 
     override suspend fun getOnboarding(): LoopyResult<SurveyResponses>? {
-        val retryResponse = responseHandler.safeApiCall(apiCall = {
-            surveyService.getOnboarding()
-        },
-            onCompleteTokenRefresh = { null })
-        val response = responseHandler.safeApiCall(apiCall = {
-            surveyService.getOnboarding()
-        },
-            onCompleteTokenRefresh = { retryResponse })
-        return when (response) {
-            is LoopyApiResponse.Error -> LoopyResult(
-                data = null,
-                result = ResponseResult.ERROR.name,
-                error = ErrorData(code = response.code, message = response.message, data = null)
-            )
-
-            is LoopyApiResponse.Success -> response.data
+        var result: LoopyResult<SurveyResponses>? = LoopyResult(result = null, data = null, error = null)
+        suspend fun retryCall() {
+            surveyService.getOnboarding().suspendOnSuccess {
+                result = this.data
+            }.suspendOnError {
+                result = this.response.body()
+            }
         }
+
+        surveyService.getOnboarding()
+            .suspendOnSuccess { result = this.data }.suspendOnError {
+                result = this.response.body()
+                if (this.response.code() == 401) {
+                    refreshTokenManager.handleTokenRefresh(
+                        retryCall = suspend { retryCall() },
+                        onRefreshFailed = {
+                            result = LoopyResult(result = ResponseResult.REFRESH_FAILED.name, data = null, error = null)
+                        }
+                    )
+                }
+            }
+        return result
     }
 
     override suspend fun postOnboardingAnswers(body: OnboardingSubmissionsInfoRequest): LoopyResult<Nothing>? {
-        val retryResponse = responseHandler.safeApiCall(apiCall = {
-            surveyService.postOnboardingAnswer(body)
-        },
-            onCompleteTokenRefresh = { null })
-        val response = responseHandler.safeApiCall(apiCall = {
-            surveyService.postOnboardingAnswer(body)
-        },
-            onCompleteTokenRefresh = { retryResponse })
-        return when (response) {
-            is LoopyApiResponse.Error -> LoopyResult(
-                data = null,
-                result = ResponseResult.ERROR.name,
-                error = ErrorData(code = response.code, message = response.message, data = null)
-            )
-
-            is LoopyApiResponse.Success -> response.data
+        var result: LoopyResult<Nothing>? = LoopyResult(result = null, data = null, error = null)
+        suspend fun retryCall() {
+            surveyService.postOnboardingAnswer(body).suspendOnSuccess {
+                result = this.data
+            }.suspendOnError {
+                result = this.response.body()
+            }
         }
+
+        surveyService.postOnboardingAnswer(body)
+            .suspendOnSuccess { result = this.data }.suspendOnError {
+                result = this.response.body()
+                if (this.response.code() == 401) {
+                    refreshTokenManager.handleTokenRefresh(
+                        retryCall = suspend { retryCall() },
+                        onRefreshFailed = {
+                            result = LoopyResult(result = ResponseResult.REFRESH_FAILED.name, data = null, error = null)
+                        }
+                    )
+                }
+            }
+        return result
     }
 }

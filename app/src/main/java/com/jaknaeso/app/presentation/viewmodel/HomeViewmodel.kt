@@ -93,7 +93,7 @@ class HomeViewmodel @Inject constructor(
         }
     }
 
-    fun handleQuestionState(questionState: QuestionState, questionIndex:String) {
+    fun handleQuestionState(questionState: QuestionState, questionIndex: String) {
         when (questionState) {
             QuestionState.FUTURE -> setEffect(HomeEffect.ShowSnackbar)
             QuestionState.TODAY_LOCKED -> setEffect(

@@ -8,6 +8,8 @@ import com.jaknaeso.app.data.service.LoginService
 import com.jaknaeso.app.data.token.TokenManager
 import com.skydoves.sandwich.ApiResponse
 import com.skydoves.sandwich.adapters.ApiResponseCallAdapterFactory
+import com.skydoves.sandwich.suspendOnError
+import com.skydoves.sandwich.suspendOnSuccess
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -29,6 +31,21 @@ class RefreshTokenManagerImpl @Inject constructor(private val tokenManager: Toke
     private val okHttp =
         OkHttpClient.Builder().connectTimeout(60, TimeUnit.SECONDS).addInterceptor(httpLoggingInterceptor)
             .readTimeout(60, TimeUnit.SECONDS).build()
+
+    override suspend fun handleTokenRefresh(
+        retryCall: suspend () -> Unit,
+        onRefreshFailed: () -> Unit
+    ) {
+        refreshTokens().suspendOnSuccess {
+            saveRefreshTokens(
+                accessToken = this.data.data?.tokenInfo!!.accessToken,
+                refreshToken = this.data.data?.tokenInfo!!.refreshToken
+            )
+            retryCall()
+        }.suspendOnError {
+            onRefreshFailed()
+        }
+    }
 
     override suspend fun refreshTokens(): ApiResponse<LoopyResult<MemberTokenResponse>> {
         val response =

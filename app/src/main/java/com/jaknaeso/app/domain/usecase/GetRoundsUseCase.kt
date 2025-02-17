@@ -15,12 +15,11 @@ class GetRoundsUseCase @Inject constructor(
 ) {
     val ROUNDS = 15
 
-    suspend operator fun invoke(): Flow<RoundBundle> {
-        val data = surveyRepository.getSurveysHistory()
-
+    operator fun invoke(): Flow<RoundBundle> {
         return flow {
+            val data = surveyRepository.getSurveysHistory()
             if (data?.result == ResponseResult.ERROR.name) {
-                throw Exception(data?.error?.message)
+                throw Exception(data.error?.message)
             }
 
             val surveyData = data?.data ?: return@flow
