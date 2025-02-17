@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
             SetUpNavGraph(
                 navController = navHostController,
-                startDestination = Route.Login.name,
+                startDestination = Route.Home.name,
             )
         }
     }
