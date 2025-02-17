@@ -28,6 +28,8 @@ class GetCharacterUseCase @Inject constructor(
                     } ?: emptyList()
                     emit(result)
                 }
+            } else {
+                throw Exception("memberId를 찾을 수 없습니다.")
             }
         }
     }
