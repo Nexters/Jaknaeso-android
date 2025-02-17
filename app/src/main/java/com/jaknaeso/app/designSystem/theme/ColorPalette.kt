@@ -11,6 +11,7 @@ object ColorPalette {
     val PrimaryBlue200 = Color(0xFFBFD2FF)
     val PrimaryBlue100 = Color(0xFFDBE6FF)
     val Kakao = Color(0xFFfee500)
+    val Neautral950 = Color(0xFF292929)
     val Neautral900 = Color(0xFF222329)
     val Neautral800 = Color(0xFF444953)
     val Neautral700 = Color(0xFF676B75)
@@ -24,4 +25,5 @@ object ColorPalette {
     val Neautral0 = Color(0xFFF7F7F7)
     val Red = Color(0xFFF03E3E)
     val GlassBlack = Color(0xFF444953)
+    val ModalBackground = Color.Black.copy(alpha = 0.5f)
 }
