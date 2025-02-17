@@ -7,6 +7,7 @@ import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.data.entity.response.MemberResponse
 import com.jaknaeso.app.data.service.MemberService
 import com.jaknaeso.app.data.token.TokenManager
+import com.skydoves.sandwich.exceptions.NoContentException
 import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnSuccess
 import javax.inject.Inject
@@ -18,53 +19,66 @@ class MemberDatastoreImpl @Inject constructor(
 ) : MemberDatastore {
     override suspend fun getMember(memberId: String): LoopyResult<MemberResponse>? {
         var result: LoopyResult<MemberResponse>? = LoopyResult(result = null, data = null, error = null)
-        suspend fun retryCall() {
+        try {
+            suspend fun retryCall() {
+                memberService.getMember(memberId).suspendOnSuccess {
+                    result = this.data
+                }.suspendOnError {
+                    result = this.response.body()
+                }
+            }
+
             memberService.getMember(memberId).suspendOnSuccess {
                 result = this.data
             }.suspendOnError {
                 result = this.response.body()
+                if (this.response.code() == 401) {
+                    refreshTokenManager.handleTokenRefresh(
+                        retryCall = suspend { retryCall() },
+                        onRefreshFailed = {
+                            result = LoopyResult(result = ResponseResult.REFRESH_FAILED.name, data = null, error = null)
+                        }
+                    )
+                }
             }
-        }
-
-        memberService.getMember(memberId).suspendOnSuccess {
-            result = this.data
-        }.suspendOnError {
-            result = this.response.body()
-            if (this.response.code() == 401) {
-                refreshTokenManager.handleTokenRefresh(
-                    retryCall = suspend { retryCall() },
-                    onRefreshFailed = {
-                        result = LoopyResult(result = ResponseResult.REFRESH_FAILED.name, data = null, error = null)
-                    }
-                )
-            }
+        } catch (e: NoContentException) {
+            result = LoopyResult(result = ResponseResult.SUCCESS.name, null, null)
         }
         return result
     }
 
     override suspend fun deleteMember(memberId: String): LoopyResult<Nothing?>? {
         var result: LoopyResult<Nothing?>? = LoopyResult(result = null, data = null, error = null)
-        suspend fun retryCall() {
+        try {
+            suspend fun retryCall() {
+                memberService.deleteMember(memberId).suspendOnSuccess {
+                    result = this.data
+                }.suspendOnError {
+                    result = this.response.body()
+                }
+            }
+
             memberService.deleteMember(memberId).suspendOnSuccess {
-                result = this.data
+                try {
+                    result = this.data
+                } catch (e: NoContentException) {
+                    LoopyResult(result = ResponseResult.SUCCESS.name, data = null, error = null)
+                }
             }.suspendOnError {
                 result = this.response.body()
+                if (this.response.code() == 401) {
+                    refreshTokenManager.handleTokenRefresh(
+                        retryCall = suspend { retryCall() },
+                        onRefreshFailed = {
+                            result = LoopyResult(result = ResponseResult.REFRESH_FAILED.name, data = null, error = null)
+                        }
+                    )
+                }
             }
+        } catch (e: NoContentException) {
+            result = LoopyResult(result = ResponseResult.SUCCESS.name, null, null)
         }
 
-        memberService.deleteMember(memberId).suspendOnSuccess {
-            result = this.data
-        }.suspendOnError {
-            result = this.response.body()
-            if (this.response.code() == 401) {
-                refreshTokenManager.handleTokenRefresh(
-                    retryCall = suspend { retryCall() },
-                    onRefreshFailed = {
-                        result = LoopyResult(result = ResponseResult.REFRESH_FAILED.name, data = null, error = null)
-                    }
-                )
-            }
-        }
         return result
     }
 
