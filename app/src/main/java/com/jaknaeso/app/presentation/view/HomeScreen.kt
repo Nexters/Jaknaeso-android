@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun HomeScreen(
+    navigateToLogin: () -> Unit,
     navigateToReport: (bundleId: String, surveyIndex: String) -> Unit,
     navigateToProfile: () -> Unit,
     navigateToBalanceRound: (bundleIndex: String, remainingRounds: String) -> Unit,
@@ -57,6 +58,7 @@ fun HomeScreen(
                 )
 
                 is HomeEffect.NavigateToRoundHistory -> navigateToReport(effect.bundleIndex, effect.surveyIndex)
+                HomeEffect.NavigateToLogin -> navigateToLogin()
             }
         }
     }

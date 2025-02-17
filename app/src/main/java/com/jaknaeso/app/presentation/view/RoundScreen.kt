@@ -23,6 +23,7 @@ import com.jaknaeso.app.presentation.viewmodel.RoundViewmodel
 
 @Composable
 fun RoundScreen(
+    navigateToLogin: () -> Unit,
     navigateToRoundComplete: () -> Unit,
     navigateToBack: () -> Unit,
     bundleIndex: String,
@@ -40,6 +41,7 @@ fun RoundScreen(
                 RoundEffect.NavigateToBalanceRoundComplete -> navigateToRoundComplete()
                 RoundEffect.OpenModal -> isModalExpanded = true
                 RoundEffect.CloseModal -> isModalExpanded = false
+                RoundEffect.NavigateToLogin -> navigateToLogin()
             }
         }
     }

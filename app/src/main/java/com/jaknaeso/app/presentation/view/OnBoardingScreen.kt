@@ -34,7 +34,11 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun OnBoardingScreen(navigateToHome: () -> Unit, viewmodel: OnBoardingViewmodel = hiltViewModel()) {
+fun OnBoardingScreen(
+    navigateToLogin: () -> Unit,
+    navigateToHome: () -> Unit,
+    viewmodel: OnBoardingViewmodel = hiltViewModel()
+) {
     val scope = rememberCoroutineScope()
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(pageCount = { uiState.pageCount })
@@ -50,6 +54,7 @@ fun OnBoardingScreen(navigateToHome: () -> Unit, viewmodel: OnBoardingViewmodel 
         viewmodel.effects.collect { effect ->
             when (effect) {
                 OnBoardingEffect.NavigateToHome -> navigateToHome()
+                OnBoardingEffect.NavigateToLogin -> navigateToLogin()
             }
         }
     }

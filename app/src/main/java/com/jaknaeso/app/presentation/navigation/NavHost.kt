@@ -17,18 +17,24 @@ fun SetUpNavGraph(
             navigateToHome = navController::navigateToHome,
             navigateToOnboarding = navController::navigateToOnboarding
         )
-        onboardingScreen(navigateToHome = navController::navigateToHome)
+        onboardingScreen(
+            navigateToLogin = navController::navigateToLogin,
+            navigateToHome = navController::navigateToHome
+        )
         homeScreen(
+            navigateToLogin = navController::navigateToLogin,
             navigateToReport = navController::navigateToReport,
             navigateToProfile = navController::navigateToProfile,
             navigateToBalanceRound = navController::navigateToRound
         )
         roundScreen(
+            navigateToLogin = navController::navigateToLogin,
             navigateToBack = navController::popBackStack,
             navigateToBalanceRoundComplete = navController::navigateToRoundComplete
         )
         RoundCompleteScreen(navigateToHome = navController::navigateToHome)
         reportScreen(
+            navigateToLogin = navController::navigateToLogin,
             navigateToHome = navController::navigateToHome,
             navigateToProfile = navController::navigateToProfile
         )

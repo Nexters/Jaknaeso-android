@@ -31,13 +31,14 @@ fun NavGraphBuilder.loginScreen(navigateToHome: () -> Unit, navigateToOnboarding
     }
 }
 
-fun NavGraphBuilder.onboardingScreen(navigateToHome: () -> Unit) {
+fun NavGraphBuilder.onboardingScreen(navigateToHome: () -> Unit, navigateToLogin: () -> Unit) {
     composable(route = "${Route.Onboarding}") {
-        OnBoardingScreen(navigateToHome = navigateToHome)
+        OnBoardingScreen(navigateToHome = navigateToHome, navigateToLogin = navigateToLogin)
     }
 }
 
 fun NavGraphBuilder.homeScreen(
+    navigateToLogin: () -> Unit,
     navigateToReport: (bundleId: String, surveyIndex: String) -> Unit,
     navigateToProfile: () -> Unit,
     navigateToBalanceRound: (roundIndex: String, remaingRounds: String) -> Unit
@@ -46,12 +47,14 @@ fun NavGraphBuilder.homeScreen(
         HomeScreen(
             navigateToReport = navigateToReport,
             navigateToProfile = navigateToProfile,
-            navigateToBalanceRound = navigateToBalanceRound
+            navigateToBalanceRound = navigateToBalanceRound,
+            navigateToLogin = navigateToLogin
         )
     }
 }
 
 fun NavGraphBuilder.roundScreen(
+    navigateToLogin: () -> Unit,
     navigateToBack: () -> Unit,
     navigateToBalanceRoundComplete: (remaingRounds: String) -> Unit,
 ) {
@@ -68,6 +71,7 @@ fun NavGraphBuilder.roundScreen(
                 navigateToRoundComplete = { navigateToBalanceRoundComplete(remainingRounds) },
                 navigateToBack = navigateToBack,
                 bundleIndex = bundleId,
+                navigateToLogin = navigateToLogin
             )
         } else {
             ErrorInfoView(title = "오류가 발생했어요!", message = "일시적인 오류가 발생했어요.\n화면을 새로고침 해주세요.", {}, {})
@@ -93,6 +97,7 @@ fun NavGraphBuilder.RoundCompleteScreen(navigateToHome: () -> Unit) {
 }
 
 fun NavGraphBuilder.reportScreen(
+    navigateToLogin: () -> Unit,
     navigateToHome: () -> Unit,
     navigateToProfile: () -> Unit,
 ) {
@@ -107,6 +112,7 @@ fun NavGraphBuilder.reportScreen(
         if (surveyIndex != null) { //나의 답변 모아보기의 회차를 포커싱해주기
             if (surveyIndex == NO_SURVEY_INDEX) {
                 ReportScreen(
+                    navigateToLogin = navigateToLogin,
                     navigateToHome = navigateToHome,
                     navigateToProfile = navigateToProfile,
                     bundleId = NO_BUNDLE_ID,
@@ -114,6 +120,7 @@ fun NavGraphBuilder.reportScreen(
                 )
             } else if (bundleId != null) {
                 ReportScreen(
+                    navigateToLogin = navigateToLogin,
                     navigateToHome = navigateToHome,
                     navigateToProfile = navigateToProfile,
                     bundleId = bundleId,

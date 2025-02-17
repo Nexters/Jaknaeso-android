@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ReportScreen(
+    navigateToLogin: () -> Unit,
     navigateToHome: () -> Unit,
     navigateToProfile: () -> Unit,
     viewmodel: ReportViewmodel = hiltViewModel(),
@@ -64,6 +65,7 @@ fun ReportScreen(
             when (effect) {
                 ReportEffect.NavigateToHome -> navigateToHome()
                 ReportEffect.NavigateToProfile -> navigateToProfile()
+                ReportEffect.NavigateToLogin -> navigateToLogin()
             }
         }
     }

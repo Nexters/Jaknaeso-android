@@ -16,6 +16,8 @@ import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
 fun RoundCompleteScreen(navigateToHome: () -> Unit, remaingRounds: Int) {
+
+
     Box(Modifier.fillMaxSize().background(color = Color.White).padding(horizontal = 20.dp)) {
         Column(
             Modifier.fillMaxSize(),
