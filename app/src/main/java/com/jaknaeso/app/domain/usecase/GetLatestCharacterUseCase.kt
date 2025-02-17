@@ -2,6 +2,7 @@ package com.jaknaeso.app.domain.usecase
 
 import com.jaknaeso.app.R
 import com.jaknaeso.app.data.entity.ResponseResult
+import com.jaknaeso.app.domain.model.CharacterType
 import com.jaknaeso.app.domain.model.LatestCharacterBrief
 import com.jaknaeso.app.domain.repository.CharacterRepository
 import com.jaknaeso.app.domain.repository.MemberRepository
@@ -27,8 +28,8 @@ class GetLatestCharacterUseCase @Inject constructor(
                     emit(
                         LatestCharacterBrief(
                             characterNo = response?.data?.characterNo ?: "",
-                            characterType = response?.data?.characterType ?: "",
-                            lottieRawFile = R.raw.balance //임시
+                            characterName = response?.data?.name ?: "",
+                            lottieRawFile = mapCharacterTypeToLottieRawFile(response?.data?.characterType!!)
                         )
                     )
                 }
@@ -38,7 +39,16 @@ class GetLatestCharacterUseCase @Inject constructor(
         }
     }
 
-    fun mapCharacterTypeToLottieRawFile(characterType: String) {
-
+    fun mapCharacterTypeToLottieRawFile(characterType: String): Int {
+        return when (characterType) {
+            CharacterType.SUCCESS.name -> R.raw.success
+            CharacterType.SELF_DIRECTION.name -> R.raw.self_direction
+            CharacterType.SECURITY.name -> R.raw.security
+            CharacterType.ADVENTURE.name -> R.raw.adventure
+            CharacterType.STABILITY.name -> R.raw.stability
+            CharacterType.BENEVOLENCE.name -> R.raw.benevolence
+            CharacterType.UNIVERSALISM.name -> R.raw.universalism
+            else -> R.raw.warning
+        }
     }
 }
