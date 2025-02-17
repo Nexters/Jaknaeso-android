@@ -67,7 +67,7 @@ fun HomeScreen(
         Column(modifier = Modifier.fillMaxSize().background(color = ColorPalette.Neautral50)) { }
     } else {
         if (uiState.isLoading) {
-            Text(text = "로딩중 임시화면", style = TextStyles.title02, modifier = Modifier.fillMaxSize(1f))
+            LoopyLoadingScreen()
         }
         Scaffold(
             modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral50),

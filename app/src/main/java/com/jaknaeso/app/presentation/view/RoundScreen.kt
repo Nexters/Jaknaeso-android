@@ -46,9 +46,6 @@ fun RoundScreen(
         }
     }
 
-    if (uiState.value.isLoading) {
-        Text(text = "로딩중 임시화면", style = TextStyles.title02, modifier = Modifier.fillMaxSize(1f))
-    }
     if (uiState.value.isError) {
         ErrorInfoView(
             title = "오류가 발생했어요!",
@@ -56,6 +53,9 @@ fun RoundScreen(
             onClickReLoad = {},
             onClickHome = {})
     } else {
+        if (uiState.value.isLoading) {
+            LoopyLoadingScreen()
+        }
         if (uiState.value.isBalanceRound) {
             BalanceRoundScreen(
                 question = uiState.value.question,

@@ -18,10 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jaknaeso.app.R
-import com.jaknaeso.app.designSystem.component.ErrorInfoView
-import com.jaknaeso.app.designSystem.component.LoopyFilledButton
-import com.jaknaeso.app.designSystem.component.LottieImageView
-import com.jaknaeso.app.designSystem.component.VerticalSliderForm
+import com.jaknaeso.app.designSystem.component.*
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.domain.model.Option
@@ -64,6 +61,9 @@ fun OnBoardingScreen(
     if (uiState.isError) {
         ErrorInfoView("에러 발생", "불편을 끼쳐죄송", {}, {})
     } else {
+        if (uiState.isLoading) {
+            LoopyLoadingScreen()
+        }
         Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
             HorizontalPager(
                 state = pagerState,
