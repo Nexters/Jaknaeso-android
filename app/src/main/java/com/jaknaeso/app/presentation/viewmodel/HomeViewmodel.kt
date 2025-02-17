@@ -6,7 +6,7 @@ import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.domain.Result
 import com.jaknaeso.app.domain.asResult
 import com.jaknaeso.app.domain.model.QuestionState
-import com.jaknaeso.app.domain.usecase.GetLatestCharacterUseCase
+import com.jaknaeso.app.domain.usecase.GetBriefLatestCharacterUseCase
 import com.jaknaeso.app.domain.usecase.GetRoundsUseCase
 import com.jaknaeso.app.presentation.contract.HomeEffect
 import com.jaknaeso.app.presentation.contract.HomeEvent
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewmodel @Inject constructor(
     private val getRoundsUseCase: GetRoundsUseCase,
-    private val getLatestCharacterUseCase: GetLatestCharacterUseCase
+    private val getLatestCharacterUseCase: GetBriefLatestCharacterUseCase
 ) :
     BaseViewModel<HomeEvent, HomeState, HomeEffect>() {
 
@@ -87,9 +87,10 @@ class HomeViewmodel @Inject constructor(
                 is Result.Success -> {
                     setState {
                         copy(
-                            characterNo = it.data.characterNo,
-                            characterName = it.data.characterName,
-                            lottieRawFile = it.data.lottieRawFile
+                            characterNo = it.data.characterNo ?: "",
+                            characterName = it.data.characterName ?: "",
+                            lottieRawFile = it.data.lottieRawFile,
+                            characterId = it.data.characterId
                         )
                     }
                 }
@@ -110,14 +111,16 @@ class HomeViewmodel @Inject constructor(
             QuestionState.PAST -> setEffect(
                 HomeEffect.NavigateToRoundHistory(
                     currentState.bundleId.toString(),
-                    questionIndex
+                    questionIndex,
+                    currentState.characterId.toString()
                 )
             )
 
             QuestionState.TODAY_COMPLETED -> setEffect(
                 HomeEffect.NavigateToRoundHistory(
                     currentState.bundleId.toString(),
-                    questionIndex
+                    questionIndex,
+                    currentState.characterId.toString()
                 )
             )
         }

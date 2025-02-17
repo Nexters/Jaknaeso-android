@@ -27,17 +27,14 @@ import com.jaknaeso.app.domain.model.QuestionState
 import com.jaknaeso.app.domain.model.Round
 import com.jaknaeso.app.presentation.contract.HomeEffect
 import com.jaknaeso.app.presentation.contract.HomeEvent
-import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
-import com.jaknaeso.app.presentation.navigation.NO_BUNDLE_ID
-import com.jaknaeso.app.presentation.navigation.NO_SURVEY_INDEX
-import com.jaknaeso.app.presentation.navigation.Route
+import com.jaknaeso.app.presentation.navigation.*
 import com.jaknaeso.app.presentation.viewmodel.HomeViewmodel
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun HomeScreen(
     navigateToLogin: () -> Unit,
-    navigateToReport: (bundleId: String, surveyIndex: String) -> Unit,
+    navigateToReport: (bundleId: String, surveyIndex: String, characterId: String) -> Unit,
     navigateToProfile: () -> Unit,
     navigateToBalanceRound: (bundleIndex: String, remainingRounds: String) -> Unit,
     viewmodel: HomeViewmodel = hiltViewModel(),
@@ -57,7 +54,12 @@ fun HomeScreen(
                     duration = SnackbarDuration.Short
                 )
 
-                is HomeEffect.NavigateToRoundHistory -> navigateToReport(effect.bundleIndex, effect.surveyIndex)
+                is HomeEffect.NavigateToRoundHistory -> navigateToReport(
+                    effect.bundleIndex,
+                    effect.surveyIndex,
+                    effect.characterId
+                )
+
                 HomeEffect.NavigateToLogin -> navigateToLogin()
             }
         }
@@ -74,7 +76,13 @@ fun HomeScreen(
             bottomBar = {
                 LoopyBottomNavBar(
                     navigateToHome = {},
-                    navigateToReport = { navigateToReport(NO_BUNDLE_ID, NO_SURVEY_INDEX) }, //캐릭터 분석으로 넘어감
+                    navigateToReport = {
+                        navigateToReport(
+                            NO_BUNDLE_ID,
+                            NO_SURVEY_INDEX,
+                            NO_CHARACTER_ID
+                        )
+                    }, //캐릭터 분석으로 넘어감
                     navigateToProfile = navigateToProfile,
                     currentRoute = Route.Home
                 )

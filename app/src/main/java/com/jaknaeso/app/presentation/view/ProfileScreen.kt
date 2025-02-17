@@ -24,17 +24,14 @@ import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.presentation.contract.ProfileEffect
 import com.jaknaeso.app.presentation.contract.ProfileEvent
-import com.jaknaeso.app.presentation.navigation.LoopyBottomNavBar
-import com.jaknaeso.app.presentation.navigation.NO_BUNDLE_ID
-import com.jaknaeso.app.presentation.navigation.NO_SURVEY_INDEX
-import com.jaknaeso.app.presentation.navigation.Route
+import com.jaknaeso.app.presentation.navigation.*
 import com.jaknaeso.app.presentation.viewmodel.ProfileViewmodel
 
 @Composable
 fun ProfileScreen(
     navigateToHome: () -> Unit,
     navigateToLogin: () -> Unit,
-    navigateToReport: (bundleIndex: String, surveyIndex: String) -> Unit,
+    navigateToReport: (bundleIndex: String, surveyIndex: String, characterId: String) -> Unit,
     viewModel: ProfileViewmodel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -67,7 +64,7 @@ fun ProfileScreen(
                     bottomNavigation = {
                         LoopyBottomNavBar(
                             navigateToHome = { navigateToHome() },
-                            navigateToReport = { navigateToReport(NO_BUNDLE_ID, NO_SURVEY_INDEX) },
+                            navigateToReport = { navigateToReport(NO_BUNDLE_ID, NO_SURVEY_INDEX, NO_CHARACTER_ID) },
                             navigateToProfile = { },
                             currentRoute = Route.Profile
                         )

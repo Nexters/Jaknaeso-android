@@ -10,14 +10,15 @@ import com.jaknaeso.app.presentation.view.*
 
 val NO_SURVEY_INDEX = "NO_SURVEY_INDEX"
 val NO_BUNDLE_ID = "NO_BUNDLE_ID"
+val NO_CHARACTER_ID = "NO_CHARACTER_ID"
 
 fun NavController.navigateToLogin() = navigate("${Route.Login}")
 fun NavController.navigateToHome() = navigate("${Route.Home}")
 fun NavController.navigateToRound(bundleId: String, remainingRounds: String) =
     navigate("${Route.Round}/${bundleId}/${remainingRounds}")
 
-fun NavController.navigateToReport(bundleId: String, surveyIndex: String) =
-    navigate("${Route.Report}/${bundleId}/${surveyIndex}")
+fun NavController.navigateToReport(bundleId: String, surveyIndex: String, characterId: String) =
+    navigate("${Route.Report}/${bundleId}/${surveyIndex}/${characterId}")
 
 fun NavController.navigateToProfile() = navigate("${Route.Profile}")
 fun NavController.navigateToRoundComplete(remainingRounds: String) =
@@ -39,7 +40,7 @@ fun NavGraphBuilder.onboardingScreen(navigateToHome: () -> Unit, navigateToLogin
 
 fun NavGraphBuilder.homeScreen(
     navigateToLogin: () -> Unit,
-    navigateToReport: (bundleId: String, surveyIndex: String) -> Unit,
+    navigateToReport: (bundleId: String, surveyIndex: String, characterId: String) -> Unit,
     navigateToProfile: () -> Unit,
     navigateToBalanceRound: (roundIndex: String, remaingRounds: String) -> Unit
 ) {
@@ -102,13 +103,16 @@ fun NavGraphBuilder.reportScreen(
     navigateToProfile: () -> Unit,
 ) {
     composable(
-        route = "${Route.Report}/{bundleId}/{surveyIndex}",
+        route = "${Route.Report}/{bundleId}/{surveyIndex}/{characterId}",
         arguments = listOf(
             navArgument("bundleId") { type = NavType.StringType },
-            navArgument("surveyIndex") { type = NavType.StringType })
+            navArgument("surveyIndex") { type = NavType.StringType },
+            navArgument("characterId") { type = NavType.StringType })
     ) {
         val bundleId = it.arguments?.getString("bundleId")
         val surveyIndex = it.arguments?.getString("surveyIndex")
+        val characterId = it.arguments?.getString("characterId")
+
         if (surveyIndex != null) { //나의 답변 모아보기의 회차를 포커싱해주기
             if (surveyIndex == NO_SURVEY_INDEX) {
                 ReportScreen(
@@ -116,15 +120,17 @@ fun NavGraphBuilder.reportScreen(
                     navigateToHome = navigateToHome,
                     navigateToProfile = navigateToProfile,
                     bundleId = NO_BUNDLE_ID,
-                    surveyIndex = surveyIndex
+                    surveyIndex = NO_SURVEY_INDEX,
+                    characterId = NO_CHARACTER_ID
                 )
-            } else if (bundleId != null) {
+            } else if (bundleId != null && characterId != null) {
                 ReportScreen(
                     navigateToLogin = navigateToLogin,
                     navigateToHome = navigateToHome,
                     navigateToProfile = navigateToProfile,
                     bundleId = bundleId,
-                    surveyIndex = surveyIndex
+                    surveyIndex = surveyIndex,
+                    characterId = characterId
                 )
             } else {
                 ErrorInfoView(title = "오류가 발생했어요!", message = "일시적인 오류가 발생했어요.\n화면을 새로고침 해주세요.", {}, {})
@@ -135,7 +141,7 @@ fun NavGraphBuilder.reportScreen(
 
 fun NavGraphBuilder.profileScreen(
     navigateToHome: () -> Unit,
-    navigateToReport: (bundleId: String, surveyIndex: String) -> Unit,
+    navigateToReport: (bundleId: String, surveyIndex: String, characterId: String) -> Unit,
     navigateToLogin: () -> Unit
 ) {
     composable(route = "${Route.Profile}") {

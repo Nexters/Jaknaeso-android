@@ -4,7 +4,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -18,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,6 +27,7 @@ import com.jaknaeso.app.designSystem.component.*
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.domain.model.Character
+import com.jaknaeso.app.domain.model.CharacterReport
 import com.jaknaeso.app.domain.model.RoundResult
 import com.jaknaeso.app.presentation.contract.ReportEffect
 import com.jaknaeso.app.presentation.contract.ReportEvent
@@ -46,6 +47,7 @@ fun ReportScreen(
     navigateToProfile: () -> Unit,
     viewmodel: ReportViewmodel = hiltViewModel(),
     bundleId: String,
+    characterId: String,
     surveyIndex: String
 ) {
     val initialTabPage by remember { mutableStateOf(if (surveyIndex != NO_SURVEY_INDEX && bundleId != NO_BUNDLE_ID) 1 else 0) }
@@ -59,7 +61,7 @@ fun ReportScreen(
             viewmodel.handleEvent(ReportEvent.GetInitialData)
         } else {
             pagerState.animateScrollToPage(1)
-            viewmodel.handleEvent(ReportEvent.GetParticularBundle(bundleId))
+            viewmodel.handleEvent(ReportEvent.GetParticularBundle(bundleId, characterId = characterId))
         }
         viewmodel.effects.collectLatest { effect ->
             when (effect) {
@@ -69,7 +71,6 @@ fun ReportScreen(
             }
         }
     }
-
     Scaffold(
         modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral0),
         bottomBar = {
@@ -81,10 +82,9 @@ fun ReportScreen(
             )
         },
         content = { paddingValues ->
-            Column(
-                modifier = Modifier
-                    .background(color = ColorPalette.Neautral0).fillMaxSize(1f).padding(paddingValues),
-                verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
                 if (isModalExpanded) {
                     BasicBottomSheet(
@@ -93,15 +93,25 @@ fun ReportScreen(
                     ) {
                         CharacterSelectModalContent(
                             onModalTitleClick = { isModalExpanded = false },
-                            onSelectionChanged = { bundleId: Int, selectedValue: String ->
+                            onSelectionChanged = { characterNo, characterId, bundleId ->
                                 viewmodel.handleEvent(
-                                    ReportEvent.SelectCharacterBundle(bundleId.toString(), selectedValue)
+                                    ReportEvent.SelectCharacterBundle(
+                                        characterNo = characterNo,
+                                        characterId = characterId.toString(),
+                                        bundleId = bundleId.toString()
+                                    )
                                 )
                             },
                             characters = uistate.value.characters
                         )
                     }
                 }
+            }
+            Column(
+                modifier = Modifier
+                    .background(color = ColorPalette.Neautral0).fillMaxSize(1f).padding(paddingValues),
+                verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start
+            ) {
                 Spacer(Modifier.fillMaxWidth().height(54.dp))
                 Column(Modifier.padding(horizontal = 20.dp)) {
                     LoopyAssistChip(
@@ -126,7 +136,7 @@ fun ReportScreen(
                     })
                 HorizontalPager(state = pagerState, userScrollEnabled = false) { page ->
                     when (page) {
-                        0 -> CharacterAnalysisView()
+                        0 -> CharacterAnalysisView(report = uistate.value.report, uistate.value.submissionsResult)
                         1 -> MyAnswersView(uistate.value.submissionsResult, surveyIndex)
                     }
                 }
@@ -138,7 +148,7 @@ fun ReportScreen(
 @Composable
 fun CharacterSelectModalContent(
     onModalTitleClick: () -> Unit,
-    onSelectionChanged: (bundleId: Int, selectedValue: String) -> Unit,
+    onSelectionChanged: (characterNo: String, characterId: Int, bundleId: Int) -> Unit,
     characters: List<Character>
 ) {
     Column(
@@ -166,14 +176,20 @@ fun CharacterSelectModalContent(
         }
         RadioButtons(
             characters = characters,
-            onChanged = { index, selectedValue -> onSelectionChanged(characters[index].bundleId, selectedValue) })
+            onChanged = { characterNo, characterId, bundleId ->
+                onSelectionChanged(
+                    characterNo,
+                    characterId,
+                    bundleId
+                )
+            })
     }
 }
 
 @Composable
 fun RadioButtons(
     characters: List<Character>,
-    onChanged: (index: Int, selectedValue: String) -> Unit,
+    onChanged: (characterNo: String, characterId: Int, bundleId: Int) -> Unit,
 ) {
     var selectedIndex by remember { mutableStateOf(-1) } // 하나만 선택 가능하도록 변경
 
@@ -181,12 +197,12 @@ fun RadioButtons(
         itemsIndexed(characters) { index, item ->
             SelectionFilterChip(
                 isSelected = (index == selectedIndex),
-                label = { Text(text = "${item.characterNo} 캐릭터", style = TextStyles.subTitle01) },
+                label = { Text(text = "${item.characterNo}", style = TextStyles.subTitle01) },
                 shape = RoundedCornerShape(10.dp),
                 onClick = { isSelected ->
                     if (!isSelected) { // 선택되지 않은 경우만 변경
                         selectedIndex = index
-                        onChanged(index, "${item.characterNo}번째 캐릭터") // 선택 변경 이벤트 전달
+                        onChanged(item.characterNo, item.characterId, item.bundleId) // 선택 변경 이벤트 전달
                     }
                 },
                 trailingIcon = painterResource(R.drawable.ic_check),
@@ -200,7 +216,7 @@ fun RadioButtons(
 }
 
 @Composable
-fun CharacterAnalysisView() {
+fun CharacterAnalysisView(report: CharacterReport, submissionResults: List<RoundResult>) {
     Column(
         modifier = Modifier
             .background(color = ColorPalette.Neautral0).fillMaxSize()
@@ -218,9 +234,9 @@ fun CharacterAnalysisView() {
                         verticalArrangement = Arrangement.Center,
                         modifier = Modifier.padding(bottom = 40.dp).padding(horizontal = 20.dp)
                     ) {
-                        LottieImageView(null)
+                        LottieImageView(report.lottieRawFile, width = 280.dp, height = 280.dp)
                         Text(
-                            text = "{valueType}",
+                            text = report.name ?: "",
                             style = TextStyles.title03,
                             color = Color.Black,
                             modifier = Modifier.padding(top = 16.dp, bottom = 12.dp),
@@ -228,7 +244,7 @@ fun CharacterAnalysisView() {
                         )
                         LoopySuggestionChip(
                             enabled = false,
-                            label = "24.01.02 - 24.04.02",
+                            label = report.duration ?: "",
                             labelStyle = TextStyles.body02,
                             filledColor = ColorPalette.Neautral200,
                             labelColor = ColorPalette.Neautral700,
@@ -236,12 +252,31 @@ fun CharacterAnalysisView() {
                             height = 26.dp
                         )
                         Text(
-                            "캐릭터 설명을 최대 두줄, 간결하게 작성해주세요. 캐릭터 설명을 최대 두줄, 간결하게 작성해주세요",
+                            report.description ?: "",
                             style = TextStyles.subTitle04,
                             color = ColorPalette.Neautral700,
-                            modifier = Modifier.padding(top = 12.dp),
-                            softWrap = true
+                            modifier = Modifier.padding(top = 12.dp).padding(horizontal = 60.dp),
+                            softWrap = true,
+                            textAlign = TextAlign.Center
                         )
+                    }
+                    Spacer(
+                        modifier = Modifier.fillMaxWidth().height(1.dp).background(color = ColorPalette.Neautral300)
+                    )
+                    Column(Modifier.padding(horizontal = 20.dp).padding(top = 48.dp, bottom = 46.dp)) {
+                        DotBoard(titleContent = "주요 특징", contents = report.mainTraits)
+                    }
+                    Spacer(
+                        modifier = Modifier.fillMaxWidth().height(1.dp).background(color = ColorPalette.Neautral300)
+                    )
+                    Column(Modifier.padding(horizontal = 20.dp).padding(top = 48.dp, bottom = 46.dp)) {
+                        DotBoard(titleContent = "강점", contents = report.strengths)
+                    }
+                    Spacer(
+                        modifier = Modifier.fillMaxWidth().height(1.dp).background(color = ColorPalette.Neautral300)
+                    )
+                    Column(Modifier.padding(horizontal = 20.dp).padding(top = 48.dp, bottom = 46.dp)) {
+                        DotBoard(titleContent = "단점", contents = report.weaknesses)
                     }
                     Spacer(
                         modifier = Modifier.fillMaxWidth().height(1.dp).background(color = ColorPalette.Neautral300)
@@ -287,83 +322,97 @@ fun CharacterAnalysisView() {
                     }
                 }
             }
-            items(items = listOf(0, 1, 2, 3)) {
+            itemsIndexed(items = submissionResults) { index, item ->
                 Column(Modifier.padding(horizontal = 20.dp)) {
-                    DropdownCard(shellContent = {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(1f),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "3회차", style = TextStyles.subTitle03)
-                            Icon(
-                                painter = painterResource(R.drawable.ic_arrow_down),
-                                contentDescription = null,
-                                tint = Color.Black
-                            )
+                    DropdownCard(
+                        shellContent = {
+                            DropdownCardShellContent(index = index)
+                        },
+                        initialExpanded = false,
+                        mainContent = {
+                            DropdownCardMainContent(item)
                         }
-                    }, initialExpanded = false, mainContent = {
-                        Column {
-                            Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
-                            LoopyAssistChip(
-                                "2025.1.2",
-                                labelStyle = TextStyles.body02,
-                                filledColor = ColorPalette.Neautral200,
-                                labelColor = ColorPalette.Neautral700,
-                                shape = RoundedCornerShape(6.dp),
-                                enabled = false
-                            )
-                            Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
-                            Row(
-                                verticalAlignment = Alignment.Top,
-                                horizontalArrangement = Arrangement.Start,
-                                modifier = Modifier.padding(bottom = 16.dp)
-                            ) {
-                                Text("Q.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
-                                Text(
-                                    "커리어를 향상시킬 수 있는 일자리이지만 가까운 사람들과 멀어져야한다면, 이 일자리를 선택하실 건가요?",
-                                    style = TextStyles.body01,
-                                    softWrap = true
-                                )
-                            }
-                            Spacer(
-                                modifier = Modifier.fillMaxWidth().height(1.dp)
-                                    .background(color = ColorPalette.Neautral300)
-                            )
-                            Row(
-                                verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Start,
-                                modifier = Modifier.padding(top = 16.dp, bottom = 12.dp)
-                            ) {
-                                Text("A.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
-                                Text(
-                                    "주변 사람과 물리적으로 멀어지더라도, 커리어를 선택한다.",
-                                    style = TextStyles.body01,
-                                    softWrap = true
-                                )
-                            }
-                            Column(
-                                modifier = Modifier.background(
-                                    color = ColorPalette.Neautral100,
-                                    shape = RoundedCornerShape(12.dp)
-                                ).padding(vertical = 12.dp).padding(horizontal = 16.dp)
-                            ) {
-                                Text(
-                                    "회고",
-                                    style = TextStyles.body01,
-                                    color = ColorPalette.Neautral800,
-                                    modifier = Modifier.padding(bottom = 8.dp),
-                                    softWrap = true
-                                )
-                                Text(
-                                    "가까운 사람들과 물리적으로 멀어지더라도 그 관계가 사라지진 않음. 내 노력에 따라 관계는 달라질 수 있지만 커리어 기회는 원할 때 오는 게 아님",
-                                    style = TextStyles.body01, color = ColorPalette.Neautral700, softWrap = true
-                                )
-                            }
-                        }
-                    })
+                    )
                 }
                 Spacer(modifier = Modifier.fillMaxWidth().height(18.dp))
             }
+        }
+    }
+}
+
+@Composable
+fun DropdownCardShellContent(index: Int) {
+    Row(
+        modifier = Modifier.fillMaxWidth(1f),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = "${index + 1}회차", style = TextStyles.subTitle03)
+        Icon(
+            painter = painterResource(R.drawable.ic_arrow_down),
+            contentDescription = null,
+            tint = Color.Black
+        )
+    }
+}
+
+@Composable
+fun DropdownCardMainContent(data: RoundResult) {
+    Column {
+        Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
+        LoopyAssistChip(
+            label = data.submittedAt,
+            labelStyle = TextStyles.body02,
+            filledColor = ColorPalette.Neautral200,
+            labelColor = ColorPalette.Neautral700,
+            shape = RoundedCornerShape(6.dp),
+            enabled = false
+        )
+        Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
+        Row(
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier.padding(bottom = 16.dp)
+        ) {
+            Text("Q.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
+            Text(
+                data.question,
+                style = TextStyles.body01,
+                softWrap = true
+            )
+        }
+        Spacer(
+            modifier = Modifier.fillMaxWidth().height(1.dp)
+                .background(color = ColorPalette.Neautral300)
+        )
+        Row(
+            verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Start,
+            modifier = Modifier.padding(top = 16.dp, bottom = 12.dp)
+        ) {
+            Text("A.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
+            Text(
+                data.answer,
+                style = TextStyles.body01,
+                softWrap = true
+            )
+        }
+        Column(
+            modifier = Modifier.background(
+                color = ColorPalette.Neautral100,
+                shape = RoundedCornerShape(12.dp)
+            ).padding(vertical = 12.dp).padding(horizontal = 16.dp).fillMaxWidth(1f)
+        ) {
+            Text(
+                "회고",
+                style = TextStyles.body01,
+                color = ColorPalette.Neautral800,
+                modifier = Modifier.padding(bottom = 8.dp),
+                softWrap = true
+            )
+            Text(
+                data.word,
+                style = TextStyles.body01, color = ColorPalette.Neautral700, softWrap = true
+            )
         }
     }
 }
@@ -377,77 +426,10 @@ fun MyAnswersView(submissionResults: List<RoundResult>, expandedSurveyItemAtInit
                 DropdownCard(
                     initialExpanded = expandedSurveyItemAtInitialized == (index + 1).toString(),
                     shellContent = {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(1f),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(text = "${data.index + 1}회차", style = TextStyles.subTitle03)
-                            Icon(
-                                painter = painterResource(R.drawable.ic_arrow_down),
-                                contentDescription = null,
-                                tint = Color.Black
-                            )
-                        }
+                        DropdownCardShellContent(index)
                     },
                     mainContent = {
-                        Column {
-                            Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
-                            LoopyAssistChip(
-                                label = data.submittedAt,
-                                labelStyle = TextStyles.body02,
-                                filledColor = ColorPalette.Neautral200,
-                                labelColor = ColorPalette.Neautral700,
-                                shape = RoundedCornerShape(6.dp),
-                                enabled = false
-                            )
-                            Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
-                            Row(
-                                verticalAlignment = Alignment.Top,
-                                horizontalArrangement = Arrangement.Start,
-                                modifier = Modifier.padding(bottom = 16.dp)
-                            ) {
-                                Text("Q.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
-                                Text(
-                                    data.question,
-                                    style = TextStyles.body01,
-                                    softWrap = true
-                                )
-                            }
-                            Spacer(
-                                modifier = Modifier.fillMaxWidth().height(1.dp)
-                                    .background(color = ColorPalette.Neautral300)
-                            )
-                            Row(
-                                verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Start,
-                                modifier = Modifier.padding(top = 16.dp, bottom = 12.dp)
-                            ) {
-                                Text("A.", style = TextStyles.body01, modifier = Modifier.padding(end = 8.dp))
-                                Text(
-                                    data.answer,
-                                    style = TextStyles.body01,
-                                    softWrap = true
-                                )
-                            }
-                            Column(
-                                modifier = Modifier.background(
-                                    color = ColorPalette.Neautral100,
-                                    shape = RoundedCornerShape(12.dp)
-                                ).padding(vertical = 12.dp).padding(horizontal = 16.dp).fillMaxWidth(1f)
-                            ) {
-                                Text(
-                                    "회고",
-                                    style = TextStyles.body01,
-                                    color = ColorPalette.Neautral800,
-                                    modifier = Modifier.padding(bottom = 8.dp),
-                                    softWrap = true
-                                )
-                                Text(
-                                    data.word,
-                                    style = TextStyles.body01, color = ColorPalette.Neautral700, softWrap = true
-                                )
-                            }
-                        }
+                        DropdownCardMainContent(data)
                     })
                 Spacer(modifier = Modifier.fillMaxWidth().height(18.dp))
             }
@@ -458,7 +440,20 @@ fun MyAnswersView(submissionResults: List<RoundResult>, expandedSurveyItemAtInit
 @Preview
 @Composable
 fun CharacterAnalysisPreview() {
-    CharacterAnalysisView()
+    CharacterAnalysisView(
+        report = CharacterReport(
+            0,
+            "첫번째 캐릭터",
+            "잔다르크",
+            R.raw.benevolence,
+            "성장을 중요시 여기는 모함가 타입은 새로운 즐거움을 발굴하는 것을 가장 중요시 여기는 유형이에요",
+            "2024.10.10 - 2024.10.25",
+            emptyList(),
+            emptyList(),
+            emptyList()
+        ),
+        emptyList()
+    )
 }
 
 @Preview

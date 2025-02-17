@@ -14,6 +14,7 @@ data class HomeState(
     val faceRound: List<Round>? = null,
     val wholeRounds: List<Round>? = null,
     val bundleId: Int? = null,
+    val characterId: Int? = null,
     val isEnabledTodayRoundButton: Boolean = true,
     val remainRounds: Int = 0,
     val characterNo: String = "",
@@ -24,6 +25,8 @@ data class HomeState(
 sealed interface HomeEffect : UiEffect {
     data object NavigateToLogin : HomeEffect
     data class NavigateToRound(val bundleIndex: String, val remainingRounds: String) : HomeEffect
-    data class NavigateToRoundHistory(val bundleIndex: String, val surveyIndex: String) : HomeEffect
+    data class NavigateToRoundHistory(val bundleIndex: String, val surveyIndex: String, val characterId: String) :
+        HomeEffect
+
     data object ShowSnackbar : HomeEffect
 }
