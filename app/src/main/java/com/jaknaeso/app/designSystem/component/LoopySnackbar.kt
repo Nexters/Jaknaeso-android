@@ -23,7 +23,7 @@ import com.jaknaeso.app.designSystem.theme.TextStyles
 fun Loopysnackbar(snackbarHostState: SnackbarHostState, content: @Composable () -> Unit) {
     SnackbarHost(
         hostState = snackbarHostState,
-        modifier = Modifier.padding(horizontal = 20.dp).height(58.dp)
+        modifier = Modifier.height(58.dp)
     ) {
         Column(
             modifier = Modifier.background(
