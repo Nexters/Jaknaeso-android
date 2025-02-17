@@ -1,7 +1,7 @@
 package com.jaknaeso.app.data.authentication
 
 import com.jaknaeso.app.data.entity.LoopyResult
-import com.jaknaeso.app.data.entity.response.MemberTokenResponse
+import com.jaknaeso.app.data.entity.response.TokenInfo
 import com.skydoves.sandwich.ApiResponse
 
 interface RefreshTokenManager {
@@ -10,7 +10,7 @@ interface RefreshTokenManager {
         onRefreshFailed: () -> Unit
     )
 
-    suspend fun refreshTokens(): ApiResponse<LoopyResult<MemberTokenResponse>>
+    suspend fun refreshTokens(): ApiResponse<LoopyResult<TokenInfo>>
 
     suspend fun saveRefreshTokens(accessToken: String, refreshToken: String)
 }
