@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Character(
-    val oridinalNumber: Int,
+    val characterNo: String,
+    val characterId: Int,
     val bundleId: Int
 )

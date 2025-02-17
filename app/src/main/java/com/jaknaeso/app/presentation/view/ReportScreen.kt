@@ -181,12 +181,12 @@ fun RadioButtons(
         itemsIndexed(characters) { index, item ->
             SelectionFilterChip(
                 isSelected = (index == selectedIndex),
-                label = { Text(text = "${item.ordinalWord}번째 캐릭터", style = TextStyles.subTitle01) },
+                label = { Text(text = "${item.characterNo} 캐릭터", style = TextStyles.subTitle01) },
                 shape = RoundedCornerShape(10.dp),
                 onClick = { isSelected ->
                     if (!isSelected) { // 선택되지 않은 경우만 변경
                         selectedIndex = index
-                        onChanged(index, "${item.ordinalWord}번째 캐릭터") // 선택 변경 이벤트 전달
+                        onChanged(index, "${item.characterNo}번째 캐릭터") // 선택 변경 이벤트 전달
                     }
                 },
                 trailingIcon = painterResource(R.drawable.ic_check),
