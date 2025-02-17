@@ -38,25 +38,13 @@ fun ExpandingBottomSheet(
     wholeContent: @Composable () -> Unit,
     bottomContent: @Composable () -> Unit,
 ) {
-    val PADDING = 40.dp
-    val ULTIMATE_GAP = 140.dp
+    val PADDING = 30.dp
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-    val localDensity = LocalDensity.current
-    var faceContentHeight by remember {
-        mutableStateOf(0.dp)
-    }
-    var wholeContentHeight by remember {
-        mutableStateOf(screenHeight)
-    }
-    var maxSheetHeight by remember { mutableStateOf(451.dp) } // 최대 높이 (화면의 90%)
-    var minSheetHeight by remember { mutableStateOf(225.dp) } // 최소 높이 (화면의 30%)
+    var maxSheetHeight by remember { mutableStateOf(451.dp) }
+    var minSheetHeight by remember { mutableStateOf(210.dp) }
     val sheetHeight = remember { mutableStateOf(minSheetHeight) } // 시트의 높이 (초기: 최소 높이)
     val coroutineScope = rememberCoroutineScope()
     var isModalOpen by remember { mutableStateOf(false) }
-
-    LaunchedEffect(faceContentHeight, wholeContentHeight) {
-    }
-
     Column(
         Modifier
             .fillMaxSize(1f),
@@ -64,7 +52,7 @@ fun ExpandingBottomSheet(
     ) {
         if (!isModalOpen) {
             floatingContent()
-            Spacer(Modifier.fillMaxWidth().height(20.dp))
+            Spacer(Modifier.fillMaxWidth().height(10.dp))
         }
 
         Box(
@@ -81,7 +69,8 @@ fun ExpandingBottomSheet(
                 modifier = Modifier
                     .align(Alignment.BottomCenter) // 항상 아래쪽 고정
                     .fillMaxWidth()
-                    .height(sheetHeight.value)
+                    .wrapContentHeight()
+//                    .height(sheetHeight.value)
                     .background(Color.Transparent)
                     .pointerInput(Unit) {
                         detectVerticalDragGestures(
@@ -107,7 +96,7 @@ fun ExpandingBottomSheet(
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .wrapContentSize()
                         .background(
                             color = Color.White,
                             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
@@ -128,27 +117,22 @@ fun ExpandingBottomSheet(
                         }
                     }
                     if (isModalOpen) {
-                        Column(modifier = Modifier.onGloballyPositioned { coordinates ->
-                            wholeContentHeight =
-                                with(localDensity) { coordinates.size.height.toDp() + ULTIMATE_GAP + PADDING }
-                        }) {
+                        Column {
                             // 스크롤 가능한 콘텐츠 영역
                             Box(
                                 modifier = Modifier
-                                    .weight(1f) // 상단 콘텐츠가 스크롤되도록 설정
-                                    .fillMaxWidth()
+//                                    .weight(1f) // 상단 콘텐츠가 스크롤되도록 설정
+//                                    .fillMaxWidth()
+                                    .wrapContentSize()
                                     .verticalScroll(rememberScrollState()) // 스크롤 가능
                             ) {
                                 wholeContent()
-                                Spacer(modifier = Modifier.fillMaxWidth(1f).height(PADDING))
+                                Spacer(modifier = Modifier.fillMaxWidth(1f).height(2.dp))
                             }
                             bottomContent()
                         }
                     } else {
-                        Column(modifier = Modifier.onGloballyPositioned { coordinates ->
-                            faceContentHeight =
-                                with(localDensity) { coordinates.size.height.toDp() + PADDING + PADDING }
-                        }) {
+                        Column {
                             faceContent()
                             Spacer(modifier = Modifier.fillMaxWidth(1f).height(PADDING))
                             bottomContent()
