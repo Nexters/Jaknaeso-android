@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetLatestCharacterUseCase @Inject constructor(
+class GetBriefLatestCharacterUseCase @Inject constructor(
     private val characterRepository: CharacterRepository,
     private val memberRepository: MemberRepository
 ) {
@@ -27,8 +27,9 @@ class GetLatestCharacterUseCase @Inject constructor(
                 return flow {
                     emit(
                         LatestCharacterBrief(
-                            characterNo = response?.data?.characterNo ?: "",
-                            characterName = response?.data?.name ?: "",
+                            characterId = response?.data?.characterId,
+                            characterNo = response?.data?.characterNo,
+                            characterName = response?.data?.name,
                             lottieRawFile = mapCharacterTypeToLottieRawFile(response?.data?.characterType!!)
                         )
                     )
