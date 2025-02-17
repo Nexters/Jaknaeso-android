@@ -81,7 +81,7 @@ class RoundViewmodel @Inject constructor(
                         }
                     }
 
-                    Result.Loading -> TODO()
+                    Result.Loading -> {}
                     is Result.Success -> setEffect(RoundEffect.NavigateToBalanceRoundComplete)
                 }
             }
