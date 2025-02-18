@@ -2,6 +2,7 @@ package com.jaknaeso.app.data.datastoreImpl
 
 import com.jaknaeso.app.data.authentication.RefreshTokenManager
 import com.jaknaeso.app.data.datastore.MemberDatastore
+import com.jaknaeso.app.data.entity.ErrorData
 import com.jaknaeso.app.data.entity.LoopyResult
 import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.data.entity.response.MemberResponse
@@ -24,14 +25,22 @@ class MemberDatastoreImpl @Inject constructor(
                 memberService.getMember(memberId).suspendOnSuccess {
                     result = this.data
                 }.suspendOnError {
-                    result = this.response.body()
+                    result = LoopyResult(
+                        result = ResponseResult.ERROR.name,
+                        data = null,
+                        error = ErrorData(code = this.response.code().toString(), message = "", data = null)
+                    )
                 }
             }
 
             memberService.getMember(memberId).suspendOnSuccess {
                 result = this.data
             }.suspendOnError {
-                result = this.response.body()
+                result = LoopyResult(
+                    result = ResponseResult.ERROR.name,
+                    data = null,
+                    error = ErrorData(code = this.response.code().toString(), message = "", data = null)
+                )
                 if (this.response.code() == 401) {
                     refreshTokenManager.handleTokenRefresh(
                         retryCall = suspend { retryCall() },
@@ -54,7 +63,11 @@ class MemberDatastoreImpl @Inject constructor(
                 memberService.deleteMember(memberId).suspendOnSuccess {
                     result = this.data
                 }.suspendOnError {
-                    result = this.response.body()
+                    result = LoopyResult(
+                        result = ResponseResult.ERROR.name,
+                        data = null,
+                        error = ErrorData(code = this.response.code().toString(), message = "", data = null)
+                    )
                 }
             }
 
@@ -65,7 +78,11 @@ class MemberDatastoreImpl @Inject constructor(
                     LoopyResult(result = ResponseResult.SUCCESS.name, data = null, error = null)
                 }
             }.suspendOnError {
-                result = this.response.body()
+                result = LoopyResult(
+                    result = ResponseResult.ERROR.name,
+                    data = null,
+                    error = ErrorData(code = this.response.code().toString(), message = "", data = null)
+                )
                 if (this.response.code() == 401) {
                     refreshTokenManager.handleTokenRefresh(
                         retryCall = suspend { retryCall() },

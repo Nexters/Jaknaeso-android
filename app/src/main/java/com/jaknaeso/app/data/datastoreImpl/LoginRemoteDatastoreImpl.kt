@@ -2,6 +2,7 @@ package com.jaknaeso.app.data.datastoreImpl
 
 import com.jaknaeso.app.data.authentication.RefreshTokenManager
 import com.jaknaeso.app.data.datastore.LoginRemoteDatastore
+import com.jaknaeso.app.data.entity.ErrorData
 import com.jaknaeso.app.data.entity.LoopyResult
 import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.data.entity.request.TokenRequest
@@ -23,14 +24,22 @@ class LoginRemoteDatastoreImpl @Inject constructor(
                 loginService.getMemberToken(request).suspendOnSuccess {
                     result = this.data
                 }.suspendOnError {
-                    result = this.response.body()
+                    result = LoopyResult(
+                        result = ResponseResult.ERROR.name,
+                        data = null,
+                        error = ErrorData(code = this.response.code().toString(), message = "", data = null)
+                    )
                 }
             }
 
             loginService.getMemberToken(request).suspendOnSuccess {
                 result = this.data
             }.suspendOnError {
-                result = this.response.body()
+                result = LoopyResult(
+                    result = ResponseResult.ERROR.name,
+                    data = null,
+                    error = ErrorData(code = this.response.code().toString(), message = "", data = null)
+                )
                 if (this.response.code() == 401) {
                     refreshTokenManager.handleTokenRefresh(
                         retryCall = suspend { retryCall() },
