@@ -85,20 +85,31 @@ fun LoginScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(20.dp),
+        modifier = Modifier.fillMaxSize().padding(20.dp).padding(bottom = 36.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        LoopyFilledButton(
-            text = "카카오로 시작하기",
-            leadingIcon = painterResource(R.drawable.ic_kakao),
-            leadingIconColor = Color.Black,
-            filledColor = ColorPalette.Kakao,
-            onClick = { handleLogin() },
-            textColor = Color.Black,
-            modifier = Modifier.fillMaxWidth(1f)
-        )
-
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxHeight(0.7f)) {
+            Image(painterResource(R.drawable.ic_loopy), contentDescription = null)
+            Spacer(Modifier.height(20.dp))
+            Text("나의 가치관을 찾는\n새로운 여정", style = TextStyles.title01, color = ColorPalette.Neautral800, textAlign = TextAlign.Center)
+        }
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            LoopyFilledButton(
+                text = "카카오로 시작하기",
+                leadingIcon = painterResource(R.drawable.ic_kakao),
+                leadingIconColor = Color.Black,
+                filledColor = ColorPalette.Kakao,
+                onClick = { handleLogin() },
+                textColor = Color.Black,
+                modifier = Modifier.fillMaxWidth(1f)
+            )
+            Spacer(Modifier.height(36.dp))
+            Text(
+                "로그인하시면 Loopy의 개인정보처리방침에 동의하는 것으로 간주합니다.\n로그인 오류시 문의 app.jaknaeso@gmail.com",
+                style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.W700, lineHeight = 15.sp, textAlign = TextAlign.Center)
+            )
+        }
     }
 }
 
@@ -124,10 +135,9 @@ fun LoginPreview() {
             textColor = Color.Black,
             modifier = Modifier.fillMaxWidth(1f)
         )
-        Spacer(Modifier.height(36.dp))
         Text(
             "로그인하시면 Loopy의 개인정보처리방침에 동의하는 것으로 간주합니다.\n로그인 오류시 문의 app.jaknaeso@gmail.com",
-            style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.W700, lineHeight = 15.sp)
+            style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.W700, lineHeight = 15.sp, textAlign = TextAlign.Center)
         )
     }
 }

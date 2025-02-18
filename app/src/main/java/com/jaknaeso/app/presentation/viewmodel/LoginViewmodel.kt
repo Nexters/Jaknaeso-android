@@ -1,11 +1,10 @@
 package com.jaknaeso.app.presentation.viewmodel
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.jaknaeso.app.domain.Result
 import com.jaknaeso.app.domain.asResult
-import com.jaknaeso.app.domain.repository.LoginRepository
+import com.jaknaeso.app.domain.usecase.CheckLoginedUserUseCase
 import com.jaknaeso.app.domain.usecase.PostAccessTokenUseCase
 import com.jaknaeso.app.presentation.contract.LoginEffect
 import com.jaknaeso.app.presentation.contract.LoginEvent
@@ -16,11 +15,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewmodel @Inject constructor(
-    private val application: Application,
-    private val loginRepository: LoginRepository,
+    private val checkLoginedUserUseCase: CheckLoginedUserUseCase,
     private val postAccessTokenUseCase: PostAccessTokenUseCase,
 ) :
     BaseViewModel<LoginEvent, LoginState, LoginEffect>() {
+
+    init {
+        branchInitialRoute()
+    }
+
     override fun createInitialState(): LoginState {
         return LoginState
     }
@@ -51,6 +54,14 @@ class LoginViewmodel @Inject constructor(
             setEffect(LoginEffect.NavigateToHome)
         } else {
             setEffect(LoginEffect.NavigateToOnboarding)
+        }
+    }
+
+    fun branchInitialRoute() {
+        viewModelScope.launch {
+            if (!checkLoginedUserUseCase.isLoginedUser()) {
+                setEffect(LoginEffect.NavigateToHome)
+            }
         }
     }
 }
