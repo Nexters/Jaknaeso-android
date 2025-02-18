@@ -72,7 +72,8 @@ fun HomeScreen(
             LoopyLoadingScreen()
         }
         Scaffold(
-            modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral50),
+            modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral50)
+                .windowInsetsPadding(WindowInsets.statusBars),
             bottomBar = {
                 LoopyBottomNavBar(
                     navigateToHome = {},
@@ -88,14 +89,16 @@ fun HomeScreen(
                 )
             },
             snackbarHost = {
-                Loopysnackbar(snackbarHostState = snackbarHostState) {
-                    Text(
-                        "하루에 한 회차씩 답변할 수 있어요",
-                        style = TextStyles.subTitle04,
-                        color = Color.White,
-                        modifier = Modifier.padding(vertical = 25.dp).fillMaxWidth(1f),
-                        textAlign = TextAlign.Center
-                    )
+                Column(Modifier.padding(horizontal = 20.dp)) {
+                    Loopysnackbar(snackbarHostState = snackbarHostState) {
+                        Text(
+                            "하루에 한 회차씩 답변할 수 있어요",
+                            style = TextStyles.subTitle04,
+                            color = Color.White,
+                            modifier = Modifier.fillMaxWidth(1f),
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             },
             content = { paddingValues ->
@@ -110,13 +113,14 @@ fun HomeScreen(
                             labelStyle = TextStyles.subTitle04,
                             filledColor = ColorPalette.PrimaryBlue100,
                             labelColor = ColorPalette.PrimaryBlue500,
-                            shape = RoundedCornerShape(8.dp)
+                            shape = RoundedCornerShape(8.dp),
                         )
                         Text(
                             uiState.characterName,
                             style = TextStyles.title01,
-                            modifier = Modifier.padding(top = 10.dp).fillMaxWidth(0.5f),
-                            softWrap = true
+                            modifier = Modifier.padding(top = 10.dp),
+                            softWrap = true,
+                            maxLines = 2
                         )
                         Column(
                             modifier = Modifier.fillMaxWidth(1f),
