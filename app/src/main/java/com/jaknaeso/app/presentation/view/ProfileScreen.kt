@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -123,6 +126,7 @@ fun ProfileContent(
     onClickDeleteMember: () -> Unit,
     bottomNavigation: @Composable () -> Unit
 ) {
+    var isFcmEnabled by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier.fillMaxHeight(1f).padding(bottom = paddingValues.calculateBottomPadding()),
         verticalArrangement = Arrangement.SpaceBetween
@@ -138,14 +142,22 @@ fun ProfileContent(
                 Text(email, style = TextStyles.subTitle04, color = ColorPalette.Neautral700)
             }
             Column {
-                LoopyAssistChip(
-                    "알림설정",
-                    labelStyle = TextStyles.subTitle03,
-                    filledColor = Color.White,
-                    labelColor = ColorPalette.Neautral800,
-                    shape = RoundedCornerShape(0.dp),
-                    modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 5.dp)
-                )
+                Row(modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 20.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text("알림설정", style = TextStyles.subTitle03, color = ColorPalette.Neautral800)
+                    Switch(
+                        checked = isFcmEnabled,
+                        onCheckedChange = { isFcmEnabled = it },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color.White,
+                            checkedTrackColor = ColorPalette.PrimaryBlue500,
+                            checkedBorderColor = ColorPalette.PrimaryBlue500,
+                            uncheckedThumbColor = Color.White,
+                            uncheckedBorderColor = ColorPalette.Neautral300,
+                            uncheckedTrackColor = ColorPalette.Neautral300
+                        ),
+                        modifier = Modifier.scale(0.9f)
+                    )
+                }
                 Spacer(Modifier.fillMaxWidth(1f).height(10.dp))
                 Spacer(modifier = Modifier.background(color = ColorPalette.Neautral300).fillMaxWidth(1f).height(1.dp))
                 Spacer(Modifier.fillMaxWidth(1f).height(10.dp))
