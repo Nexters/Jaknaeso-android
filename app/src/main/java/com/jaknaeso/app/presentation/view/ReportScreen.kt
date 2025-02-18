@@ -58,7 +58,7 @@ fun ReportScreen(
 
     LaunchedEffect(Unit) {
         if (surveyIndex == NO_SURVEY_INDEX && bundleId == NO_BUNDLE_ID) {
-            viewmodel.handleEvent(ReportEvent.GetInitialData)
+            viewmodel.handleEvent(ReportEvent.GetLatestData)
         } else {
             pagerState.animateScrollToPage(1)
             viewmodel.handleEvent(ReportEvent.GetParticularBundle(bundleId, characterId = characterId))
@@ -106,43 +106,103 @@ fun ReportScreen(
                         )
                     }
                 }
-            }
-            Column(
-                modifier = Modifier
-                    .background(color = ColorPalette.Neautral0).fillMaxSize(1f).padding(paddingValues),
-                verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start
-            ) {
-                Spacer(Modifier.fillMaxWidth().height(54.dp))
-                Column(Modifier.padding(horizontal = 20.dp)) {
-                    LoopyAssistChip(
-                        onClick = { isModalExpanded = !isModalExpanded },
-                        label = uistate.value.reportTitle,
-                        labelStyle = TextStyles.title03,
-                        filledColor = Color.Transparent,
-                        labelColor = Color.Black,
-                        shape = RoundedCornerShape(8.dp),
-                        trailingIcon = painterResource(R.drawable.ic_arrow_down),
-                        trailingIconColor = ColorPalette.Neautral600
-                    )
-                    Spacer(modifier = Modifier.fillMaxWidth(1f).height(20.dp))
-                }
-                LoopyTabBar(
-                    initialPage = initialTabPage,
-                    tabBarTitles = listOf("캐릭터 분석", "나의 답변 모아보기"),
-                    onPage = { index ->
-                        scope.launch {
-                            pagerState.animateScrollToPage((pagerState.currentPage + 1) % 2)
+
+                Column(
+                    modifier = Modifier
+                        .background(color = ColorPalette.Neautral0).fillMaxSize(1f).padding(paddingValues),
+                    verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start
+                ) {
+                    Spacer(Modifier.fillMaxWidth().height(54.dp))
+                    Column(Modifier.padding(horizontal = 20.dp)) {
+                        LoopyAssistChip(
+                            onClick = { isModalExpanded = !isModalExpanded },
+                            label = uistate.value.reportTitle,
+                            labelStyle = TextStyles.title03,
+                            filledColor = Color.Transparent,
+                            labelColor = Color.Black,
+                            shape = RoundedCornerShape(8.dp),
+                            trailingIcon = painterResource(R.drawable.ic_arrow_down),
+                            trailingIconColor = ColorPalette.Neautral600
+                        )
+                        Spacer(modifier = Modifier.fillMaxWidth(1f).height(20.dp))
+                    }
+                    LoopyTabBar(
+                        initialPage = initialTabPage,
+                        tabBarTitles = listOf("캐릭터 분석", "나의 답변 모아보기"),
+                        onPage = { index ->
+                            scope.launch {
+                                pagerState.animateScrollToPage((pagerState.currentPage + 1) % 2)
+                            }
+                        })
+                    HorizontalPager(state = pagerState, userScrollEnabled = false) { page ->
+                        when (page) {
+                            0 -> {
+                                if (uistate.value.isNoCharacterToShow) {
+                                    NoCharacterToShow(characterNo = uistate.value.reportTitle)
+                                } else {
+                                    CharacterAnalysisView(
+                                        report = uistate.value.report,
+                                        uistate.value.submissionsResult
+                                    )
+                                }
+                            }
+
+                            1 -> MyAnswersView(uistate.value.submissionsResult, surveyIndex)
                         }
-                    })
-                HorizontalPager(state = pagerState, userScrollEnabled = false) { page ->
-                    when (page) {
-                        0 -> CharacterAnalysisView(report = uistate.value.report, uistate.value.submissionsResult)
-                        1 -> MyAnswersView(uistate.value.submissionsResult, surveyIndex)
                     }
                 }
             }
+
         }
     )
+}
+
+@Composable
+fun MyAnswersView(submissionResults: List<RoundResult>, expandedSurveyItemAtInitialized: String) {
+    Column {
+        Spacer(Modifier.fillMaxWidth().height(40.dp))
+        LazyColumn(Modifier.padding(horizontal = 20.dp)) {
+            itemsIndexed(items = submissionResults, key = { index, item -> item.index }) { index, data ->
+                DropdownCard(
+                    initialExpanded = expandedSurveyItemAtInitialized == (index + 1).toString(),
+                    shellContent = {
+                        DropdownCardShellContent(index)
+                    },
+                    mainContent = {
+                        DropdownCardMainContent(data)
+                    })
+                Spacer(modifier = Modifier.fillMaxWidth().height(18.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun NoCharacterToShow(characterNo: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            LottieImageView(rawFile = R.raw.doing_phone, width = 200.dp, height = 200.dp)
+            Spacer(Modifier.height(24.dp))
+            Text(
+                "${characterNo}를\n만드는 중이에요",
+                textAlign = TextAlign.Center,
+                style = TextStyles.title02,
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
+            Spacer(Modifier.height(12.dp))
+            Text(
+                "15일 간의 가치관 질문에\n응답하면 캐릭터가 완성돼요.",
+                textAlign = TextAlign.Center,
+                style = TextStyles.subTitle03,
+                color = ColorPalette.Neautral600
+            )
+        }
+    }
 }
 
 @Composable
@@ -417,26 +477,6 @@ fun DropdownCardMainContent(data: RoundResult) {
     }
 }
 
-@Composable
-fun MyAnswersView(submissionResults: List<RoundResult>, expandedSurveyItemAtInitialized: String) {
-    Column {
-        Spacer(Modifier.fillMaxWidth().height(40.dp))
-        LazyColumn(Modifier.padding(horizontal = 20.dp)) {
-            itemsIndexed(items = submissionResults, key = { index, item -> item.index }) { index, data ->
-                DropdownCard(
-                    initialExpanded = expandedSurveyItemAtInitialized == (index + 1).toString(),
-                    shellContent = {
-                        DropdownCardShellContent(index)
-                    },
-                    mainContent = {
-                        DropdownCardMainContent(data)
-                    })
-                Spacer(modifier = Modifier.fillMaxWidth().height(18.dp))
-            }
-        }
-    }
-}
-
 @Preview
 @Composable
 fun CharacterAnalysisPreview() {
@@ -460,4 +500,10 @@ fun CharacterAnalysisPreview() {
 @Composable
 fun MyAnswersReportPreview() {
     MyAnswersView(emptyList(), "1")
+}
+
+@Preview
+@Composable
+fun NoCharacterToShowPreview() {
+    NoCharacterToShow("두번째 캐릭터")
 }

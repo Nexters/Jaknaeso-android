@@ -6,7 +6,7 @@ import com.jaknaeso.app.domain.model.RoundResult
 
 
 sealed interface ReportEvent : UiEvent {
-    data object GetInitialData : ReportEvent
+    data object GetLatestData : ReportEvent
     data class GetParticularBundle(val bundleId: String, val characterId: String) : ReportEvent
     data class SelectCharacterBundle(val characterNo: String, val characterId: String, val bundleId: String) :
         ReportEvent
@@ -18,6 +18,7 @@ sealed interface ReportEvent : UiEvent {
 data class ReportState(
     val isLoading: Boolean = true,
     val isError: Boolean = false,
+    val isNoCharacterToShow: Boolean = false,
     val reportTitle: String,
     val characters: List<Character> = emptyList(),
     val report: CharacterReport,

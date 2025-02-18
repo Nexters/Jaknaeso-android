@@ -1,8 +1,14 @@
 package com.jaknaeso.app.domain.usecase
 
+import android.util.Log
+import com.jaknaeso.app.R
+import com.jaknaeso.app.data.entity.ResponseResult
+import com.jaknaeso.app.domain.model.CharacterReport
+import com.jaknaeso.app.domain.model.CharacterType
 import com.jaknaeso.app.domain.repository.CharacterRepository
 import com.jaknaeso.app.domain.repository.MemberRepository
 import com.jaknaeso.app.domain.repository.SurveyRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -12,15 +18,19 @@ class GetCharacterReportUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
     private val surveyRepository: SurveyRepository
 ) {
-    suspend operator fun invoke(characterId: String, bundleId: String) {
+    suspend operator fun invoke(characterId: String, bundleId: String): Flow<CharacterReport> {
         val memberId = memberRepository.getMemberId().firstOrNull()
         if (memberId != null) {
-            val response = characterRepository.getCharacterReport(characterId, memberId) //캐릭터 분석 정보
-//            if (response?.result == ResponseResult.ERROR.name) {
-//                return flow { throw Exception(response.error?.message) }
-//            } else if (response?.result == ResponseResult.REFRESH_FAILED.name) {
-//                return flow { throw Exception(response.result) }
-//            } else {
+            val response = characterRepository.getCharacterReport(characterId, memberId)
+            Log.e("ReportViewmodel", "getCharacterReport: ${response}")
+            if (response?.result == ResponseResult.ERROR.name) {
+                return flow { throw Exception(response.error?.code.toString()) }
+            } else if (response?.result == ResponseResult.REFRESH_FAILED.name) {
+                return flow { throw Exception(response.result) }
+            } else {
+                return flow {}
+            }
+            //            else {
 //                return flow {
 //                    val data = response?.data
 //                    emit(
@@ -39,8 +49,22 @@ class GetCharacterReportUseCase @Inject constructor(
 //                    )
 //                }
 //            }
-//        } else {
-//            return flow { throw Exception("memberId를 찾을 수 없습니다.") }
-//        }
+        } else {
+            return flow { throw Exception("memberId를 찾을 수 없습니다.") }
         }
-    }}
+    }
+
+    fun mapCharacterTypeToLottieRawFile(characterType: String): Int {
+        return when (characterType) {
+            CharacterType.SUCCESS.name -> R.raw.success
+            CharacterType.SELF_DIRECTION.name -> R.raw.self_direction
+            CharacterType.SECURITY.name -> R.raw.security
+            CharacterType.ADVENTURE.name -> R.raw.adventure
+            CharacterType.STABILITY.name -> R.raw.stability
+            CharacterType.BENEVOLENCE.name -> R.raw.benevolence
+            CharacterType.UNIVERSALISM.name -> R.raw.universalism
+            else -> R.raw.warning
+        }
+    }
+}
+
