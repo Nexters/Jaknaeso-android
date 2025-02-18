@@ -30,6 +30,7 @@ firebase-messaging = "23.4.1"
 kakao = "2.20.5"
 oss-licenses-version = "17.0.0"
 lottieVersion = "6.6.2"
+splash-screen-version = "1.2.0-alpha01"
 
 [libraries]
 open-licenses = { group = "com.google.android.gms", name = "play-services-oss-licenses", version.ref = "oss-licenses-version" }
@@ -66,6 +67,7 @@ firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebase-messaging" }
 kakao-all = { group = "com.kakao.sdk", name = "v2-all", version.ref = "kakao" }
 airbnb-lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieVersion" }
+splash-screen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash-screen-version" }
 
 [bundles]
 basic = ["appcompat", "androidx-core-ktx"]

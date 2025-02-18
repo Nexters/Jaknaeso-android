@@ -69,6 +69,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.splash.screen)
     implementation(libs.airbnb.lottie.compose)
     implementation(libs.kakao.all)
     implementation(libs.firebase.messaging)
