@@ -1,7 +1,9 @@
 package com.jaknaeso.app.presentation.view
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -9,11 +11,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jaknaeso.app.R
 import com.jaknaeso.app.designSystem.component.LoopyFilledButton
 import com.jaknaeso.app.designSystem.theme.ColorPalette
+import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.presentation.contract.LoginEffect
 import com.jaknaeso.app.presentation.viewmodel.LoginViewmodel
 import com.kakao.sdk.auth.model.OAuthToken
@@ -91,5 +99,35 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(1f)
         )
 
+    }
+}
+
+@Preview
+@Composable
+fun LoginPreview() {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(20.dp).padding(bottom = 36.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxHeight(0.8f)) {
+            Image(painterResource(R.drawable.ic_loopy), contentDescription = null)
+            Spacer(Modifier.height(20.dp))
+            Text("나의 가치관을 찾는\n새로운 여정", style = TextStyles.title01, color = ColorPalette.Neautral800, textAlign = TextAlign.Center)
+        }
+        LoopyFilledButton(
+            text = "카카오로 시작하기",
+            leadingIcon = painterResource(R.drawable.ic_kakao),
+            leadingIconColor = Color.Black,
+            filledColor = ColorPalette.Kakao,
+            onClick = { },
+            textColor = Color.Black,
+            modifier = Modifier.fillMaxWidth(1f)
+        )
+        Spacer(Modifier.height(36.dp))
+        Text(
+            "로그인하시면 Loopy의 개인정보처리방침에 동의하는 것으로 간주합니다.\n로그인 오류시 문의 app.jaknaeso@gmail.com",
+            style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.W700, lineHeight = 15.sp)
+        )
     }
 }
