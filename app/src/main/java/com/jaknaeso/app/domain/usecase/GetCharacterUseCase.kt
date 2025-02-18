@@ -24,7 +24,12 @@ class GetCharacterUseCase @Inject constructor(
                     throw Exception(response.result)
                 } else {
                     val result = response?.data?.characters?.map {
-                        Character(characterNo = it.characterNo, characterId = it.characterId, bundleId = it.bundleId)
+                        Character(
+                            ordinalNumber = it.ordinalNumber,
+                            characterNo = it.characterNo,
+                            characterId = it.characterId,
+                            bundleId = it.bundleId
+                        )
                     } ?: emptyList()
                     emit(result)
                 }

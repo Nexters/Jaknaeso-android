@@ -22,7 +22,7 @@ class GetCharacterReportUseCase @Inject constructor(
         val memberId = memberRepository.getMemberId().firstOrNull()
         if (memberId != null) {
             val response = characterRepository.getCharacterReport(characterId, memberId)
-            Log.e("ReportViewmodel", "getCharacterReport: ${response}")
+            Log.e("GetCharacterReportUseCase", "getCharacterReport: ${response}")
             if (response?.result == ResponseResult.ERROR.name) {
                 return flow { throw Exception(response.error?.code.toString()) }
             } else if (response?.result == ResponseResult.REFRESH_FAILED.name) {
