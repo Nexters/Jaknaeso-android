@@ -82,6 +82,9 @@ class ReportViewmodel @Inject constructor(
     private fun initializeParticularAnswersHistory(bundleId: String, characterId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             getSubmissionsResult(bundleId)
+            val target = currentState.characters.find { it.bundleId.toString() == bundleId }
+            //레포트 타이틀 업데이트
+            setState { copy(reportTitle = mapToKoreanOrdinalWord(target!!.ordinalNumber)) }
             //특정 번들, 캐릭터 분석
             getCharacterReportUseCase(characterId = characterId, bundleId = bundleId)
                 .asResult().collect {
@@ -98,8 +101,6 @@ class ReportViewmodel @Inject constructor(
                         }
                     }
                 }
-            //나의 답변 모아보기도 특정 번들 결과
-            setState { copy(reportTitle = mapToKoreanOrdinalWord(bundleId.toInt())) }
         }
     }
 
