@@ -18,7 +18,7 @@ fun DotBoard(titleContent: String, contents: List<String>) {
     Column(Modifier.background(color = Color.Transparent)) {
         Text(text = titleContent, style = TextStyles.title03, color = Color.Black)
         Spacer(modifier = Modifier.height(16.dp))
-        contents.forEach { text ->
+        contents.forEachIndexed { index, text ->
             Row(verticalAlignment = Alignment.Top, modifier = Modifier.background(color = Color.Transparent)) {
                 Column(Modifier.padding(top = 10.dp)) {
                     Box(
@@ -29,6 +29,9 @@ fun DotBoard(titleContent: String, contents: List<String>) {
                 }
                 Spacer(modifier = Modifier.width(8.dp)) // 도트와 텍스트 사이 간격
                 Text(text, style = TextStyles.subTitle02, color = ColorPalette.Neautral700, softWrap = true)
+            }
+            if(index < contents.size){
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }

@@ -70,7 +70,7 @@ fun ExpandingBottomSheet(
                     .align(Alignment.BottomCenter) // 항상 아래쪽 고정
                     .fillMaxWidth()
                     .wrapContentHeight()
-//                    .height(sheetHeight.value)
+                    //.height(sheetHeight.value)
                     .background(Color.Transparent)
                     .pointerInput(Unit) {
                         detectVerticalDragGestures(

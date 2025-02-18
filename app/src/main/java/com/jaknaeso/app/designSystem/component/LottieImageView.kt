@@ -16,7 +16,7 @@ import com.jaknaeso.app.designSystem.theme.ColorPalette
 
 @Composable
 fun LottieImageView(rawFile: Int?, width:Dp=240.dp, height:Dp=240.dp) {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(rawFile?:R.raw.warning))
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(rawFile?:R.raw.loopy_loading))
     Column(
         modifier = Modifier.width(width).height(height)
             .background(color = Color.Transparent, shape = RoundedCornerShape(25.dp))
