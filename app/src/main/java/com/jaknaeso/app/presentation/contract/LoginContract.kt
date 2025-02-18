@@ -1,9 +1,6 @@
 package com.jaknaeso.app.presentation.contract
 
-sealed interface LoginEvent : UiEvent {
-    data object ClickKakaoLogin : LoginEvent
-}
-
+sealed interface LoginEvent : UiEvent
 data object LoginState : UiState
 
 sealed interface LoginEffect : UiEffect {
