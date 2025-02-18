@@ -34,7 +34,7 @@ fun BalanceRoundScreen(
 
     if (question != null && surveyId != null) {
         Scaffold(
-            modifier = Modifier.fillMaxSize().background(color = ColorPalette.Neautral0)
+            modifier = Modifier.fillMaxSize().background(color = ColorPalette.Neautral0).windowInsetsPadding(WindowInsets.navigationBars)
         ) { paddingValue ->
             if (isModalExpanded) {
                 UserCommentModal(
