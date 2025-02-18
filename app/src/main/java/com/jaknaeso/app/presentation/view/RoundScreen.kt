@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
@@ -98,39 +99,55 @@ fun UserCommentModal(
     onChangedCommentValue: (value: String) -> Unit,
     handleEvent: (RoundEvent) -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
 
     ModalBottomSheet(
         onDismissRequest = { handleEvent(RoundEvent.CloseModal) },
-        modifier = Modifier.background(color = Color.Transparent),
+        modifier = Modifier.background(color = Color.Transparent).fillMaxWidth(),
         sheetState = sheetState,
         contentColor = Color.White,
-        dragHandle = { DragHandle(onClick = {}) }
+        dragHandle = { DragHandle(onClick = {}) },
+        windowInsets = WindowInsets.ime
     ) {
         Column(
-            modifier = Modifier.background(color = Color.White).padding(horizontal = 20.dp)
+            modifier = Modifier.background(color = Color.White).padding(horizontal = 20.dp).windowInsetsPadding(
+                WindowInsets.navigationBars
+            )
                 .fillMaxWidth(1f),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center
         ) {
             Spacer(modifier = Modifier.fillMaxWidth().height(8.dp))
-            Text(text = "답변을 선택한 이유를 알려주세요", style = TextStyles.title03)
+            Row(
+                modifier = Modifier.fillMaxWidth(1f),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("답변을 선택한 이유를 알려주세요", style = TextStyles.title03, color = Color.Black)
+                Icon(painter = painterResource(R.drawable.ic_close), contentDescription = null, tint = Color.Black)
+            }
             Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
             LoopyTextField(
                 value = enteredComment,
                 placeHolderValue = "오늘의 나에게 집중해서 적어보세요",
                 onValueChange = { onChangedCommentValue(it) },
-                modifier = Modifier.fillMaxWidth(1f)
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.fillMaxWidth().height(32.dp))
-            Row(horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+            ) {
                 LoopyFilledButton(
                     "작성 완료",
-                    onClick = { handleEvent(RoundEvent.ClickSubmitAnswer) },
-                    modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 4.dp)
+                    onClick = {
+                        handleEvent(RoundEvent.CloseModal)
+                        handleEvent(RoundEvent.ClickSubmitAnswer)
+                    },
+                    modifier = Modifier.weight(1f).padding(horizontal = 4.dp)
                 )
             }
-            Spacer(modifier = Modifier.fillMaxWidth().height(62.dp))
+            Spacer(modifier = Modifier.weight(1f).height(62.dp))
         }
     }
 }
