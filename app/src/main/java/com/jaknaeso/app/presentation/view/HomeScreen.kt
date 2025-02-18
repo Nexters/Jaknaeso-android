@@ -106,7 +106,7 @@ fun HomeScreen(
                     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
                         Spacer(modifier = Modifier.fillMaxWidth().height(34.dp))
                         LoopySuggestionChip(
-                            "${uiState.characterNo} 캐릭터",
+                            "${uiState.characterNo}",
                             labelStyle = TextStyles.subTitle04,
                             filledColor = ColorPalette.PrimaryBlue100,
                             labelColor = ColorPalette.PrimaryBlue500,

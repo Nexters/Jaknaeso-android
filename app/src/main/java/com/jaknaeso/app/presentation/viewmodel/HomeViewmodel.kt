@@ -79,7 +79,7 @@ class HomeViewmodel @Inject constructor(
         getLatestCharacterUseCase().asResult().collect {
             when (it) {
                 is Result.Error -> {
-                    Log.e("HomeViewmodel", "getLatestCharacter: ${it.exception}")
+                    Log.e("HomeViewmodel", "getLatestCharacter: ${it.exception.message}")
                     setState { copy(isLoading = false, isError = true) }
                 }
 
