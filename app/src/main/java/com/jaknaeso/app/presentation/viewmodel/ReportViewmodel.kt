@@ -41,7 +41,7 @@ class ReportViewmodel @Inject constructor(
     override fun handleEvent(event: ReportEvent) {
         when (event) {
             ReportEvent.GetLatestData -> {
-                initializeLatestAnswersHistory()
+                initializeAnswersHistory()
             }
 
             is ReportEvent.GetParticularBundle -> { //미션 라운드 아이템을 클릭해서 Report 페이지에 진입한 경우
@@ -50,9 +50,14 @@ class ReportViewmodel @Inject constructor(
 
             is ReportEvent.SelectCharacterBundle -> { //캐릭터별 결과를 보는 경우
                 viewModelScope.launch(Dispatchers.IO) {
-                    getCharacterReportUseCase(bundleId = event.bundleId, characterId = event.characterId)
-                    getSubmissionsResult(event.bundleId)
+                    val character = currentState.characters.find { it.characterId.toString() == event.characterId }
                     setState { copy(reportTitle = event.characterNo) }
+                    getSubmissionsResult(event.bundleId)
+                    if (character?.isCompleted ?: false) {
+                        getCharacterReportUseCase(bundleId = event.bundleId, characterId = event.characterId)
+                    } else {
+                        setState { copy(isNoCharacterToShow = true) }
+                    }
                 }
             }
 
@@ -61,7 +66,7 @@ class ReportViewmodel @Inject constructor(
         }
     }
 
-    fun initializeLatestAnswersHistory() {
+    fun initializeAnswersHistory() {
         viewModelScope.launch(Dispatchers.IO) {
             //캐릭터 분석은 최신
             getLatestCharacterReportUseCase().asResult().collect { result ->
@@ -69,7 +74,13 @@ class ReportViewmodel @Inject constructor(
                     is Result.Error -> {}
                     Result.Loading -> {}
                     is Result.Success -> {
-                        setState { copy(report = result.data, reportTitle = "${result.data.characterNo} 캐릭터") }
+                        setState {
+                            copy(
+                                report = result.data,
+                                reportTitle = "${result.data.characterNo} 캐릭터",
+                                isNoCharacterToShow = false
+                            )
+                        }
                         val character = currentState.characters.find { it.characterNo == result.data.characterNo }
                         val bundleId = character?.bundleId.toString()
                         getSubmissionsResult(bundleId)
@@ -97,7 +108,7 @@ class ReportViewmodel @Inject constructor(
 
                         Result.Loading -> {}
                         is Result.Success -> {
-                            setState { copy(report = it.data) }
+                            setState { copy(report = it.data, isNoCharacterToShow = false) }
                         }
                     }
                 }

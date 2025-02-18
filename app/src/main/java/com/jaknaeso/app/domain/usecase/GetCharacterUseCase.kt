@@ -28,7 +28,8 @@ class GetCharacterUseCase @Inject constructor(
                             ordinalNumber = it.ordinalNumber,
                             characterNo = it.characterNo,
                             characterId = it.characterId,
-                            bundleId = it.bundleId
+                            bundleId = it.bundleId,
+                            isCompleted = it.isCompleted
                         )
                     } ?: emptyList()
                     emit(result)

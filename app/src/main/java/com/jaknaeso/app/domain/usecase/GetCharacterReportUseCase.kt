@@ -7,7 +7,6 @@ import com.jaknaeso.app.domain.model.CharacterReport
 import com.jaknaeso.app.domain.model.CharacterType
 import com.jaknaeso.app.domain.repository.CharacterRepository
 import com.jaknaeso.app.domain.repository.MemberRepository
-import com.jaknaeso.app.domain.repository.SurveyRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
@@ -16,7 +15,6 @@ import javax.inject.Inject
 class GetCharacterReportUseCase @Inject constructor(
     private val characterRepository: CharacterRepository,
     private val memberRepository: MemberRepository,
-    private val surveyRepository: SurveyRepository
 ) {
     suspend operator fun invoke(characterId: String, bundleId: String): Flow<CharacterReport> {
         val memberId = memberRepository.getMemberId().firstOrNull()
