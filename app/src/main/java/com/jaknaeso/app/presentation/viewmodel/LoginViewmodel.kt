@@ -59,7 +59,7 @@ class LoginViewmodel @Inject constructor(
 
     fun branchInitialRoute() {
         viewModelScope.launch {
-            if (!checkLoginedUserUseCase.isLoginedUser()) {
+            if (checkLoginedUserUseCase.isLoginedUser()) {
                 setEffect(LoginEffect.NavigateToHome)
             }
         }
