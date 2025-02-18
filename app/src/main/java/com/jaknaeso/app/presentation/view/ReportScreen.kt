@@ -46,9 +46,9 @@ fun ReportScreen(
     navigateToHome: () -> Unit,
     navigateToProfile: () -> Unit,
     viewmodel: ReportViewmodel = hiltViewModel(),
-    bundleId: String,
-    characterId: String,
-    surveyIndex: String
+    bundleId: String, //클릭해서 들어오는 라운드의 bundleId
+    characterId: String, //최신 캐릭터의 결과값을 볼 수 있는 characterId.
+    surveyIndex: String //클릭해서 들어오는 라운드 index
 ) {
     val initialTabPage by remember { mutableStateOf(if (surveyIndex != NO_SURVEY_INDEX && bundleId != NO_BUNDLE_ID) 1 else 0) }
     val uistate = viewmodel.uiState.collectAsStateWithLifecycle()
@@ -58,10 +58,15 @@ fun ReportScreen(
 
     LaunchedEffect(Unit) {
         if (surveyIndex == NO_SURVEY_INDEX && bundleId == NO_BUNDLE_ID) {
-            viewmodel.handleEvent(ReportEvent.GetLatestData)
+            viewmodel.handleEvent(ReportEvent.GetCharacterData)
         } else {
             pagerState.animateScrollToPage(1)
-            viewmodel.handleEvent(ReportEvent.GetParticularBundle(bundleId, characterId = characterId))
+            viewmodel.handleEvent(
+                ReportEvent.GetParticularCharacterData(
+                    bundleId,
+                    characterId = characterId
+                )
+            ) //번들Id, characterId는 같은 세트가 아닌데...
         }
         viewmodel.effects.collectLatest { effect ->
             when (effect) {
@@ -101,7 +106,7 @@ fun ReportScreen(
                                 onModalTitleClick = { isModalExpanded = false },
                                 onSelectionChanged = { characterNo, characterId, bundleId ->
                                     viewmodel.handleEvent(
-                                        ReportEvent.SelectCharacterBundle(
+                                        ReportEvent.SelectCharacterData(
                                             characterNo = characterNo,
                                             characterId = characterId.toString(),
                                             bundleId = bundleId.toString()
@@ -109,7 +114,7 @@ fun ReportScreen(
                                     )
                                     isModalExpanded = !isModalExpanded
                                 },
-                                characters = uistate.value.characters
+                                characters = uistate.value.characters ?: emptyList()
                             )
                         }
                     }
@@ -144,12 +149,12 @@ fun ReportScreen(
                                     } else {
                                         CharacterAnalysisView(
                                             report = uistate.value.report,
-                                            uistate.value.submissionsResult
+                                            uistate.value.submissionsResult ?: emptyList()
                                         )
                                     }
                                 }
 
-                                1 -> MyAnswersView(uistate.value.submissionsResult, surveyIndex)
+                                1 -> MyAnswersView(uistate.value.submissionsResult ?: emptyList(), surveyIndex)
                             }
                         }
                     }

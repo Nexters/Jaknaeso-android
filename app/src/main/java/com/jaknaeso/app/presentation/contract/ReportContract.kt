@@ -6,9 +6,9 @@ import com.jaknaeso.app.domain.model.RoundResult
 
 
 sealed interface ReportEvent : UiEvent {
-    data object GetLatestData : ReportEvent
-    data class GetParticularBundle(val bundleId: String, val characterId: String) : ReportEvent
-    data class SelectCharacterBundle(val characterNo: String, val characterId: String, val bundleId: String) :
+    data object GetCharacterData : ReportEvent
+    data class GetParticularCharacterData(val bundleId: String, val characterId: String) : ReportEvent
+    data class SelectCharacterData(val characterNo: String, val characterId: String, val bundleId: String) :
         ReportEvent
 
     data object ClickHome : ReportEvent
@@ -20,9 +20,9 @@ data class ReportState(
     val isError: Boolean = false,
     val isNoCharacterToShow: Boolean = false,
     val reportTitle: String,
-    val characters: List<Character> = emptyList(),
+    val characters: List<Character>? = emptyList(),
     val report: CharacterReport,
-    val submissionsResult: List<RoundResult> = emptyList(),
+    val submissionsResult: List<RoundResult>? = emptyList(),
 ) : UiState
 
 sealed interface ReportEffect : UiEffect {
