@@ -61,7 +61,8 @@ class RoundViewmodel @Inject constructor(
                     isLoading = false,
                     question = it,
                     isBalanceRound = isBalanceRound,
-                    surveyId = it?.surveyId
+                    surveyId = it?.surveyId,
+                    selectedOptionId = it!!.options[0].id //초기화 값은 첫번째 아이템
                 )
             }
         }
