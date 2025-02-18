@@ -12,6 +12,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material3.Button
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -71,95 +72,96 @@ fun ReportScreen(
             }
         }
     }
-    Scaffold(
-        modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral0),
-        bottomBar = {
-            LoopyBottomNavBar(
-                navigateToHome = navigateToHome,
-                navigateToReport = {},
-                navigateToProfile = navigateToProfile,
-                currentRoute = Route.Report
-            )
-        },
-        content = { paddingValues ->
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                if (isModalExpanded) {
-                    BasicBottomSheet(
-                        isVisible = isModalExpanded,
-                        onDismiss = { isModalExpanded = false }
-                    ) {
-                        CharacterSelectModalContent(
-                            onModalTitleClick = { isModalExpanded = false },
-                            onSelectionChanged = { characterNo, characterId, bundleId ->
-                                viewmodel.handleEvent(
-                                    ReportEvent.SelectCharacterBundle(
-                                        characterNo = characterNo,
-                                        characterId = characterId.toString(),
-                                        bundleId = bundleId.toString()
-                                    )
-                                )
-                            },
-                            characters = uistate.value.characters
-                        )
-                    }
-                }
-
+        Scaffold(
+            modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral0),
+            bottomBar = {
+                LoopyBottomNavBar(
+                    navigateToHome = navigateToHome,
+                    navigateToReport = {},
+                    navigateToProfile = navigateToProfile,
+                    currentRoute = Route.Report
+                )
+            },
+            content = { paddingValues ->
                 Column(
-                    modifier = Modifier
-                        .background(color = ColorPalette.Neautral0).fillMaxSize(1f).padding(paddingValues),
-                    verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Spacer(Modifier.fillMaxWidth().height(54.dp))
-                    Column(Modifier.padding(horizontal = 20.dp)) {
-                        LoopyAssistChip(
-                            onClick = { isModalExpanded = !isModalExpanded },
-                            label = uistate.value.reportTitle,
-                            labelStyle = TextStyles.title03,
-                            filledColor = Color.Transparent,
-                            labelColor = Color.Black,
-                            shape = RoundedCornerShape(8.dp),
-                            trailingIcon = painterResource(R.drawable.ic_arrow_down),
-                            trailingIconColor = ColorPalette.Neautral600
-                        )
-                        Spacer(modifier = Modifier.fillMaxWidth(1f).height(20.dp))
-                    }
-                    LoopyTabBar(
-                        initialPage = initialTabPage,
-                        tabBarTitles = listOf("캐릭터 분석", "나의 답변 모아보기"),
-                        onPage = { index ->
-                            scope.launch {
-                                pagerState.animateScrollToPage((pagerState.currentPage + 1) % 2)
+                    Column (
+                        modifier = Modifier
+                            .background(color = ColorPalette.Neautral0).padding(paddingValues),
+                        verticalArrangement = Arrangement.Top, horizontalAlignment = Alignment.Start
+                    ) {
+                        if (isModalExpanded) {
+                            BasicBottomSheet(
+                                isVisible = isModalExpanded,
+                                onDismiss = { isModalExpanded = false }
+                            ) {
+                                CharacterSelectModalContent(
+                                    onModalTitleClick = { isModalExpanded = false },
+                                    onSelectionChanged = { characterNo, characterId, bundleId ->
+                                        viewmodel.handleEvent(
+                                            ReportEvent.SelectCharacterBundle(
+                                                characterNo = characterNo,
+                                                characterId = characterId.toString(),
+                                                bundleId = bundleId.toString()
+                                            )
+                                        )
+                                    },
+                                    characters = uistate.value.characters
+                                )
                             }
-                        })
-                    HorizontalPager(state = pagerState, userScrollEnabled = false) { page ->
-                        when (page) {
-                            0 -> {
-                                if (uistate.value.isNoCharacterToShow) {
-                                    NoCharacterToShow(characterNo = uistate.value.reportTitle)
-                                } else {
-                                    CharacterAnalysisView(
-                                        report = uistate.value.report,
-                                        uistate.value.submissionsResult
-                                    )
+                        }
+                        Column {
+                            Spacer(Modifier.fillMaxWidth().height(54.dp))
+                            Column(Modifier.padding(horizontal = 20.dp)) {
+                                LoopyAssistChip(
+                                    onClick = { isModalExpanded = !isModalExpanded },
+                                    label = uistate.value.reportTitle,
+                                    labelStyle = TextStyles.title03,
+                                    filledColor = Color.Transparent,
+                                    labelColor = Color.Black,
+                                    shape = RoundedCornerShape(8.dp),
+                                    trailingIcon = painterResource(R.drawable.ic_arrow_down),
+                                    trailingIconColor = ColorPalette.Neautral600
+                                )
+                                Spacer(modifier = Modifier.fillMaxWidth(1f).height(20.dp))
+                            }
+                            LoopyTabBar(
+                                initialPage = initialTabPage,
+                                tabBarTitles = listOf("캐릭터 분석", "나의 답변 모아보기"),
+                                onPage = { index ->
+                                    scope.launch {
+                                        pagerState.animateScrollToPage((pagerState.currentPage + 1) % 2)
+                                    }
+                                })
+                            HorizontalPager(state = pagerState, userScrollEnabled = false) { page ->
+                                when (page) {
+                                    0 -> {
+                                        if (uistate.value.isNoCharacterToShow) {
+                                            NoCharacterToShow(characterNo = uistate.value.reportTitle)
+                                        } else {
+                                            CharacterAnalysisView(
+                                                report = uistate.value.report,
+                                                uistate.value.submissionsResult
+                                            )
+                                        }
+                                    }
+
+                                    1 -> MyAnswersView(uistate.value.submissionsResult, surveyIndex)
                                 }
                             }
-
-                            1 -> MyAnswersView(uistate.value.submissionsResult, surveyIndex)
                         }
                     }
                 }
             }
-
-        }
-    )
+        )
 }
 
 @Composable
 fun MyAnswersView(submissionResults: List<RoundResult>, expandedSurveyItemAtInitialized: String) {
-    Column {
+    Column(Modifier.fillMaxSize()) {
         Spacer(Modifier.fillMaxWidth().height(40.dp))
         LazyColumn(Modifier.padding(horizontal = 20.dp)) {
             itemsIndexed(items = submissionResults, key = { index, item -> item.index }) { index, data ->
