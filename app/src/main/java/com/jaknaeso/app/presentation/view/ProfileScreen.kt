@@ -75,43 +75,41 @@ fun ProfileScreen(
                     )
                 }
             )
-            Row(Modifier.fillMaxWidth(1f).padding(horizontal = 20.dp)) {
-                LoopyDialog(
-                    visible = showDialog,
-                    onDismiss = { showDialog = false }
+            LoopyDialog(
+                visible = showDialog,
+                onDismiss = { showDialog = false }
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 32.dp).padding(vertical = 36.dp),
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 32.dp).padding(vertical = 36.dp),
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        androidx.compose.material3.Text("정말 탈퇴하실 건가요?", style = TextStyles.title04)
-                        Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
-                        androidx.compose.material3.Text(
-                            "회원 탈퇴 시 지금까지 기록한 정보가\n 전부 삭제되고 복구가 불가능해요.",
-                            style = TextStyles.subTitle04,
-                            color = ColorPalette.Neautral700,
-                            softWrap = true,
-                            textAlign = TextAlign.Center
+                    androidx.compose.material3.Text("정말 탈퇴하실 건가요?", style = TextStyles.title04)
+                    Spacer(modifier = Modifier.fillMaxWidth(1f).height(16.dp))
+                    androidx.compose.material3.Text(
+                        "회원 탈퇴 시 지금까지 기록한 정보가\n 전부 삭제되고 복구가 불가능해요.",
+                        style = TextStyles.subTitle04,
+                        color = ColorPalette.Neautral700,
+                        softWrap = true,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(Modifier.fillMaxWidth(1f).height(24.dp))
+                    Row(modifier = Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.SpaceBetween) {
+                        LoopyFilledButton(
+                            "더 써볼게요",
+                            onClick = { showDialog = false },
+                            modifier = Modifier.fillMaxWidth(0.5f).padding(horizontal = 4.dp),
+                            height = 47.dp
                         )
-                        Spacer(Modifier.fillMaxWidth(1f).height(24.dp))
-                        Row(modifier = Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.SpaceBetween) {
-                            LoopyFilledButton(
-                                "더 써볼게요",
-                                onClick = { showDialog = false },
-                                modifier = Modifier.fillMaxWidth(0.5f).padding(horizontal = 4.dp),
-                                height = 47.dp
-                            )
-                            LoopyFilledButton(
-                                "떠날래요",
-                                onClick = { viewModel.handleEvent(ProfileEvent.DeleteMember) },
-                                modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 4.dp),
-                                filledColor = ColorPalette.Neautral200,
-                                textColor = ColorPalette.Neautral600,
-                                borderColor = ColorPalette.Neautral200,
-                                height = 47.dp
-                            )
-                        }
+                        LoopyFilledButton(
+                            "떠날래요",
+                            onClick = { viewModel.handleEvent(ProfileEvent.DeleteMember) },
+                            modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 4.dp),
+                            filledColor = ColorPalette.Neautral200,
+                            textColor = ColorPalette.Neautral600,
+                            borderColor = ColorPalette.Neautral200,
+                            height = 47.dp
+                        )
                     }
                 }
             }
