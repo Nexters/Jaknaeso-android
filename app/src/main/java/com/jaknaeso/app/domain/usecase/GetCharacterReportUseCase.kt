@@ -93,12 +93,28 @@ class GetCharacterReportUseCase @Inject constructor(
 
     fun mapTwoMostStrengthToDescription(report: List<CharacterPercentage>?, userName: String): String {
         val arrangedKeyWordPercentage = report?.sortedBy { it.percentage }
-        val firstStrength = arrangedKeyWordPercentage?.get(0)?.keyword
-        val secondStrength = arrangedKeyWordPercentage?.get(1)?.keyword
-        val conjunctiveParticle = getConjunctiveParticle(firstStrength)
-        val objectiveMarker = getObjectiveMarker(secondStrength)
+        val keyword1 = arrangedKeyWordPercentage?.get(0)?.keyword
+        val keyword2 = arrangedKeyWordPercentage?.get(2)?.keyword
+
+        val firstStrength = mapToKoreanCharacterWord(keyword1)
+        val secondStrength = mapToKoreanCharacterWord(keyword2)
+        val conjunctiveParticle = getConjunctiveParticle(keyword1)
+        val objectiveMarker = getObjectiveMarker(keyword2)
         return "${userName}님은 ${firstStrength}${conjunctiveParticle} ${secondStrength}${objectiveMarker}\n 가장 중요시 여기고 있어요."
 
+    }
+
+    fun mapToKoreanCharacterWord(word: String?): String {
+        return when (word) {
+            CharacterType.SELF_DIRECTION.name -> CharacterType.SELF_DIRECTION.koreanWord
+            CharacterType.ADVENTURE.name -> CharacterType.ADVENTURE.koreanWord
+            CharacterType.SECURITY.name -> CharacterType.SECURITY.koreanWord
+            CharacterType.STABILITY.name -> CharacterType.STABILITY.koreanWord
+            CharacterType.SUCCESS.name -> CharacterType.SUCCESS.koreanWord
+            CharacterType.BENEVOLENCE.name -> CharacterType.BENEVOLENCE.koreanWord
+            CharacterType.UNIVERSALISM.name -> CharacterType.UNIVERSALISM.koreanWord
+            else -> ""
+        }
     }
 
     fun getConjunctiveParticle(forwardWord: String?): String {
