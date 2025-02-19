@@ -63,31 +63,20 @@ class MemberDatastoreImpl @Inject constructor(
                 memberService.deleteMember(memberId).suspendOnSuccess {
                     result = this.data
                 }.suspendOnError {
-                    result = LoopyResult(
-                        result = ResponseResult.ERROR.name,
-                        data = null,
-                        error = ErrorData(code = this.response.code().toString(), message = "", data = null)
-                    )
+                    result = this.response.body()
                 }
             }
 
             memberService.deleteMember(memberId).suspendOnSuccess {
-                try {
-                    result = this.data
-                } catch (e: NoContentException) {
-                    LoopyResult(result = ResponseResult.SUCCESS.name, data = null, error = null)
-                }
+                result = this.data
             }.suspendOnError {
-                result = LoopyResult(
-                    result = ResponseResult.ERROR.name,
-                    data = null,
-                    error = ErrorData(code = this.response.code().toString(), message = "", data = null)
-                )
+                result = this.response.body()
                 if (this.response.code() == 401) {
                     refreshTokenManager.handleTokenRefresh(
                         retryCall = suspend { retryCall() },
                         onRefreshFailed = {
-                            result = LoopyResult(result = ResponseResult.REFRESH_FAILED.name, data = null, error = null)
+                            result =
+                                LoopyResult(result = ResponseResult.REFRESH_FAILED.name, data = null, error = null)
                         }
                     )
                 }
