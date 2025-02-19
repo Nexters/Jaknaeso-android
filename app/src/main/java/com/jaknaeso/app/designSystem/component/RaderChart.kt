@@ -22,18 +22,21 @@ import com.jaknaeso.app.designSystem.theme.TextStyles
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
-
 @Composable
 fun RadarChart(
     values: List<Float>,  // 8개의 값 (0~1 범위 가정)
     maxRadius: Float = 250f, // 차트 크기
     labels: List<String> = listOf(
-        "성장", "평화", "사회", "안전", "인정", "성취", "개인", "자유"
+        "모험","안정","자율","박애","보편","성취","안전"
     )
 ) {
     val numAxes = values.size
+    if (numAxes == 0) return  // 0일 경우 실행하지 않음
+
     val angleStep = (2 * PI / numAxes).toFloat()
-    val fontColors = mutableListOf<Color>()
+    if (!angleStep.isFinite()) return  // NaN 방지
+
+    val fontColors = MutableList(numAxes) { ColorPalette.Neautral600 }
 
     Box(modifier = Modifier.size((maxRadius * 2).dp), contentAlignment = Alignment.TopStart) {
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -46,6 +49,8 @@ fun RadarChart(
             // 축 그리기
             for (i in 0 until numAxes) {
                 val angle = angleStep * i - PI.toFloat() / 2
+                if (!angle.isFinite()) continue
+
                 val endX = center.x + maxRadius * cos(angle)
                 val endY = center.y + maxRadius * sin(angle)
                 drawLine(ColorPalette.Neautral600, center, Offset(endX, endY), strokeWidth = 1.16f)
@@ -55,11 +60,18 @@ fun RadarChart(
             val path = Path()
             values.forEachIndexed { index, value ->
                 val angle = angleStep * index - PI.toFloat() / 2
-                val radius = maxRadius * value
+                if (!angle.isFinite()) return@forEachIndexed // NaN 방지
+
+                val safeValue = value.takeIf { it.isFinite() } ?: 0f
+                val radius = maxRadius * safeValue
                 val x = center.x + radius * cos(angle)
                 val y = center.y + radius * sin(angle)
-                val fontColor = if (value > 0.5f) Color.Black else ColorPalette.Neautral600
-                fontColors.add(fontColor)
+
+                if (!x.isFinite() || !y.isFinite()) return@forEachIndexed  // NaN 방지
+
+                if (index < fontColors.size) {
+                    fontColors[index] = if (safeValue > 0.5f) Color.Black else ColorPalette.Neautral600
+                }
                 points.add(Offset(x, y))
             }
 
@@ -73,19 +85,24 @@ fun RadarChart(
         // 축 레이블 추가
         labels.forEachIndexed { index, label ->
             val angle = angleStep * index - PI.toFloat() / 2
+            if (!angle.isFinite()) return@forEachIndexed // NaN 방지
+
             val radius = maxRadius * 0.48f // 레이블 위치 조정
             val x = maxRadius + radius * cos(angle) - 64
             val y = maxRadius + radius * sin(angle) - 7
-            Box(
-                modifier = Modifier.offset(x.dp, y.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = label,
-                    style = TextStyles.body02,
-                    color = fontColors[index],
-                    textAlign = TextAlign.Center
-                )
+
+            if (x.isFinite() && y.isFinite()) {
+                Box(
+                    modifier = Modifier.offset(x.dp, y.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = label,
+                        style = TextStyles.body02,
+                        color = fontColors[index],
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }
@@ -102,6 +119,8 @@ private fun DrawScope.drawRadarLayer(
     val path = Path()
     for (i in 0 until numAxes) {
         val angle = angleStep * i - PI.toFloat() / 2
+        if (!angle.isFinite()) continue // NaN 방지
+
         val x = center.x + radius * cos(angle)
         val y = center.y + radius * sin(angle)
         if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
