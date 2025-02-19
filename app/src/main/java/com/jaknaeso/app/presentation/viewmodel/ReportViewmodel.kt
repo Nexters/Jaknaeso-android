@@ -171,7 +171,7 @@ class ReportViewmodel @Inject constructor(
 
     private fun isCharacterResultExisted(characterId: String): Boolean {
         val isCharacterSurveyCompleted = currentState.characters?.find { it.characterId.toString() == characterId }
-        if (isCharacterSurveyCompleted!!.isCompleted) {
+        if (isCharacterSurveyCompleted?.isCompleted == true) {
             return true
         }
         return false
