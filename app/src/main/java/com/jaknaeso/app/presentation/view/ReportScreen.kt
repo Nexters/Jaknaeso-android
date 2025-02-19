@@ -363,7 +363,7 @@ fun CharacterAnalysisView(report: CharacterReport, submissionResults: List<Round
                     )
                     Column(
                         horizontalAlignment = Alignment.Start,
-                        modifier = Modifier.padding(vertical = 40.dp).padding(horizontal = 20.dp)
+                        modifier = Modifier.padding(vertical = 48.dp).padding(horizontal = 20.dp)
                     ) {
                         Text("가치관 선택 비율", style = TextStyles.title03, modifier = Modifier.padding(bottom = 8.dp))
                         Text(
