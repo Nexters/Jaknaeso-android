@@ -51,7 +51,8 @@ fun ProfileScreen(
     }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(1f).background(color = Color.White),
+        modifier = Modifier.fillMaxSize(1f).background(color = Color.White)
+            .windowInsetsPadding(WindowInsets.statusBars),
     ) { paddingValues ->
         Box(
             modifier = Modifier.fillMaxSize(),

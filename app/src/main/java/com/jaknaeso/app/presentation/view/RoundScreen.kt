@@ -113,7 +113,7 @@ fun UserCommentModal(
         Column(
             modifier = Modifier.background(color = Color.White).padding(horizontal = 20.dp).windowInsetsPadding(
                 WindowInsets.navigationBars
-            )
+            ).windowInsetsPadding(WindowInsets.statusBars)
                 .fillMaxWidth(1f),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center

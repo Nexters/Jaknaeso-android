@@ -76,7 +76,8 @@ fun ReportScreen(
         }
     }
     Scaffold(
-        modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral0),
+        modifier = Modifier.fillMaxSize(1f).background(color = ColorPalette.Neautral0)
+            .windowInsetsPadding(WindowInsets.statusBars),
         bottomBar = {
             LoopyBottomNavBar(
                 navigateToHome = navigateToHome,
