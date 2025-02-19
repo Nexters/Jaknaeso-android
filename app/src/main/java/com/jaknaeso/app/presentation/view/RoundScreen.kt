@@ -1,6 +1,7 @@
 package com.jaknaeso.app.presentation.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -124,14 +125,18 @@ fun UserCommentModal(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text("답변을 선택한 이유를 알려주세요", style = TextStyles.title03, color = Color.Black)
-                Icon(painter = painterResource(R.drawable.ic_close), contentDescription = null, tint = Color.Black)
+                Icon(
+                    painter = painterResource(R.drawable.ic_close),
+                    contentDescription = null,
+                    tint = Color.Black,
+                    modifier = Modifier.clickable { handleEvent(RoundEvent.CloseModal) })
             }
             Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
             LoopyTextField(
                 value = enteredComment,
                 placeHolderValue = "오늘의 나에게 집중해서 적어보세요",
                 onValueChange = { onChangedCommentValue(it) },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             )
             Spacer(modifier = Modifier.fillMaxWidth().height(32.dp))
             Row(
