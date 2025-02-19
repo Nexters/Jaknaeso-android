@@ -25,7 +25,7 @@ fun LoopyDialog(
     if (visible) {
         Box(
             modifier = Modifier
-                .fillMaxSize().padding(horizontal = 20.dp)
+                .fillMaxSize()
                 .background(color = ColorPalette.ModalBackground).clickable { onDismiss() },
             contentAlignment = Alignment.Center
         ) {

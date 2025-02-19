@@ -16,6 +16,7 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
@@ -61,8 +62,8 @@ fun VerticalSliderForm(answerList: List<String>, onValueChange: (index: Int) -> 
 
     LaunchedEffect(value) {
         valueRanges.forEachIndexed { index, closedFloatingPointRange ->
-            if(value in closedFloatingPointRange){
-                isSelected = (size-1)-index
+            if (value in closedFloatingPointRange) {
+                isSelected = (size - 1) - index
             }
         }
     }
@@ -216,7 +217,7 @@ fun VerticalSlider(
                     painter = painterResource(R.drawable.ic_arrow_vertical_side),
                     contentDescription = "Thumb Icon",
                     tint = Color.White, // 아이콘 색상 설정
-                    modifier = Modifier.size(24.dp) // 아이콘 크기 조정
+                    modifier = Modifier.size(24.dp).rotate(90f) // 아이콘 크기 조정
                 )
             }
         }
