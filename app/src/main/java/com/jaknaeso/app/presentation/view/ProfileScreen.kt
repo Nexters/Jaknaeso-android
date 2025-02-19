@@ -57,24 +57,25 @@ fun ProfileScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Column(Modifier.fillMaxSize()) {
-                ProfileContent(
-                    paddingValues,
-                    name = uiState.name,
-                    email = uiState.email,
-                    onClickLogout = { viewModel.handleEvent(ProfileEvent.LogOutMember) },
-                    onClickDeleteMember = { showDialog = true },
-                    bottomNavigation = {
-                        LoopyBottomNavBar(
-                            navigateToHome = { navigateToHome() },
-                            navigateToReport = { navigateToReport(NO_BUNDLE_ID, NO_SURVEY_INDEX, NO_CHARACTER_ID) },
-                            navigateToProfile = { },
-                            currentRoute = Route.Profile
-                        )
-                    }
-                )
-            }
 
+            ProfileContent(
+                paddingValues,
+                name = uiState.name,
+                email = uiState.email,
+                onClickLogout = { viewModel.handleEvent(ProfileEvent.LogOutMember) },
+                onClickDeleteMember = {
+                    viewModel.handleEvent(ProfileEvent.DeleteMember)
+                    showDialog = true
+                },
+                bottomNavigation = {
+                    LoopyBottomNavBar(
+                        navigateToHome = { navigateToHome() },
+                        navigateToReport = { navigateToReport(NO_BUNDLE_ID, NO_SURVEY_INDEX, NO_CHARACTER_ID) },
+                        navigateToProfile = { },
+                        currentRoute = Route.Profile
+                    )
+                }
+            )
             LoopyDialog(
                 visible = showDialog,
                 onDismiss = { showDialog = false }
@@ -142,7 +143,11 @@ fun ProfileContent(
                 Text(email, style = TextStyles.subTitle04, color = ColorPalette.Neautral700)
             }
             Column {
-                Row(modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 20.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text("알림설정", style = TextStyles.subTitle03, color = ColorPalette.Neautral800)
                     Switch(
                         checked = isFcmEnabled,

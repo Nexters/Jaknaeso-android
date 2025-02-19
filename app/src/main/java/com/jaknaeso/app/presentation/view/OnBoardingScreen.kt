@@ -74,7 +74,7 @@ fun OnBoardingScreen(
         if (uiState.isLoading) {
             LoopyLoadingScreen()
         }
-        Scaffold(modifier = Modifier.fillMaxSize().background(Color.White)) { paddingValues ->
+        Scaffold(modifier = Modifier.fillMaxSize().background(Color.White).windowInsetsPadding(WindowInsets.navigationBars)) { paddingValues ->
             Column(
                 Modifier.fillMaxSize().background(Color.White),
                 verticalArrangement = Arrangement.SpaceBetween
