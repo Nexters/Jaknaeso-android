@@ -15,14 +15,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewmodel @Inject constructor(
-    private val checkLoginedUserUseCase: CheckLoginedUserUseCase,
     private val postAccessTokenUseCase: PostAccessTokenUseCase,
 ) :
     BaseViewModel<LoginEvent, LoginState, LoginEffect>() {
 
-    init {
-        branchInitialRoute()
-    }
 
     override fun createInitialState(): LoginState {
         return LoginState
@@ -54,14 +50,6 @@ class LoginViewmodel @Inject constructor(
             setEffect(LoginEffect.NavigateToHome)
         } else {
             setEffect(LoginEffect.NavigateToOnboarding)
-        }
-    }
-
-    fun branchInitialRoute() {
-        viewModelScope.launch {
-            if (checkLoginedUserUseCase.isLoginedUser()) {
-                setEffect(LoginEffect.NavigateToHome)
-            }
         }
     }
 }
