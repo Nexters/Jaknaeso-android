@@ -100,7 +100,7 @@ class GetCharacterReportUseCase @Inject constructor(
         val secondStrength = mapToKoreanCharacterWord(keyword2)
         val conjunctiveParticle = getConjunctiveParticle(keyword1)
         val objectiveMarker = getObjectiveMarker(keyword2)
-        return "${userName}님은 ${firstStrength}${conjunctiveParticle} ${secondStrength}${objectiveMarker}\n 가장 중요시 여기고 있어요."
+        return "${userName}님은 ${firstStrength}${conjunctiveParticle} ${secondStrength}${objectiveMarker}\n가장 중요시 여기고 있어요."
 
     }
 
@@ -126,14 +126,13 @@ class GetCharacterReportUseCase @Inject constructor(
                 CharacterType.UNIVERSALISM.name,
                 CharacterType.SECURITY.name
             )
-        ) {//모험, 안정, 자율,보편,안전
+        ) {
             return "과"
         } else {
             return "와"
         }
     }
 
-    // "모험", "안정", "자율", "박애", "보편", "성취", "안전"순서로 삽입
     fun getObjectiveMarker(forwardWord: String?): String {
         if (forwardWord == null) return ""
         if (forwardWord in listOf(
@@ -143,10 +142,10 @@ class GetCharacterReportUseCase @Inject constructor(
                 CharacterType.UNIVERSALISM.name,
                 CharacterType.SECURITY.name
             )
-        ) {//모험, 안정, 자율,보편,안전
-            return "과"
+        ) {
+            return "을"
         } else {
-            return "와"
+            return "를"
         }
     }
 }
