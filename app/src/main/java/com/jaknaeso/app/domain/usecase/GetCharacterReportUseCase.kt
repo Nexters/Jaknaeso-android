@@ -23,6 +23,7 @@ class GetCharacterReportUseCase @Inject constructor(
             val response = characterRepository.getCharacterReport(characterId, memberId)
             val keywordGraphResponse =
                 characterRepository.getCharacterGraphValue(characterId = characterId, memberId = memberId)
+            val userName = memberRepository.getMember(memberId)
             if (response?.result == ResponseResult.ERROR.name) {
                 return flow { throw Exception(response.error?.code.toString()) }
             } else if (response?.result == ResponseResult.REFRESH_FAILED.name) {
@@ -42,6 +43,10 @@ class GetCharacterReportUseCase @Inject constructor(
                                 mainTraits = data.mainTraits.map { it.description },
                                 strengths = data.strengths.map { it.description },
                                 weaknesses = data.weaknesses.map { it.description },
+                                keywordStrenthDescription = mapTwoMostStrengthToDescription(
+                                    keywordGraphResponse.data?.valueReports,
+                                    userName?.data?.name ?: "" //userName은 따로 에러처리 안 하고 바로 붙임
+                                ),
                                 keywordPercentage = mapToKeywordPercentage(keywordGraphResponse.data?.valueReports)
                             )
                         )
@@ -83,6 +88,49 @@ class GetCharacterReportUseCase @Inject constructor(
         )
         return tmp.map {
             round((it / 100f) * 10f) / 10f
+        }
+    }
+
+    fun mapTwoMostStrengthToDescription(report: List<CharacterPercentage>?, userName: String): String {
+        val arrangedKeyWordPercentage = report?.sortedBy { it.percentage }
+        val firstStrength = arrangedKeyWordPercentage?.get(0)?.keyword
+        val secondStrength = arrangedKeyWordPercentage?.get(1)?.keyword
+        val conjunctiveParticle = getConjunctiveParticle(firstStrength)
+        val objectiveMarker = getObjectiveMarker(secondStrength)
+        return "${userName}님은 ${firstStrength}${conjunctiveParticle} ${secondStrength}${objectiveMarker}\n 가장 중요시 여기고 있어요."
+
+    }
+
+    fun getConjunctiveParticle(forwardWord: String?): String {
+        if (forwardWord == null) return ""
+        if (forwardWord in listOf(
+                CharacterType.ADVENTURE.name,
+                CharacterType.STABILITY.name,
+                CharacterType.SELF_DIRECTION.name,
+                CharacterType.UNIVERSALISM.name,
+                CharacterType.SECURITY.name
+            )
+        ) {//모험, 안정, 자율,보편,안전
+            return "과"
+        } else {
+            return "와"
+        }
+    }
+
+    // "모험", "안정", "자율", "박애", "보편", "성취", "안전"순서로 삽입
+    fun getObjectiveMarker(forwardWord: String?): String {
+        if (forwardWord == null) return ""
+        if (forwardWord in listOf(
+                CharacterType.ADVENTURE.name,
+                CharacterType.STABILITY.name,
+                CharacterType.SELF_DIRECTION.name,
+                CharacterType.UNIVERSALISM.name,
+                CharacterType.SECURITY.name
+            )
+        ) {//모험, 안정, 자율,보편,안전
+            return "과"
+        } else {
+            return "와"
         }
     }
 }

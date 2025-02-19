@@ -367,14 +367,20 @@ fun CharacterAnalysisView(report: CharacterReport, submissionResults: List<Round
                     ) {
                         Text("가치관 선택 비율", style = TextStyles.title03, modifier = Modifier.padding(bottom = 8.dp))
                         Text(
-                            "{userName님은 성장과 평화를 가장 중요시 여기고 있어요.}",
+                            text = report.keywordStrenthDescription,
                             style = TextStyles.subTitle04,
                             color = ColorPalette.Neautral700,
-                            softWrap = true
+                            softWrap = true,
+                            maxLines = 2
                         )
                         Spacer(modifier = Modifier.fillMaxWidth().height(24.dp))
-//
-                        RadarChart(values = report.keywordPercentage)
+                        Column(
+                            Modifier.fillMaxWidth(1f),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            RadarChart(values = report.keywordPercentage, extraHorizontalPadding = 20.dp)
+                        }
                     }
 //                    Spacer(
 //                        modifier = Modifier.fillMaxWidth().height(1.dp).background(color = ColorPalette.Neautral300)
@@ -511,10 +517,11 @@ fun CharacterAnalysisPreview() {
             R.raw.benevolence,
             "성장을 중요시 여기는 모함가 타입은 새로운 즐거움을 발굴하는 것을 가장 중요시 여기는 유형이에요",
             "2024.10.10 - 2024.10.25",
+            mainTraits = emptyList(),
+            strengths = emptyList(),
             emptyList(),
-            emptyList(),
-            emptyList(),
-            emptyList()
+            keywordStrenthDescription = "",
+            keywordPercentage = listOf(0.3f, 0.5f, 0.6f, 0.7f, 0.5f, 0.6f, 0.7f)
         ),
         emptyList()
     )

@@ -32,7 +32,7 @@ class ReportViewmodel @Inject constructor(
         return ReportState(
             reportTitle = "첫번째 캐릭터", report = CharacterReport(
                 null, null, null, null, null, null,
-                emptyList(), emptyList(), emptyList(), emptyList()
+                emptyList(), emptyList(), emptyList(), "", emptyList()
             )
         )
     }

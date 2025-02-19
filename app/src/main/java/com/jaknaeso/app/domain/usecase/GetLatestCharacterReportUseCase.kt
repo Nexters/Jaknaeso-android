@@ -37,6 +37,7 @@ class GetLatestCharacterReportUseCase @Inject constructor(
                             mainTraits = data.mainTraits.map { it.description },
                             strengths = data.strengths.map { it.description },
                             weaknesses = data.weaknesses.map { it.description },
+                            keywordStrenthDescription = "",
                             keywordPercentage = emptyList()
                             )
                     )
