@@ -8,6 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jaknaeso.app.R
 import com.jaknaeso.app.designSystem.component.LoopyFilledButton
@@ -16,11 +17,9 @@ import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
 fun RoundCompleteScreen(navigateToHome: () -> Unit, remaingRounds: Int) {
-
-
     Box(Modifier.fillMaxSize().background(color = Color.White).padding(horizontal = 20.dp)) {
         Column(
-            Modifier.fillMaxSize(),
+            Modifier.fillMaxWidth().fillMaxHeight(0.7f).windowInsetsPadding(WindowInsets.statusBars),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -48,4 +47,10 @@ fun RoundCompleteScreen(navigateToHome: () -> Unit, remaingRounds: Int) {
             )
         }
     }
+}
+
+@Composable
+@Preview
+fun RoundCompleteScreenPreview(){
+    RoundCompleteScreen({},0)
 }
