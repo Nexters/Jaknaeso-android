@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -57,22 +58,20 @@ fun ReportScreen(
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        if (surveyIndex == NO_SURVEY_INDEX && bundleId == NO_BUNDLE_ID) {
-            viewmodel.handleEvent(ReportEvent.GetCharacterData)
-        } else {
+        viewmodel.handleEvent(ReportEvent.GetCharactersList(bundleId)) //캐릭터리스트 먼저 호출하고 나면 CompletedLoadCharacterList에서 캐릭터가 얻어짐
+
+        if (surveyIndex != NO_SURVEY_INDEX && bundleId != NO_BUNDLE_ID) { //캐릭터리스트가 로드된 후에 호출할 필요가 없음
             pagerState.animateScrollToPage(1)
             viewmodel.handleEvent(
-                ReportEvent.GetParticularCharacterData(
-                    bundleId,
-                    characterId = characterId
-                )
-            ) //번들Id, characterId는 같은 세트가 아닌데...
+                ReportEvent.GetParticularCharacterData(bundleId)
+            )
         }
         viewmodel.effects.collectLatest { effect ->
             when (effect) {
                 ReportEffect.NavigateToHome -> navigateToHome()
                 ReportEffect.NavigateToProfile -> navigateToProfile()
                 ReportEffect.NavigateToLogin -> navigateToLogin()
+                ReportEffect.CompletedLoadCharacterList -> viewmodel.handleEvent(ReportEvent.GetFirstCharacterData)
             }
         }
     }
@@ -141,20 +140,24 @@ fun ReportScreen(
                                     pagerState.animateScrollToPage((pagerState.currentPage + 1) % 2)
                                 }
                             })
-                        HorizontalPager(state = pagerState, userScrollEnabled = false) { page ->
-                            when (page) {
-                                0 -> {
-                                    if (uistate.value.isNoCharacterToShow) {
-                                        NoCharacterToShow(characterNo = uistate.value.reportTitle)
-                                    } else {
-                                        CharacterAnalysisView(
-                                            report = uistate.value.report,
-                                            uistate.value.submissionsResult ?: emptyList()
-                                        )
+                        if (uistate.value.isLoading) {
+                            LoopyLoadingScreen()
+                        } else {
+                            HorizontalPager(state = pagerState, userScrollEnabled = false) { page ->
+                                when (page) {
+                                    0 -> {
+                                        if (uistate.value.isNoCharacterToShow) {
+                                            NoCharacterToShow(characterNo = uistate.value.reportTitle)
+                                        } else {
+                                            CharacterAnalysisView(
+                                                report = uistate.value.report,
+                                                uistate.value.submissionsResult ?: emptyList()
+                                            )
+                                        }
                                     }
-                                }
 
-                                1 -> MyAnswersView(uistate.value.submissionsResult ?: emptyList(), surveyIndex)
+                                    1 -> MyAnswersView(uistate.value.submissionsResult ?: emptyList(), surveyIndex)
+                                }
                             }
                         }
                     }
@@ -166,6 +169,16 @@ fun ReportScreen(
 
 @Composable
 fun MyAnswersView(submissionResults: List<RoundResult>, expandedSurveyItemAtInitialized: String) {
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            val index = if (submissionResults.size > 1) 10 else 1 //왜 안 되지
+            listState.animateScrollToItem(index)
+        }
+    }
+
     Column(Modifier.fillMaxSize()) {
         Spacer(Modifier.fillMaxWidth().height(40.dp))
         LazyColumn(Modifier.padding(horizontal = 20.dp)) {
@@ -359,50 +372,53 @@ fun CharacterAnalysisView(report: CharacterReport, submissionResults: List<Round
                             color = ColorPalette.Neautral700,
                             softWrap = true
                         )
+                        Spacer(modifier = Modifier.fillMaxWidth().height(24.dp))
+//
+                        RadarChart(values = report.keywordPercentage)
                     }
-                    Spacer(
-                        modifier = Modifier.fillMaxWidth().height(1.dp).background(color = ColorPalette.Neautral300)
-                    )
-                    Column(modifier = Modifier.padding(top = 40.dp, bottom = 24.dp).padding(horizontal = 20.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = "회고를 자주 남긴 주제는 ",
-                                style = TextStyles.title03,
-                                color = Color.Black,
-                                modifier = Modifier.padding(end = 9.dp)
-                            )
-                            LoopyAssistChip(
-                                enabled = false,
-                                label = "{value}",
-                                labelStyle = TextStyles.subTitle03,
-                                filledColor = ColorPalette.PrimaryBlue100,
-                                labelColor = ColorPalette.PrimaryBlue500,
-                                shape = RoundedCornerShape(5.dp),
-                            )
-                            Text(
-                                text = " 예요.",
-                                style = TextStyles.title03,
-                                color = Color.Black,
-                                modifier = Modifier.padding(start = 7.dp)
-                            )
-                        }
-                    }
+//                    Spacer(
+//                        modifier = Modifier.fillMaxWidth().height(1.dp).background(color = ColorPalette.Neautral300)
+//                    )
+//                    Column(modifier = Modifier.padding(top = 40.dp, bottom = 24.dp).padding(horizontal = 20.dp)) {
+//                        Row(verticalAlignment = Alignment.CenterVertically) {
+//                            Text(
+//                                text = "회고를 자주 남긴 주제는 ",
+//                                style = TextStyles.title03,
+//                                color = Color.Black,
+//                                modifier = Modifier.padding(end = 9.dp)
+//                            )
+//                            LoopyAssistChip(
+//                                enabled = false,
+//                                label = "{value}",
+//                                labelStyle = TextStyles.subTitle03,
+//                                filledColor = ColorPalette.PrimaryBlue100,
+//                                labelColor = ColorPalette.PrimaryBlue500,
+//                                shape = RoundedCornerShape(5.dp),
+//                            )
+//                            Text(
+//                                text = " 예요.",
+//                                style = TextStyles.title03,
+//                                color = Color.Black,
+//                                modifier = Modifier.padding(start = 7.dp)
+//                            )
+//                        }
+//                    }
                 }
             }
-            itemsIndexed(items = submissionResults) { index, item ->
-                Column(Modifier.padding(horizontal = 20.dp)) {
-                    DropdownCard(
-                        shellContent = {
-                            DropdownCardShellContent(index = index)
-                        },
-                        initialExpanded = false,
-                        mainContent = {
-                            DropdownCardMainContent(item)
-                        }
-                    )
-                }
-                Spacer(modifier = Modifier.fillMaxWidth().height(18.dp))
-            }
+//            itemsIndexed(items = submissionResults) { index, item ->
+//                Column(Modifier.padding(horizontal = 20.dp)) {
+//                    DropdownCard(
+//                        shellContent = {
+//                            DropdownCardShellContent(index = index)
+//                        },
+//                        initialExpanded = false,
+//                        mainContent = {
+//                            DropdownCardMainContent(item)
+//                        }
+//                    )
+//                }
+//                Spacer(modifier = Modifier.fillMaxWidth().height(18.dp))
+//            }
         }
     }
 }
@@ -495,6 +511,7 @@ fun CharacterAnalysisPreview() {
             R.raw.benevolence,
             "성장을 중요시 여기는 모함가 타입은 새로운 즐거움을 발굴하는 것을 가장 중요시 여기는 유형이에요",
             "2024.10.10 - 2024.10.25",
+            emptyList(),
             emptyList(),
             emptyList(),
             emptyList()

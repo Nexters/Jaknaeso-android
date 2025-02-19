@@ -6,8 +6,9 @@ import com.jaknaeso.app.domain.model.RoundResult
 
 
 sealed interface ReportEvent : UiEvent {
-    data object GetCharacterData : ReportEvent
-    data class GetParticularCharacterData(val bundleId: String, val characterId: String) : ReportEvent
+    data class GetCharactersList(val bundleId: String) : ReportEvent
+    data object GetFirstCharacterData : ReportEvent
+    data class GetParticularCharacterData(val bundleId: String) : ReportEvent
     data class SelectCharacterData(val characterNo: String, val characterId: String, val bundleId: String) :
         ReportEvent
 
@@ -29,4 +30,5 @@ sealed interface ReportEffect : UiEffect {
     data object NavigateToLogin : ReportEffect
     data object NavigateToHome : ReportEffect
     data object NavigateToProfile : ReportEffect
+    data object CompletedLoadCharacterList : ReportEffect
 }
