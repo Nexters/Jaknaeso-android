@@ -21,11 +21,13 @@ fun LottieImageView(rawFile: Int?, width:Dp=240.dp, height:Dp=240.dp) {
         modifier = Modifier.width(width).height(height)
             .background(color = Color.Transparent, shape = RoundedCornerShape(25.dp))
     ) {
-        LottieAnimation(
-            composition = composition,
-            iterations = LottieConstants.IterateForever,
-            clipSpec = LottieClipSpec.Progress(0.5f, 0.75f)
-        )
+        if(rawFile != null){
+            LottieAnimation(
+                composition = composition,
+                iterations = LottieConstants.IterateForever,
+                clipSpec = LottieClipSpec.Progress(0.5f, 0.75f)
+            )
+        }
     }
 }
 
