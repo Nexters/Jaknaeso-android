@@ -143,10 +143,10 @@ class ReportViewmodel @Inject constructor(
 
                 Result.Loading -> {}
                 is Result.Success -> {
+                    setState { copy(characters = it.data) }
                     if (isGetFirstCharacter) {
                         setEffect(ReportEffect.CompletedLoadCharacterList)
                     }
-                    setState { copy(characters = it.data, isLoading = false) }
                 }
             }
         }
