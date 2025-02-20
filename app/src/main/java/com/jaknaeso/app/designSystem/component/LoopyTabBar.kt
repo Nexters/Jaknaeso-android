@@ -1,6 +1,8 @@
 package com.jaknaeso.app.designSystem.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -50,7 +52,7 @@ fun LoopyTabBar(initialPage:Int, onPage: (index: Int) -> Unit, tabBarTitles: Lis
                     enabled = true,
                     selectedContentColor = Color.Transparent,
                     unselectedContentColor = Color.Transparent,
-                    modifier = Modifier.background(color = ColorPalette.Neautral0).padding(horizontal = 8.dp)
+                    modifier = Modifier.background(color = ColorPalette.Neautral0).padding(horizontal = 8.dp).clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {  }
                 ) {
                     Text(
                         text = title,

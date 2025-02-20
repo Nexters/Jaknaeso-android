@@ -16,7 +16,7 @@ import com.jaknaeso.app.designSystem.theme.TextStyles
 @Composable
 fun LoopyLoadingScreen() {
     Box(modifier = Modifier.fillMaxSize().background(color = Color.Transparent), contentAlignment = Alignment.Center) {
-        LottieImageView(rawFile = R.raw.loopy_loading, 200.dp, 200.dp)
+        LottieImageView(rawFile = R.raw.loopy_loading, width =200.dp, height = 200.dp)
     }
 }
 
