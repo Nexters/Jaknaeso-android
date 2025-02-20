@@ -74,7 +74,9 @@ fun OnBoardingScreen(
         if (uiState.isLoading) {
             LoopyLoadingScreen()
         }
-        Scaffold(modifier = Modifier.fillMaxSize().background(Color.White).windowInsetsPadding(WindowInsets.navigationBars)) { paddingValues ->
+        Scaffold(
+            modifier = Modifier.fillMaxSize().background(Color.White).windowInsetsPadding(WindowInsets.navigationBars)
+        ) { paddingValues ->
             Column(
                 Modifier.fillMaxSize().background(Color.White),
                 verticalArrangement = Arrangement.SpaceBetween
@@ -88,7 +90,7 @@ fun OnBoardingScreen(
                     ) { page ->
                         if (page < viewmodel.ONBOARD_INFO_PAGE) { //온보딩 게임 전
                             Column(
-                                modifier = Modifier.wrapContentHeight().padding(top=50.dp),
+                                modifier = Modifier.wrapContentHeight().padding(top = 50.dp),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
@@ -339,7 +341,7 @@ fun OnBoardingPreview() {
                     Option(id = "0", optionContents = "짜장"),
                     Option(id = "0", optionContents = "짜장"),
                     Option(id = "0", optionContents = "짜장"),
-                    Option(id = "0", optionContents = "짜장")
+                    Option(id = "0", optionContents = "짬뽕")
                 )
             ),
             onChangedOption = { optionIndex ->

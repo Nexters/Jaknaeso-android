@@ -171,9 +171,9 @@ fun ProfileContent(
                     onClick = {onClickPolicy()}
                 )
             }
+            Spacer(Modifier.fillMaxWidth(1f).height(10.dp))
+            Spacer(modifier = Modifier.background(color = ColorPalette.Neautral300).fillMaxWidth(1f).height(1.dp))
             Column(Modifier.padding(horizontal = 20.dp)) {
-                Spacer(Modifier.fillMaxWidth(1f).height(10.dp))
-                Spacer(modifier = Modifier.background(color = ColorPalette.Neautral300).fillMaxWidth(1f).height(1.dp))
                 Spacer(Modifier.fillMaxWidth(1f).height(10.dp))
                 ClickableText(
                     text = "오픈소스 라이센스",
