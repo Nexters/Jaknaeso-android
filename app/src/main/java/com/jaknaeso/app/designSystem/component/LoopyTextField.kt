@@ -12,9 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,7 +20,12 @@ import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
-fun LoopyTextField(value: String, onValueChange: (value: String) -> Unit, placeHolderValue: String, modifier: Modifier = Modifier) {
+fun LoopyTextField(
+    value: String,
+    onValueChange: (value: String) -> Unit,
+    placeHolderValue: String,
+    modifier: Modifier = Modifier
+) {
     TextField(
         value = value,
         onValueChange = onValueChange,
@@ -96,7 +98,7 @@ fun LoopyTextField(value: String, onValueChange: (value: String) -> Unit, placeH
 @Preview
 @Composable
 fun PreviewLoopyTextField() {
-    Column(Modifier.fillMaxWidth(1f)){
+    Column(Modifier.fillMaxWidth(1f)) {
         LoopyTextField(
             value = "",
             placeHolderValue = "오늘의 나에게 집중해서 적어보세요",

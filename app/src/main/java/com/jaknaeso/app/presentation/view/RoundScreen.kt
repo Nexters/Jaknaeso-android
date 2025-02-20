@@ -11,7 +11,9 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,6 +24,7 @@ import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.presentation.contract.RoundEffect
 import com.jaknaeso.app.presentation.contract.RoundEvent
 import com.jaknaeso.app.presentation.viewmodel.RoundViewmodel
+import kotlinx.coroutines.launch
 
 @Composable
 fun RoundScreen(
@@ -100,7 +103,19 @@ fun UserCommentModal(
     onChangedCommentValue: (value: String) -> Unit,
     handleEvent: (RoundEvent) -> Unit
 ) {
+    val density = LocalDensity.current
+    val keyboardDensity = WindowInsets.ime.getBottom(density)
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false)
+    val scope = rememberCoroutineScope()
+    val isImeVisible by remember {
+        derivedStateOf { keyboardDensity > 0 }
+    }
+
+    LaunchedEffect(isImeVisible) {
+        if (isImeVisible) {
+            sheetState.expand()
+        }
+    }
 
     ModalBottomSheet(
         onDismissRequest = { handleEvent(RoundEvent.CloseModal) },
@@ -111,9 +126,8 @@ fun UserCommentModal(
         windowInsets = WindowInsets.ime
     ) {
         Column(
-            modifier = Modifier.background(color = Color.White).padding(horizontal = 20.dp).windowInsetsPadding(
-                WindowInsets.navigationBars
-            ).windowInsetsPadding(WindowInsets.statusBars)
+            modifier = Modifier.background(color = Color.White).padding(horizontal = 20.dp)
+                .windowInsetsPadding(WindowInsets.statusBars)
                 .fillMaxWidth(1f),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center
@@ -136,7 +150,10 @@ fun UserCommentModal(
                 value = enteredComment,
                 placeHolderValue = "오늘의 나에게 집중해서 적어보세요",
                 onValueChange = { onChangedCommentValue(it) },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+                    .onFocusEvent {
+                        scope.launch { sheetState.expand() }
+                    }
             )
             Spacer(modifier = Modifier.fillMaxWidth().height(32.dp))
             Row(
