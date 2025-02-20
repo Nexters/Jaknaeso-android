@@ -31,7 +31,7 @@ fun LoopyDialog(
         ) {
             Box(
                 modifier = Modifier.wrapContentSize()
-                    .background(Color.White, shape = RoundedCornerShape(20.dp)).padding(horizontal = 20.dp),
+                    .background(Color.White, shape = RoundedCornerShape(20.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 content()

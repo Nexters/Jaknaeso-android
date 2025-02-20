@@ -11,8 +11,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -38,7 +36,7 @@ import com.kakao.sdk.user.UserApiClient
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LoginScreen(
-    navigateToOnBoarding: () -> Unit,
+    navigateToInformation: () -> Unit,
     navigateToHome: () -> Unit,
     navigateToPolicy:()->Unit,
     viewmodel: LoginViewmodel = hiltViewModel()
@@ -52,8 +50,8 @@ fun LoginScreen(
                     navigateToHome()
                 }
 
-                LoginEffect.NavigateToOnboarding -> {
-                    navigateToOnBoarding()
+                LoginEffect.NavigateToInformation -> {
+                    navigateToInformation()
                 }
             }
         }

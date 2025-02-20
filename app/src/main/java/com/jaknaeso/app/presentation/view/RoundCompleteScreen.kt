@@ -17,13 +17,17 @@ import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
 fun RoundCompleteScreen(navigateToHome: () -> Unit, remaingRounds: Int) {
-    Box(Modifier.fillMaxSize().background(color = Color.White).padding(horizontal = 20.dp)) {
+    Column(
+        Modifier.fillMaxSize().background(color = Color.White).padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
         Column(
-            Modifier.fillMaxWidth().fillMaxHeight(0.7f).windowInsetsPadding(WindowInsets.statusBars),
+            Modifier.fillMaxWidth().weight(1f).windowInsetsPadding(WindowInsets.statusBars)
+                .windowInsetsPadding(WindowInsets.navigationBars),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "오늘의 질문 답변을 완료했어요!", style = TextStyles.title02, softWrap = true)
+            Text(text = "${15-remaingRounds}차 질문에\n답변을 완료했어요!", style = TextStyles.title02, softWrap = true, textAlign = TextAlign.Center)
             Spacer(Modifier.height(20.dp))
             Text(
                 text = "캐릭터 완성까지 ${remaingRounds}회 남았어요",
@@ -32,10 +36,10 @@ fun RoundCompleteScreen(navigateToHome: () -> Unit, remaingRounds: Int) {
                 softWrap = true
             )
             Spacer(Modifier.height(40.dp))
-            LottieImageView(R.raw.paper_pollen)
+            LottieImageView(R.raw.paper_pollen, isFullScreen = true)
         }
         Column(
-            Modifier.fillMaxSize().padding(bottom = 62.dp),
+            Modifier.padding(bottom = 28.dp),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -51,6 +55,6 @@ fun RoundCompleteScreen(navigateToHome: () -> Unit, remaingRounds: Int) {
 
 @Composable
 @Preview
-fun RoundCompleteScreenPreview(){
-    RoundCompleteScreen({},0)
+fun RoundCompleteScreenPreview() {
+    RoundCompleteScreen({}, 0)
 }

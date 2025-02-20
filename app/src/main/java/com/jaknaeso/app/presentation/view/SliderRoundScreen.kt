@@ -67,7 +67,7 @@ fun SliderContent(
 ) {
     var selectedIndex by remember { mutableStateOf(0) } //0이 VerticalSliderForm 디폴트 값
     Column(
-        Modifier.padding(horizontal = 20.dp).padding(top = 54.dp, bottom = 28.dp).fillMaxSize(1f),
+        Modifier.padding(horizontal = 20.dp).padding(top = 54.dp, bottom = 28.dp).fillMaxWidth(1f),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
