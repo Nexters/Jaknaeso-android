@@ -162,8 +162,6 @@ fun ProfileContent(
             }
             Column(Modifier.padding(horizontal = 20.dp)) {
                 Spacer(Modifier.fillMaxWidth(1f).height(10.dp))
-                Spacer(modifier = Modifier.background(color = ColorPalette.Neautral300).fillMaxWidth(1f).height(1.dp))
-                Spacer(Modifier.fillMaxWidth(1f).height(10.dp))
                 ClickableText(
                     text = "이용약관",
                     textStyle = TextStyles.subTitle03,
