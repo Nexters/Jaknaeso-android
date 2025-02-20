@@ -1,10 +1,7 @@
 package com.jaknaeso.app.designSystem.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
@@ -29,8 +26,8 @@ fun Loopysnackbar(snackbarHostState: SnackbarHostState, content: @Composable () 
             modifier = Modifier.background(
                 color = ColorPalette.GlassBlack.copy(alpha = 0.95f),
                 shape = RoundedCornerShape(12.dp)
-            )
-                .fillMaxWidth(1f)
+            ).fillMaxWidth(1f).fillMaxHeight(1f),
+            verticalArrangement = Arrangement.Center
         ) {
             content()
         }
@@ -39,7 +36,7 @@ fun Loopysnackbar(snackbarHostState: SnackbarHostState, content: @Composable () 
 
 @Preview
 @Composable
-fun LoopysnackbarPrevie(){
+fun LoopysnackbarPrevie() {
     val snackbarHostState = remember { SnackbarHostState() }
     Loopysnackbar(snackbarHostState = snackbarHostState) {
         Text(
