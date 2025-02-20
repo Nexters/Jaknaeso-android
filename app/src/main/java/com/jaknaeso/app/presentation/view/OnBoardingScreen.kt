@@ -29,6 +29,9 @@ import com.jaknaeso.app.domain.model.RoundQuestion
 import com.jaknaeso.app.domain.model.SurveyType
 import com.jaknaeso.app.presentation.contract.OnBoardingEffect
 import com.jaknaeso.app.presentation.contract.OnBoardingEvent
+import com.jaknaeso.app.presentation.navigation.NO_BUNDLE_ID
+import com.jaknaeso.app.presentation.navigation.NO_CHARACTER_ID
+import com.jaknaeso.app.presentation.navigation.NO_SURVEY_INDEX
 import com.jaknaeso.app.presentation.viewmodel.OnBoardingViewmodel
 import kotlinx.coroutines.launch
 
@@ -36,40 +39,27 @@ import kotlinx.coroutines.launch
 @Composable
 fun OnBoardingScreen(
     navigateToLogin: () -> Unit,
-    navigateToHome: () -> Unit,
+    navigateToReport: (bundleId: String, surveyIndex: String, characterId: String) -> Unit,
     viewmodel: OnBoardingViewmodel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val uiState by viewmodel.uiState.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(pageCount = { uiState.pageCount })
-    val infoContents = listOf(
-        Pair("매일 가치관을 묻는 질문에 답변하고", "나의 하루를 돌아보세요"),
-        Pair("15일 동안 답변하면", "나의 가치관 캐릭터를 알 수 있어요"),
-        Pair("답변에 대한 나의 생각을 적어", "그날의 나를 돌아볼 수 있어요"),
-        Pair("먼저 가치관 테스트를 통해", "나의 가치관 캐릭터를 만들어 볼까요?")
-    )
-    val images = listOf(
-        painterResource(R.drawable.onboard_slider),
-        painterResource(R.drawable.onboard_characters),
-        painterResource(R.drawable.onboard_enter),
-        null
-    )
-    val lotties = listOf(null, null, null, R.raw.doing_phone)
 
     LaunchedEffect(Unit) {
         viewmodel.handleEvent(OnBoardingEvent.GetOnboardingData)
         viewmodel.effects.collect { effect ->
             when (effect) {
-                OnBoardingEffect.NavigateToHome -> navigateToHome()
+                OnBoardingEffect.NavigateToHome -> navigateToReport(NO_BUNDLE_ID, NO_SURVEY_INDEX, NO_CHARACTER_ID)
                 OnBoardingEffect.NavigateToLogin -> navigateToLogin()
             }
         }
     }
     if (uiState.isLoading) {
-        Text("로딩 임시", style = TextStyles.title01)
+        LoopyLoadingScreen()
     }
     if (uiState.isError) {
-        ErrorInfoView("에러 발생", "불편을 끼쳐죄송", {}, {})
+        ErrorInfoView("에러 발생", "일시적인 오류가 발생했습니다.", {}, {})
     } else {
         if (uiState.isLoading) {
             LoopyLoadingScreen()
@@ -79,7 +69,8 @@ fun OnBoardingScreen(
         ) { paddingValues ->
             Column(
                 Modifier.fillMaxSize().background(Color.White),
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     HorizontalPager(
@@ -88,29 +79,15 @@ fun OnBoardingScreen(
                         modifier = Modifier.fillMaxWidth(1f).wrapContentHeight().padding(paddingValues)
                             .background(Color.White)
                     ) { page ->
-                        if (page < viewmodel.ONBOARD_INFO_PAGE) { //온보딩 게임 전
-                            Column(
-                                modifier = Modifier.wrapContentHeight().padding(top = 50.dp),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                InfoContentView(
-                                    content1 = infoContents[page].first,
-                                    content2 = infoContents[page].second,
-                                    painter = images[page],
-                                    lottieRawFile = lotties[page]
-                                )
-                            }
-                        } else if (page < uiState.pageCount - 1) { //온보딩 게임 중
-                            val index = page - viewmodel.ONBOARD_INFO_PAGE
-                            val question = uiState.questions[index]
-                            Column(
-                                modifier = Modifier.wrapContentHeight().padding(top = 50.dp),
-                                verticalArrangement = Arrangement.Top,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
+                        Column(
+                            modifier = Modifier.wrapContentHeight().padding(top = 50.dp),
+                            verticalArrangement = Arrangement.Top,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            if (page < pagerState.pageCount - 1) {
+                                val question = uiState.questions.get(page)
                                 OnboardingGameView(
-                                    currentPage = index + 1,
+                                    currentPage = page + 1,
                                     totalGamePage = uiState.questions.size,
                                     question = question,
                                     onChangedOption = { optionIndex ->
@@ -121,72 +98,101 @@ fun OnBoardingScreen(
                                             )
                                         )
                                     },
+                                    footContent = {
+                                        if (pagerState.currentPage == 0) {//온보딩의 첫페이지
+                                            Column(
+                                                modifier = Modifier.padding(bottom = 28.dp)
+                                            ) {
+                                                LoopyFilledButton(
+                                                    "다음으로",
+                                                    onClick = {
+                                                        scope.launch {
+                                                            pagerState.scrollToPage(page = pagerState.currentPage + 1)
+                                                        }
+                                                    },
+                                                    modifier = Modifier.fillMaxWidth(1f)
+                                                )
+                                            }
+                                        } else { //온보딩 나머지 페이지
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(1f).padding(bottom = 28.dp),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                LoopyFilledButton(
+                                                    "이전으로",
+                                                    onClick = {
+                                                        scope.launch {
+                                                            pagerState.scrollToPage(page = pagerState.currentPage - 1)
+                                                        }
+                                                    },
+                                                    filledColor = ColorPalette.Neautral200,
+                                                    textColor = ColorPalette.Neautral600,
+                                                    modifier = Modifier.weight(1f)
+                                                )
+                                                Spacer(modifier = Modifier.width(12.dp))
+                                                LoopyFilledButton(
+                                                    "다음으로",
+                                                    onClick = {
+                                                        scope.launch {
+                                                            if (pagerState.currentPage == uiState.pageCount - 2) { //마지막 질문의 경우
+                                                                viewmodel.handleEvent(OnBoardingEvent.SubmitResultButton)
+                                                                pagerState.scrollToPage(page = pagerState.currentPage + 1)
+                                                            } else {
+                                                                pagerState.scrollToPage(page = pagerState.currentPage + 1)
+                                                            }
+                                                        }
+                                                    },
+                                                    modifier = Modifier.weight(1f)
+                                                )
+                                            }
+                                        }
+                                    }
+                                )
+                            } else {
+                                OnBoardingCompletedView(
+                                    backToPreviousPage = {
+                                        scope.launch {
+                                            pagerState.scrollToPage(page = pagerState.currentPage - 1)
+                                        }
+                                    },
+                                    navigateToReport = {
+                                        navigateToReport(
+                                            NO_BUNDLE_ID,
+                                            NO_SURVEY_INDEX,
+                                            NO_CHARACTER_ID
+                                        )
+                                    })
+                                LoopyFilledButton(
+                                    "이전으로",
+                                    onClick = {
+                                        scope.launch {
+                                            pagerState.scrollToPage(page = pagerState.currentPage - 1)
+                                        }
+                                    },
+                                    filledColor = ColorPalette.Neautral200,
+                                    textColor = ColorPalette.Neautral600,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Spacer(modifier = Modifier.width(12.dp))
+                                LoopyFilledButton(
+                                    "다음으로",
+                                    onClick = {
+                                        scope.launch {
+                                            if (pagerState.currentPage == uiState.pageCount - 1) { //
+                                                navigateToReport(
+                                                    NO_BUNDLE_ID,
+                                                    NO_SURVEY_INDEX,
+                                                    NO_CHARACTER_ID
+                                                )
+                                            } else {
+                                                pagerState.scrollToPage(page = pagerState.currentPage + 1)
+                                            }
+                                        }
+                                    },
+                                    modifier = Modifier.weight(1f)
                                 )
                             }
-
-                        } else { //온보딩 게임 후 완료 화면
-                            OnBoardingCompletedView { viewmodel.handleEvent(OnBoardingEvent.ClickFinkshButton) }
-                        }
-                    }
-                    if (pagerState.currentPage < viewmodel.ONBOARD_INFO_PAGE) { //온보딩 게임 전 인디케이터
-                        Spacer(Modifier.height(40.dp))
-                        DotIndicator(totalPage = viewmodel.ONBOARD_INFO_PAGE, pagerState.currentPage)
-                    }
-                }
-                if (pagerState.currentPage < viewmodel.ONBOARD_INFO_PAGE) {
-                    //버튼들
-                    Column(modifier = Modifier.padding(horizontal = 20.dp).padding(28.dp)) {
-                        LoopyFilledButton(
-                            text = if (pagerState.currentPage < 3) "다음으로" else "시작하기",
-                            leadingIconColor = Color.Black,
-                            onClick = {
-                                scope.launch {
-                                    pagerState.animateScrollToPage(page = pagerState.currentPage + 1)
-                                }
-                            },
-                            modifier = Modifier.fillMaxWidth(1f),
-                        )
-                    }
-                } else if (pagerState.currentPage < uiState.pageCount - 1) { //온보딩 게임 중
-                    if (pagerState.currentPage == viewmodel.ONBOARD_INFO_PAGE) {//온보딩의 첫페이지
-                        Column(modifier = Modifier.padding(horizontal = 20.dp).padding(28.dp)) {
-                            LoopyFilledButton(
-                                "다음으로",
-                                onClick = {
-                                    scope.launch {
-                                        pagerState.animateScrollToPage(page = pagerState.currentPage + 1)
-                                    }
-                                },
-                                modifier = Modifier.fillMaxWidth(1f)
-                            )
-                        }
-                    } else { //온보딩 나머지 페이지
-                        Row(
-                            modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 20.dp).padding(bottom = 28.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            LoopyFilledButton(
-                                "이전으로",
-                                onClick = {
-                                    scope.launch {
-                                        pagerState.animateScrollToPage(page = pagerState.currentPage - 1)
-                                    }
-                                },
-                                filledColor = ColorPalette.Neautral200,
-                                textColor = ColorPalette.Neautral600,
-                                modifier = Modifier.fillMaxWidth(0.5f)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            LoopyFilledButton(
-                                "다음으로",
-                                onClick = {
-                                    scope.launch {
-                                        pagerState.animateScrollToPage(page = pagerState.currentPage + 1)
-                                    }
-                                },
-                                modifier = Modifier.fillMaxWidth(1f)
-                            )
                         }
                     }
                 }
@@ -197,39 +203,56 @@ fun OnBoardingScreen(
 
 
 @Composable
-fun OnBoardingCompletedView(navigateToHome: () -> Unit) {
+fun OnBoardingCompletedView(navigateToReport: () -> Unit, backToPreviousPage: () -> Unit) {
     Column(
-        Modifier.fillMaxSize().background(color = Color.White).padding(horizontal = 20.dp).padding(top = 120.dp),
+        Modifier.fillMaxSize().background(color = Color.White).padding(horizontal = 20.dp).padding(top = 59.dp),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
-            Modifier.wrapContentHeight(),
-            verticalArrangement = Arrangement.Center,
+            Modifier.weight(1f),
+            verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "내 가치관 캐릭터가 완성됐어요!", style = TextStyles.title02, softWrap = true)
-            Spacer(Modifier.height(20.dp))
-            Text(
-                text = "홈 화면에서 내 캐릭터를 확인해보세요.",
-                style = TextStyles.subTitle02,
-                textAlign = TextAlign.Center,
-                softWrap = true
-            )
-            Spacer(Modifier.height(40.dp))
-            LottieImageView(R.raw.paper_pollen)
+            Column(
+                Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "내 가치관 캐릭터가\n 완성됐어요!",
+                    style = TextStyles.title02,
+                    softWrap = true,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(Modifier.height(20.dp))
+                Text(
+                    text = "홈 화면에서 내 캐릭터를 확인해보세요.",
+                    style = TextStyles.subTitle02,
+                    textAlign = TextAlign.Center,
+                    softWrap = true
+                )
+                Spacer(Modifier.height(40.dp))
+            }
+            LottieImageView(R.raw.paper_pollen, isFullScreen = true)
         }
-
-        Column(
-            Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
+        Row(
+            modifier = Modifier.fillMaxWidth(1f).padding(bottom = 28.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             LoopyFilledButton(
+                "이전으로",
+                onClick = { backToPreviousPage() },
+                filledColor = ColorPalette.Neautral200,
+                textColor = ColorPalette.Neautral600,
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            LoopyFilledButton(
                 "완료",
-                leadingIconColor = Color.Black,
-                onClick = navigateToHome,
-                modifier = Modifier.fillMaxWidth(1f),
+                onClick = { navigateToReport() },
+                modifier = Modifier.weight(1f)
             )
         }
     }
@@ -272,55 +295,64 @@ fun OnboardingGameView(
     totalGamePage: Int,
     question: RoundQuestion,
     onChangedOption: (selectedOptionIndex: String) -> Unit,
+    footContent: @Composable () -> Unit
 ) {
     var selectedIndex by remember { mutableStateOf(0) } //0이 VerticalSliderForm 디폴트 값, 순수 ui인덱스
     Column(
         Modifier.padding(horizontal = 20.dp).fillMaxWidth(1f),
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Row(
-                modifier = Modifier.background(
-                    color = ColorPalette.PrimaryBlue100,
-                    shape = RoundedCornerShape(8.dp)
-                ).padding(horizontal = 12.dp).padding(vertical = 6.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = "${currentPage}",
-                    style = TextStyles.subTitle01,
-                    color = ColorPalette.PrimaryBlue500
-                )
-                Text(
-                    text = " / ${totalGamePage}",
-                    style = TextStyles.subTitle01,
-                    color = ColorPalette.PrimaryBlue300
-                )
-            }
-            Spacer(modifier = Modifier.fillMaxWidth(1f).height(18.dp))
-            androidx.compose.material.Text(
-                question.content,
-                style = TextStyles.title03,
-                color = Color.Black,
-                textAlign = TextAlign.Center,
-                softWrap = true
-            )
-        }
         Column(
-            Modifier.padding(horizontal = 58.dp).padding(top = 82.dp).wrapContentHeight(),
+            modifier = Modifier.fillMaxWidth(1f).weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            VerticalSliderForm(
-                answerList = question.options.map { it.optionContents },
-                onValueChange = { index ->
-                    selectedIndex = index
-                    val selectedOptionIndex = question.options[index].id
-                    onChangedOption(selectedOptionIndex)
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                Row(
+                    modifier = Modifier.background(
+                        color = ColorPalette.PrimaryBlue100,
+                        shape = RoundedCornerShape(8.dp)
+                    ).padding(horizontal = 12.dp).padding(vertical = 6.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "${currentPage}",
+                        style = TextStyles.subTitle01,
+                        color = ColorPalette.PrimaryBlue500
+                    )
+                    Text(
+                        text = " / ${totalGamePage}",
+                        style = TextStyles.subTitle01,
+                        color = ColorPalette.PrimaryBlue300
+                    )
                 }
-            )
+                Spacer(modifier = Modifier.fillMaxWidth(1f).height(18.dp))
+                androidx.compose.material.Text(
+                    question.content,
+                    style = TextStyles.title03,
+                    color = Color.Black,
+                    textAlign = TextAlign.Center,
+                    softWrap = true
+                )
+            }
+            Spacer(modifier = Modifier.fillMaxWidth(1f).height(58.dp))
+            Column(
+                Modifier.padding(horizontal = 58.dp).wrapContentHeight(),
+                verticalArrangement = Arrangement.Center
+            ) {
+                VerticalSliderForm(
+                    answerList = question.options.map { it.optionContents },
+                    onValueChange = { index ->
+                        selectedIndex = index
+                        val selectedOptionIndex = question.options[index].id
+                        onChangedOption(selectedOptionIndex)
+                    }
+                )
+            }
         }
+        footContent()
     }
 }
 
@@ -346,22 +378,35 @@ fun OnBoardingPreview() {
             ),
             onChangedOption = { optionIndex ->
             },
+            {
+                Row(
+                    modifier = Modifier.fillMaxWidth(1f).padding(bottom = 28.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    LoopyFilledButton(
+                        "이전으로",
+                        onClick = {},
+                        filledColor = ColorPalette.Neautral200,
+                        textColor = ColorPalette.Neautral600,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    LoopyFilledButton(
+                        "완료",
+                        onClick = {},
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
         )
-        Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-            LoopyFilledButton(
-                text = "다음으로",
-                leadingIconColor = Color.Black,
-                onClick = {},
-                modifier = Modifier.fillMaxWidth(1f),
-            )
-        }
     }
 }
 
 @Preview
 @Composable
 fun onBoardingCompletedPreview() {
-    OnBoardingCompletedView({})
+    OnBoardingCompletedView({}, {})
 }
 
 @Preview

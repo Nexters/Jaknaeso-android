@@ -7,7 +7,7 @@ import com.jaknaeso.app.domain.model.SurveyId
 sealed interface OnBoardingEvent : UiEvent {
     data object GetOnboardingData : OnBoardingEvent
     data class SelectOption(val optionId: String, val surveyId: String) : OnBoardingEvent
-    data object ClickFinkshButton : OnBoardingEvent
+    data object SubmitResultButton : OnBoardingEvent
 }
 
 data class OnBoardingState(
