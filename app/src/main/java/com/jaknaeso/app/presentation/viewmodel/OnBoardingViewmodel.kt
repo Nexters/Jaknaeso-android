@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.domain.Result
 import com.jaknaeso.app.domain.asResult
+import com.jaknaeso.app.domain.repository.LoginRepository
 import com.jaknaeso.app.domain.usecase.GetOnBoardingQuestionUseCase
 import com.jaknaeso.app.domain.usecase.PostOnBoardingRoundUseCase
 import com.jaknaeso.app.presentation.contract.OnBoardingEffect
@@ -18,9 +19,9 @@ import javax.inject.Inject
 @HiltViewModel
 class OnBoardingViewmodel @Inject constructor(
     private val getOnBoardingQuestionUseCase: GetOnBoardingQuestionUseCase,
-    private val postOnBoardingRoundUseCase: PostOnBoardingRoundUseCase
+    private val postOnBoardingRoundUseCase: PostOnBoardingRoundUseCase,
+    private val loginRepository: LoginRepository
 ) : BaseViewModel<OnBoardingEvent, OnBoardingState, OnBoardingEffect>() {
-    val ONBOARD_INFO_PAGE = 4
     val ONBOARD_COMPLETED_PAGE = 1
 
     override fun createInitialState(): OnBoardingState {
@@ -31,7 +32,7 @@ class OnBoardingViewmodel @Inject constructor(
         when (event) {
             OnBoardingEvent.GetOnboardingData -> getOnBoardingQuestion()
             is OnBoardingEvent.SelectOption -> updateAnswers(surveyId = event.surveyId, optionId = event.optionId)
-            OnBoardingEvent.ClickFinkshButton -> postAnswers()
+            OnBoardingEvent.SubmitResultButton -> postAnswers()
         }
     }
 
@@ -53,7 +54,7 @@ class OnBoardingViewmodel @Inject constructor(
                             copy(
                                 isLoading = false,
                                 questions = it.data,
-                                pageCount = it.data.size + ONBOARD_INFO_PAGE + ONBOARD_COMPLETED_PAGE
+                                pageCount = it.data.size + ONBOARD_COMPLETED_PAGE
                             )
                         }
                     }
@@ -80,7 +81,9 @@ class OnBoardingViewmodel @Inject constructor(
                     }
 
                     Result.Loading -> {}
-                    is Result.Success -> setEffect(OnBoardingEffect.NavigateToHome)
+                    is Result.Success -> {
+                        loginRepository.saveIsOnBoardingCompleted(true)
+                    }
                 }
             }
         }

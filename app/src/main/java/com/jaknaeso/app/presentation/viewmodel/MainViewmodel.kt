@@ -1,6 +1,7 @@
 package com.jaknaeso.app.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.jaknaeso.app.domain.model.InitialRoute
 import com.jaknaeso.app.domain.usecase.CheckLoginedUserUseCase
 import com.jaknaeso.app.presentation.contract.MainEffect
 import com.jaknaeso.app.presentation.contract.MainEvent
@@ -25,10 +26,22 @@ class MainViewmodel @Inject constructor(
 
     fun branchInitialRoute() {
         viewModelScope.launch(Dispatchers.IO) {
-            if (checkLoginedUserUseCase.isLoginedUser()) {
-                setState { copy(isInitialRoutingOngoing = false, initialRoute = Route.Home.name) }
-            } else {
-                setState { copy(isInitialRoutingOngoing = false, initialRoute = Route.Login.name) }
+            val result = checkLoginedUserUseCase()
+            when (result) {
+                InitialRoute.Home -> setState { copy(isInitialRoutingOngoing = false, initialRoute = Route.Home.name) }
+                InitialRoute.Login -> setState {
+                    copy(
+                        isInitialRoutingOngoing = false,
+                        initialRoute = Route.Login.name
+                    )
+                }
+
+                InitialRoute.OnBoardingInformation -> setState {
+                    copy(
+                        isInitialRoutingOngoing = false,
+                        initialRoute = Route.Information.name
+                    )
+                }
             }
         }
     }

@@ -48,7 +48,9 @@ class ProfileViewmodel @Inject constructor(
                     }
 
                     Result.Loading -> {}
-                    is Result.Success -> setEffect(ProfileEffect.NavigateToLogin)
+                    is Result.Success -> {
+                        setEffect(ProfileEffect.NavigateToLogin)
+                    }
                 }
             }
         }

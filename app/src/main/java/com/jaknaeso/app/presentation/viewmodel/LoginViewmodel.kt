@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.jaknaeso.app.domain.Result
 import com.jaknaeso.app.domain.asResult
-import com.jaknaeso.app.domain.usecase.CheckLoginedUserUseCase
 import com.jaknaeso.app.domain.usecase.PostAccessTokenUseCase
 import com.jaknaeso.app.presentation.contract.LoginEffect
 import com.jaknaeso.app.presentation.contract.LoginEvent
@@ -49,7 +48,7 @@ class LoginViewmodel @Inject constructor(
         if (isOnboardingCompleted) {
             setEffect(LoginEffect.NavigateToHome)
         } else {
-            setEffect(LoginEffect.NavigateToOnboarding)
+            setEffect(LoginEffect.NavigateToInformation)
         }
     }
 }

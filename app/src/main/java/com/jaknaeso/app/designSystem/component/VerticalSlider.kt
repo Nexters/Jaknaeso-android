@@ -33,7 +33,7 @@ import com.jaknaeso.app.designSystem.theme.TextStyles
 fun VerticalSliderForm(answerList: List<String>, onValueChange: (index: Int) -> Unit) {
     var value by remember { mutableStateOf(0.5f) }
     var isSelected by remember { mutableStateOf(2) }
-    val HEIGHT = 278.dp
+    val HEIGHT = 330.dp
     val size = answerList.size
     var valueRanges = remember {
         mutableListOf<ClosedFloatingPointRange<Float>>(
@@ -70,6 +70,9 @@ fun VerticalSliderForm(answerList: List<String>, onValueChange: (index: Int) -> 
         ) {
             itemsIndexed(items = answerList) { index, item ->
                 SliderAnswer(isSelected = index == isSelected, answer = item)
+                if (index < answerList.size){
+                    Spacer(Modifier.height(48.dp))
+                }
             }
         }
         Column(

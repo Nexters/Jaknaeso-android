@@ -3,6 +3,7 @@ package com.jaknaeso.app.domain.usecase
 import android.util.Log
 import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.data.token.TokenManager
+import com.jaknaeso.app.domain.repository.LoginRepository
 import com.jaknaeso.app.domain.repository.MemberRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -11,9 +12,11 @@ import javax.inject.Inject
 
 class DeleteMemberUseCase @Inject constructor(
     private val memberRepository: MemberRepository,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    private val loginRepository: LoginRepository
 ) {
     suspend operator fun invoke(): Flow<Nothing?> {
+        loginRepository.deleteIsOnBoardingCompleted()
         val memberId = tokenManager.getMemberId().firstOrNull()
         if (memberId != null) {
             val response = memberRepository.deleteMember(memberId)

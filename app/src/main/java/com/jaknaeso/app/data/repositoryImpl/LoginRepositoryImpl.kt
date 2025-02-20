@@ -26,6 +26,10 @@ class LoginRepositoryImpl @Inject constructor(
         return loginLocalDatastore.getRefreshToken()
     }
 
+    override suspend fun getIsOnBoardingCompleted(): Boolean? {
+        return loginLocalDatastore.getIsOnBoardingCompleted()
+    }
+
     override suspend fun saveAccessToken(token: String) {
         loginLocalDatastore.saveAccessToken(token)
     }
@@ -34,11 +38,19 @@ class LoginRepositoryImpl @Inject constructor(
         loginLocalDatastore.saveRefreshToken(token)
     }
 
+    override suspend fun saveIsOnBoardingCompleted(value: Boolean) {
+        loginLocalDatastore.saveIsOnBoardingCompleted(value)
+    }
+
     override suspend fun deleteAccessToken(token: String) {
         loginLocalDatastore.deleteAccessToken()
     }
 
     override suspend fun deleteRefreshToken(token: String) {
         loginLocalDatastore.deleteRefreshToken()
+    }
+
+    override suspend fun deleteIsOnBoardingCompleted() {
+        loginLocalDatastore.deleteIsOnBoardingCompleted()
     }
 }
