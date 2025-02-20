@@ -123,7 +123,7 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(1f)
             )
             Spacer(Modifier.height(36.dp))
-            FlowRow {
+            FlowRow(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalArrangement = Arrangement.Center) {
                 Text(
                     "로그인하시면 Loopy의 ",
                     style = TextStyle(
@@ -145,7 +145,16 @@ fun LoginScreen(
                     )
                 )
                 Text(
-                    "에 동의하는 것으로 간주합니다. 로그인 오류시 문의 ",
+                    "에 동의하는 것으로 간주합니다. ",
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.W700,
+                        lineHeight = 15.sp,
+                        textAlign = TextAlign.Center
+                    )
+                )
+                Text(
+                    "로그인 오류시 문의",
                     style = TextStyle(
                         fontSize = 10.sp,
                         fontWeight = FontWeight.W700,
