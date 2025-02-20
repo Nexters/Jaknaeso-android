@@ -1,7 +1,11 @@
 package com.jaknaeso.app.presentation.view
 
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
@@ -13,13 +17,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.jaknaeso.app.R
+import com.jaknaeso.app.designSystem.component.ClickableText
 import com.jaknaeso.app.designSystem.component.LoopyAssistChip
 import com.jaknaeso.app.designSystem.component.LoopyDialog
 import com.jaknaeso.app.designSystem.component.LoopyFilledButton
@@ -130,7 +137,15 @@ fun ProfileContent(
     bottomNavigation: @Composable () -> Unit,
     onClickPolicy:()->Unit
 ) {
-    var isFcmEnabled by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()) {}
+    val openLicenses = remember {
+        {
+            launcher.launch(Intent(context, OssLicensesMenuActivity::class.java))
+            OssLicensesMenuActivity.setActivityTitle("오픈소스 라이센스")
+        }
+    }
+
     Column(
         modifier = Modifier.fillMaxHeight(1f).padding(bottom = paddingValues.calculateBottomPadding()),
         verticalArrangement = Arrangement.SpaceBetween
@@ -145,40 +160,30 @@ fun ProfileContent(
                 Text(name, style = TextStyles.subTitle03, modifier = Modifier.padding(bottom = 8.dp))
                 Text(email, style = TextStyles.subTitle04, color = ColorPalette.Neautral700)
             }
-            Column {
-//                Row(
-//                    modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 20.dp),
-//                    horizontalArrangement = Arrangement.SpaceBetween,
-//                    verticalAlignment = Alignment.CenterVertically
-//                ) {
-//                    Text("알림설정", style = TextStyles.subTitle03, color = ColorPalette.Neautral800)
-//                    Switch(
-//                        checked = isFcmEnabled,
-//                        onCheckedChange = { isFcmEnabled = it },
-//                        colors = SwitchDefaults.colors(
-//                            checkedThumbColor = Color.White,
-//                            checkedTrackColor = ColorPalette.PrimaryBlue500,
-//                            checkedBorderColor = ColorPalette.PrimaryBlue500,
-//                            uncheckedThumbColor = Color.White,
-//                            uncheckedBorderColor = ColorPalette.Neautral300,
-//                            uncheckedTrackColor = ColorPalette.Neautral300
-//                        ),
-//                        modifier = Modifier.scale(0.9f)
-//                    )
-//                }
+            Column(Modifier.padding(horizontal = 20.dp)) {
                 Spacer(Modifier.fillMaxWidth(1f).height(10.dp))
                 Spacer(modifier = Modifier.background(color = ColorPalette.Neautral300).fillMaxWidth(1f).height(1.dp))
                 Spacer(Modifier.fillMaxWidth(1f).height(10.dp))
-                LoopyAssistChip(
-                    "이용약관",
-                    onClick = {onClickPolicy()},
-                    labelStyle = TextStyles.subTitle03,
-                    filledColor = Color.White,
-                    labelColor = ColorPalette.Neautral800,
-                    shape = RoundedCornerShape(0.dp),
-                    modifier = Modifier.fillMaxWidth(1f).padding(horizontal = 5.dp),
-                    trailingIcon = painterResource(R.drawable.ic_next),
-                    trailingIconColor = ColorPalette.Neautral950,
+                ClickableText(
+                    text = "이용약관",
+                    textStyle = TextStyles.subTitle03,
+                    textColor = ColorPalette.Neautral800,
+                    iconColor = ColorPalette.Neautral950,
+                    icon = painterResource(R.drawable.ic_next),
+                    onClick = {onClickPolicy()}
+                )
+            }
+            Column(Modifier.padding(horizontal = 20.dp)) {
+                Spacer(Modifier.fillMaxWidth(1f).height(10.dp))
+                Spacer(modifier = Modifier.background(color = ColorPalette.Neautral300).fillMaxWidth(1f).height(1.dp))
+                Spacer(Modifier.fillMaxWidth(1f).height(10.dp))
+                ClickableText(
+                    text = "오픈소스 라이센스",
+                    textStyle = TextStyles.subTitle03,
+                    textColor = ColorPalette.Neautral800,
+                    iconColor = ColorPalette.Neautral950,
+                    icon = painterResource(R.drawable.ic_next),
+                    onClick = {openLicenses()}
                 )
             }
         }
@@ -192,14 +197,14 @@ fun ProfileContent(
                     "로그아웃",
                     style = TextStyles.subTitle05,
                     color = ColorPalette.Neautral600,
-                    modifier = Modifier.clickable { onClickLogout() }
+                    modifier = Modifier.clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) { onClickLogout() }
                         .padding(end = 24.dp)
                 )
                 Text(
                     "회원 탈퇴",
                     style = TextStyles.subTitle05,
                     color = ColorPalette.Neautral600,
-                    modifier = Modifier.clickable { onClickDeleteMember() }
+                    modifier = Modifier.clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) { onClickDeleteMember() }
                 )
             }
             bottomNavigation()

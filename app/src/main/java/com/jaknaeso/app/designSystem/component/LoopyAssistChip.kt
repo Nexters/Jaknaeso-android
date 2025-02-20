@@ -1,6 +1,7 @@
 package com.jaknaeso.app.designSystem.component
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -8,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FilterChip
 import androidx.compose.material.Text
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ChipColors
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -42,6 +44,7 @@ fun LoopyAssistChip(
     disabledColor: Color = ColorPalette.Neautral200,
     modifier: Modifier? = null,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
     val borderColor = remember { mutableStateOf(if (enabled) filledColor else disabledColor) }
     AssistChip(
         modifier = Modifier.height(33.dp).then(modifier ?: Modifier),
@@ -52,7 +55,7 @@ fun LoopyAssistChip(
                 Icon(painter = trailingIcon, contentDescription = null)
             }
         },
-        colors = ChipColors(
+        colors = AssistChipDefaults.assistChipColors(
             containerColor = filledColor,
             labelColor = labelColor,
             leadingIconContentColor = labelIconColor,
@@ -64,7 +67,8 @@ fun LoopyAssistChip(
         ),
         enabled = enabled,
         border = BorderStroke(width = 0.dp, color = borderColor.value),
-        shape = shape
+        shape = shape,
+        interactionSource = interactionSource,
     )
 }
 
