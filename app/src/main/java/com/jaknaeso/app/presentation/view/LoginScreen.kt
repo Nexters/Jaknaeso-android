@@ -2,18 +2,24 @@ package com.jaknaeso.app.presentation.view
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,10 +35,12 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LoginScreen(
     navigateToOnBoarding: () -> Unit,
     navigateToHome: () -> Unit,
+    navigateToPolicy:()->Unit,
     viewmodel: LoginViewmodel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -115,15 +123,47 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(1f)
             )
             Spacer(Modifier.height(36.dp))
-            Text(
-                "로그인하시면 Loopy의 개인정보처리방침에 동의하는 것으로 간주합니다.\n로그인 오류시 문의 app.jaknaeso@gmail.com",
-                style = TextStyle(
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.W700,
-                    lineHeight = 15.sp,
-                    textAlign = TextAlign.Center
+            FlowRow {
+                Text(
+                    "로그인하시면 Loopy의 ",
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.W700,
+                        lineHeight = 15.sp,
+                        textAlign = TextAlign.Center
+                    )
                 )
-            )
+                Text(
+                    "개인정보처리방침",
+                    modifier = Modifier.clickable( interactionSource = remember { MutableInteractionSource() }, indication = null ) { navigateToPolicy() },
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.W700,
+                        lineHeight = 15.sp,
+                        textAlign = TextAlign.Center,
+                        textDecoration = TextDecoration.Underline
+                    )
+                )
+                Text(
+                    "에 동의하는 것으로 간주합니다. 로그인 오류시 문의 ",
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.W700,
+                        lineHeight = 15.sp,
+                        textAlign = TextAlign.Center
+                    )
+                )
+                Text(
+                    "app.jaknaeso@gmail.com",
+                    style = TextStyle(
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.W700,
+                        lineHeight = 15.sp,
+                        textAlign = TextAlign.Center,
+                        textDecoration = TextDecoration.Underline
+                    )
+                )
+            }
         }
     }
 }

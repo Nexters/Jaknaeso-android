@@ -32,6 +32,7 @@ import com.jaknaeso.app.presentation.viewmodel.ProfileViewmodel
 
 @Composable
 fun ProfileScreen(
+    navigateToPolicy:()->Unit,
     navigateToHome: () -> Unit,
     navigateToLogin: () -> Unit,
     navigateToReport: (bundleIndex: String, surveyIndex: String, characterId: String) -> Unit,
@@ -74,7 +75,8 @@ fun ProfileScreen(
                         navigateToProfile = { },
                         currentRoute = Route.Profile
                     )
-                }
+                },
+                onClickPolicy = {navigateToPolicy()}
             )
             LoopyDialog(
                 visible = showDialog,
@@ -125,7 +127,8 @@ fun ProfileContent(
     email: String,
     onClickLogout: () -> Unit,
     onClickDeleteMember: () -> Unit,
-    bottomNavigation: @Composable () -> Unit
+    bottomNavigation: @Composable () -> Unit,
+    onClickPolicy:()->Unit
 ) {
     var isFcmEnabled by remember { mutableStateOf(false) }
     Column(
@@ -168,6 +171,7 @@ fun ProfileContent(
                 Spacer(Modifier.fillMaxWidth(1f).height(10.dp))
                 LoopyAssistChip(
                     "이용약관",
+                    onClick = {onClickPolicy()},
                     labelStyle = TextStyles.subTitle03,
                     filledColor = Color.White,
                     labelColor = ColorPalette.Neautral800,
@@ -217,7 +221,7 @@ fun PreviewProfileScreen() {
             )
         },
         content = { paddingValues ->
-            ProfileContent(paddingValues, "칠가이", "chill777@gmail.com", {}, {}, {})
+            ProfileContent(paddingValues, "칠가이", "chill777@gmail.com", {}, {}, {},{})
         }
     )
 

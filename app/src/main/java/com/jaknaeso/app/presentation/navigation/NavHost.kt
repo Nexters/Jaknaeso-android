@@ -15,7 +15,8 @@ fun SetUpNavGraph(
     ) {
         loginScreen(
             navigateToHome = navController::navigateToHome,
-            navigateToOnboarding = navController::navigateToOnboarding
+            navigateToOnboarding = navController::navigateToOnboarding,
+            navigateToPolicy = navController::navigateToPrivateDataPolicy
         )
         onboardingScreen(
             navigateToLogin = navController::navigateToLogin,
@@ -41,7 +42,9 @@ fun SetUpNavGraph(
         profileScreen(
             navigateToHome = navController::navigateToHome,
             navigateToReport = navController::navigateToReport,
-            navigateToLogin = navController::navigateToLogin
+            navigateToLogin = navController::navigateToLogin,
+            navigateToPolicy = navController::navigateToPrivateDataPolicy
         )
+        privateDataPolicyScreen(navigateToBack = navController::popBackStack)
     }
 }

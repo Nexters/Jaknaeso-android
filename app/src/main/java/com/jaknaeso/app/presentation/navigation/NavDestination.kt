@@ -26,9 +26,21 @@ fun NavController.navigateToRoundComplete(remainingRounds: String) =
 
 fun NavController.navigateToOnboarding() = navigate("${Route.Onboarding}")
 
-fun NavGraphBuilder.loginScreen(navigateToHome: () -> Unit, navigateToOnboarding: () -> Unit) {
+fun NavController.navigateToPrivateDataPolicy() {
+    navigate("${Route.PrivateDataPolicy}")
+}
+
+fun NavGraphBuilder.loginScreen(
+    navigateToHome: () -> Unit,
+    navigateToOnboarding: () -> Unit,
+    navigateToPolicy: () -> Unit
+) {
     composable(route = "${Route.Login}") {
-        LoginScreen(navigateToHome = navigateToHome, navigateToOnBoarding = navigateToOnboarding)
+        LoginScreen(
+            navigateToHome = navigateToHome,
+            navigateToOnBoarding = navigateToOnboarding,
+            navigateToPolicy = navigateToPolicy
+        )
     }
 }
 
@@ -141,6 +153,7 @@ fun NavGraphBuilder.reportScreen(
 
 fun NavGraphBuilder.profileScreen(
     navigateToHome: () -> Unit,
+    navigateToPolicy: () -> Unit,
     navigateToReport: (bundleId: String, surveyIndex: String, characterId: String) -> Unit,
     navigateToLogin: () -> Unit
 ) {
@@ -148,8 +161,15 @@ fun NavGraphBuilder.profileScreen(
         ProfileScreen(
             navigateToHome = navigateToHome,
             navigateToReport = navigateToReport,
-            navigateToLogin = navigateToLogin
+            navigateToLogin = navigateToLogin,
+            navigateToPolicy = navigateToPolicy
         )
+    }
+}
+
+fun NavGraphBuilder.privateDataPolicyScreen(navigateToBack: () -> Unit) {
+    composable(route = "${Route.PrivateDataPolicy}") {
+        PrivateDataPolicyScreen(navigateToBack = navigateToBack)
     }
 }
 
