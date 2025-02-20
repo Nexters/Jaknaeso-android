@@ -66,7 +66,7 @@ class GetCharacterReportUseCase @Inject constructor(
         return when (characterType) {
             CharacterType.SUCCESS.name -> R.raw.success
             CharacterType.SELF_DIRECTION.name -> R.raw.self_direction
-            CharacterType.SECURITY.name -> R.raw.security
+            CharacterType.SECURITY.name -> R.raw.security2
             CharacterType.ADVENTURE.name -> R.raw.adventure
             CharacterType.STABILITY.name -> R.raw.stability
             CharacterType.BENEVOLENCE.name -> R.raw.benevolence
