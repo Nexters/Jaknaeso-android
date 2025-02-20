@@ -4,10 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.jaknaeso.app.BuildConfig
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -37,6 +34,7 @@ class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context)
         private val ACCESS_TOKEN_KEY = stringPreferencesKey("AUTH_TOKEN")
         private val REFRESH_TOKEN_KEY = stringPreferencesKey("REMEMBERED_TOKEN")
         private val MEMBER_ID_KEY = stringPreferencesKey("MEMBER_ID")
+        private val IS_ONBOARDING_COMPLETED = booleanPreferencesKey("IS_ONBOARDING_COMPLETED")
     }
 
     override fun getAuthTokenForHeader(): String {
@@ -79,6 +77,12 @@ class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context)
 
     }
 
+    override suspend fun getIsOnBoardingCompleted(): Flow<Boolean?> {
+        return dataStore.data.map { preferences ->
+            preferences[IS_ONBOARDING_COMPLETED]
+        }
+    }
+
     override suspend fun saveAccessToken(token: String) {
         dataStore.edit { preferences ->
             preferences[ACCESS_TOKEN_KEY] = token
@@ -97,6 +101,12 @@ class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context)
         }
     }
 
+    override suspend fun saveIsOnBoardingCompleted(value: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[IS_ONBOARDING_COMPLETED] = value
+        }
+    }
+
     override suspend fun deleteAccessToken() {
         dataStore.edit { preferences ->
             preferences.remove(ACCESS_TOKEN_KEY)
@@ -112,6 +122,12 @@ class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context)
     override suspend fun deleteMemberId() {
         dataStore.edit { preferences ->
             preferences.remove(MEMBER_ID_KEY)
+        }
+    }
+
+    override suspend fun deleteIsOnBoardingCompleted() {
+        dataStore.edit { preferences ->
+            preferences.remove(IS_ONBOARDING_COMPLETED)
         }
     }
 }
