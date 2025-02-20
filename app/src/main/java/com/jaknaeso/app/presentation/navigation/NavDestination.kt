@@ -13,6 +13,7 @@ val NO_BUNDLE_ID = "NO_BUNDLE_ID"
 val NO_CHARACTER_ID = "NO_CHARACTER_ID"
 
 fun NavController.navigateToLogin() = navigate("${Route.Login}")
+fun NavController.navigateToInformation() = navigate("${Route.Information}")
 fun NavController.navigateToHome() = navigate("${Route.Home}")
 fun NavController.navigateToRound(bundleId: String, remainingRounds: String) =
     navigate("${Route.Round}/${bundleId}/${remainingRounds}")
@@ -32,21 +33,30 @@ fun NavController.navigateToPrivateDataPolicy() {
 
 fun NavGraphBuilder.loginScreen(
     navigateToHome: () -> Unit,
-    navigateToOnboarding: () -> Unit,
+    navigateToInformation: () -> Unit,
     navigateToPolicy: () -> Unit
 ) {
     composable(route = "${Route.Login}") {
         LoginScreen(
             navigateToHome = navigateToHome,
-            navigateToOnBoarding = navigateToOnboarding,
+            navigateToInformation = navigateToInformation,
             navigateToPolicy = navigateToPolicy
         )
     }
 }
 
-fun NavGraphBuilder.onboardingScreen(navigateToHome: () -> Unit, navigateToLogin: () -> Unit) {
+fun NavGraphBuilder.informationScreen(navigateToOnboarding: () -> Unit){
+    composable(route = "${Route.Information}") {
+        InformationScreen(navigateToOnboarding)
+    }
+}
+
+fun NavGraphBuilder.onboardingScreen(
+    navigateToReport: (bundleId: String, surveyIndex: String, characterId: String) -> Unit,
+    navigateToLogin: () -> Unit
+) {
     composable(route = "${Route.Onboarding}") {
-        OnBoardingScreen(navigateToHome = navigateToHome, navigateToLogin = navigateToLogin)
+        OnBoardingScreen(navigateToReport = navigateToReport, navigateToLogin = navigateToLogin)
     }
 }
 
