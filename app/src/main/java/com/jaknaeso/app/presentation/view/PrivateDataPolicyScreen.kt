@@ -18,7 +18,7 @@ import com.jaknaeso.app.designSystem.theme.TextStyles
 fun PrivateDataPolicyScreen(navigateToBack: () -> Unit) {
     val scrollState = rememberScrollState()
     Column(Modifier.fillMaxSize()) {
-        LoopyTopBar(title = "개인정보처리방침", icon = painterResource(R.drawable.ic_back), onClickIcon = {})
+        LoopyTopBar(title = "개인정보처리방침", icon = painterResource(R.drawable.ic_back), onClickIcon = {navigateToBack()})
         Column(Modifier.verticalScroll(scrollState).padding(20.dp)) {
             DotBoard(titleContent = "1.개인정보 수집 항목", contentDescription = "당사는 회원가입 과정에서 다음과 같은 개인정보를 수집합니다:", contents = listOf("이름","이메일 주소"), contentsColor = Color.Black, contentsStyle = TextStyles.body01)
             Spacer(Modifier.height(16.dp))

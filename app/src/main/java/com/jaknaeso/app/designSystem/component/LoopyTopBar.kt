@@ -1,9 +1,11 @@
 package com.jaknaeso.app.designSystem.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -36,7 +38,10 @@ fun LoopyTopBar(
             Icon(
                 painter = icon,
                 contentDescription = null,
-                modifier = Modifier.clickable { onClickIcon() })
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { onClickIcon() })
         },
         colors = TopAppBarColors(
             containerColor = containerColors,
