@@ -327,6 +327,7 @@ fun CharacterAnalysisView(report: CharacterReport, submissionResults: List<Round
                             enabled = false,
                             label = report.duration ?: "",
                             labelStyle = TextStyles.body02,
+                            labelColor = ColorPalette.Neautral700,
                             shape = RoundedCornerShape(5.dp),
                             height = 26.dp
                         )
