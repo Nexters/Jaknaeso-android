@@ -31,8 +31,8 @@ import com.jaknaeso.app.designSystem.theme.TextStyles
 
 @Composable
 fun VerticalSliderForm(answerList: List<String>, onValueChange: (index: Int) -> Unit) {
-    var value by remember { mutableStateOf(0f) }
-    var isSelected by remember { mutableStateOf(0) }
+    var value by remember { mutableStateOf(0.5f) }
+    var isSelected by remember { mutableStateOf(2) }
     val HEIGHT = 278.dp
     val size = answerList.size
     var valueRanges = remember {
@@ -43,21 +43,6 @@ fun VerticalSliderForm(answerList: List<String>, onValueChange: (index: Int) -> 
             0.61f..0.8f,
             0.81f..1f
         )
-    }
-
-    fun generateValueRanges(step: Int): List<ClosedFloatingPointRange<Float>> {
-        var start = 0.0f
-        val result = mutableListOf<ClosedFloatingPointRange<Float>>()
-        for (i in 0 until step) {
-            val end = (start + step).coerceAtMost(1f)
-            result.add(start..end)
-            start += step
-        }
-        return result
-    }
-
-    LaunchedEffect(Unit) {
-        valueRanges = generateValueRanges(size).toMutableList()
     }
 
     LaunchedEffect(value) {
