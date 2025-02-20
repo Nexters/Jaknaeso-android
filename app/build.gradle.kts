@@ -69,6 +69,7 @@ android {
 }
 
 dependencies {
+    implementation("com.google.accompanist:accompanist-flowlayout:0.31.3-beta")
     implementation(libs.splash.screen)
     implementation(libs.airbnb.lottie.compose)
     implementation(libs.kakao.all)
