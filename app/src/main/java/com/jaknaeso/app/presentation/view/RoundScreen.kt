@@ -123,11 +123,10 @@ fun UserCommentModal(
         sheetState = sheetState,
         contentColor = Color.White,
         dragHandle = { DragHandle(onClick = {}) },
-        windowInsets = WindowInsets.ime
+        windowInsets = WindowInsets.navigationBars.add(WindowInsets.ime)
     ) {
         Column(
             modifier = Modifier.background(color = Color.White).padding(horizontal = 20.dp)
-                .windowInsetsPadding(WindowInsets.statusBars)
                 .fillMaxWidth(1f),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center
@@ -169,7 +168,6 @@ fun UserCommentModal(
                     modifier = Modifier.weight(1f).padding(horizontal = 4.dp)
                 )
             }
-            Spacer(modifier = Modifier.weight(1f).height(62.dp))
         }
     }
 }
