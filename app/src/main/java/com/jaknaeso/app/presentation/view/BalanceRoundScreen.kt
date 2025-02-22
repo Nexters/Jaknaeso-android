@@ -34,7 +34,8 @@ fun BalanceRoundScreen(
 
     if (question != null && surveyId != null) {
         Scaffold(
-            modifier = Modifier.fillMaxSize().background(color = ColorPalette.Neautral0).windowInsetsPadding(WindowInsets.navigationBars).windowInsetsPadding(WindowInsets.statusBars)
+            modifier = Modifier.fillMaxSize().background(color = ColorPalette.Neautral0)
+                .windowInsetsPadding(WindowInsets.navigationBars).windowInsetsPadding(WindowInsets.statusBars)
         ) { paddingValue ->
             if (isModalExpanded) {
                 UserCommentModal(
@@ -52,11 +53,11 @@ fun BalanceRoundScreen(
                     icon = painterResource(R.drawable.ic_back),
                     onClickIcon = { handleEvent(RoundEvent.ClickBackButton) })
                 Column(
-                    Modifier.padding(horizontal = 40.dp).padding(top = 54.dp, bottom = 28.dp).fillMaxSize(1f),
+                    Modifier.padding(horizontal = 20.dp).padding(top = 54.dp, bottom = 28.dp).fillMaxSize(1f),
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column {
+                    Column(Modifier.padding(horizontal = 20.dp)) {
                         Text(
                             question.content,
                             style = TextStyles.title03,
@@ -177,10 +178,10 @@ private fun BalanceRoundPreview() {
                         forwardColor = Color.White,
                         backwardColor = ColorPalette.PrimaryBlue100,
                         frontContent = {
-                            BalanceContent(title = "첫번째 선택지", option = "주변 사람과 물리적으로 멀어지더라도, 커리어를 선택한다.",{})
+                            BalanceContent(title = "첫번째 선택지", option = "주변 사람과 물리적으로 멀어지더라도, 커리어를 선택한다.", {})
                         },
                         backContent = {
-                            BalanceContent(title = "두번째 선택지", option = "가족과 함께 살며 따뜻한 식사와 생활비 걱정 없는 일상을 선택한다.",{})
+                            BalanceContent(title = "두번째 선택지", option = "가족과 함께 살며 따뜻한 식사와 생활비 걱정 없는 일상을 선택한다.", {})
                         },
                         modifier = Modifier.fillMaxWidth(1f).padding(40.dp).aspectRatio(0.94f),
                         onFlipped = {}
