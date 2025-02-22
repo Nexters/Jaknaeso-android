@@ -123,7 +123,7 @@ fun UserCommentModal(
         sheetState = sheetState,
         contentColor = Color.White,
         dragHandle = { DragHandle(onClick = {}) },
-        windowInsets = WindowInsets.navigationBars.add(WindowInsets.ime)
+        windowInsets = WindowInsets.ime
     ) {
         Column(
             modifier = Modifier.background(color = Color.White).padding(horizontal = 20.dp)
