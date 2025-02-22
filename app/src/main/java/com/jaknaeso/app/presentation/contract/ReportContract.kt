@@ -14,6 +14,7 @@ sealed interface ReportEvent : UiEvent {
 
     data object ClickHome : ReportEvent
     data object ClickProfile : ReportEvent
+    data class ClickReload(val bundleId: String) : ReportEvent
 }
 
 data class ReportState(

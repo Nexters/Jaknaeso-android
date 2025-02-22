@@ -73,6 +73,15 @@ class ReportViewmodel @Inject constructor(
 
             ReportEvent.ClickHome -> setEffect(ReportEffect.NavigateToHome)
             ReportEvent.ClickProfile -> setEffect(ReportEffect.NavigateToProfile)
+            is ReportEvent.ClickReload -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    if (event.bundleId == NO_BUNDLE_ID) { //바텀네비게이션으로 들어온 경우
+                        getCharacters(true)
+                    } else {
+                        getCharacters(false)
+                    }
+                }
+            }
         }
     }
 
@@ -97,15 +106,19 @@ class ReportViewmodel @Inject constructor(
     private fun initializeParticularCharacterHistory(bundleId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val target = currentState.characters?.find { it.bundleId.toString() == bundleId }
-            val isCharacterExisted = isCharacterResultExisted(characterId = target?.characterId.toString())
+            if (target !== null) {
+                val isCharacterExisted = isCharacterResultExisted(characterId = target.characterId.toString())
 
-            setState { copy(reportTitle = mapToKoreanOrdinalWord(target!!.ordinalNumber)) } //레포트 타이틀 업데이트
-            getSubmissionsResult(bundleId)
+                setState { copy(reportTitle = mapToKoreanOrdinalWord(target.ordinalNumber)) } //레포트 타이틀 업데이트
+                getSubmissionsResult(bundleId)
 
-            if (isCharacterExisted) {
-                getParticularCharacter(target?.characterId.toString()) //특정 캐릭터 결과 업데이트
+                if (isCharacterExisted) {
+                    getParticularCharacter(target?.characterId.toString()) //특정 캐릭터 결과 업데이트
+                } else {
+                    setState { copy(isNoCharacterToShow = true) }
+                }
             } else {
-                setState { copy(isNoCharacterToShow = true) }
+                setState { copy(isError = true) }
             }
         }
     }
