@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jaknaeso.app.R
 import com.jaknaeso.app.designSystem.component.LoopyTopBar
-import com.jaknaeso.app.designSystem.component.VerticalSliderForm
+import com.jaknaeso.app.designSystem.component.SliderOptions
 import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 import com.jaknaeso.app.domain.model.Option
@@ -80,12 +80,10 @@ fun SliderContent(
         )
         Spacer(Modifier.fillMaxWidth(1f).height(82.dp))
         Column(Modifier.padding(horizontal = 58.dp).fillMaxHeight(0.8f), verticalArrangement = Arrangement.Top) {
-            VerticalSliderForm(
-                answerList = question.options.map { it.optionContents },
-                onValueChange = { index ->
-                    selectedIndex = index
-                    onChangedOption(index)
-                })
+            SliderOptions(options = question.options.map { it.optionContents }, onValueChanged = { index ->
+                selectedIndex = index
+                onChangedOption(index)
+            })
         }
         footerContent()
     }

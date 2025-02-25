@@ -45,7 +45,7 @@ fun NavGraphBuilder.loginScreen(
     }
 }
 
-fun NavGraphBuilder.informationScreen(navigateToOnboarding: () -> Unit){
+fun NavGraphBuilder.informationScreen(navigateToOnboarding: () -> Unit) {
     composable(route = "${Route.Information}") {
         InformationScreen(navigateToOnboarding)
     }
@@ -143,7 +143,6 @@ fun NavGraphBuilder.reportScreen(
                     navigateToProfile = navigateToProfile,
                     bundleId = NO_BUNDLE_ID,
                     surveyIndex = NO_SURVEY_INDEX,
-                    characterId = NO_CHARACTER_ID
                 )
             } else if (bundleId != null && characterId != null) {
                 ReportScreen(
@@ -152,7 +151,6 @@ fun NavGraphBuilder.reportScreen(
                     navigateToProfile = navigateToProfile,
                     bundleId = bundleId,
                     surveyIndex = surveyIndex,
-                    characterId = characterId
                 )
             } else {
                 ErrorInfoView(title = "오류가 발생했어요!", message = "일시적인 오류가 발생했어요.\n화면을 새로고침 해주세요.", {}, {})

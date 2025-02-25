@@ -48,7 +48,6 @@ fun ReportScreen(
     navigateToProfile: () -> Unit,
     viewmodel: ReportViewmodel = hiltViewModel(),
     bundleId: String, //클릭해서 들어오는 라운드의 bundleId
-    characterId: String, //최신 캐릭터의 결과값을 볼 수 있는 characterId.
     surveyIndex: String //클릭해서 들어오는 라운드 index
 ) {
     val initialTabPage by remember { mutableStateOf(if (surveyIndex != NO_SURVEY_INDEX && bundleId != NO_BUNDLE_ID) 1 else 0) }

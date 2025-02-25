@@ -46,7 +46,7 @@ fun SliderOptions(options: List<String>, onValueChanged: (index: Int) -> Unit) {
     Box(
         modifier = Modifier
             .size(400.dp)
-            .background(Color.LightGray),
+            .background(Color.Transparent),
         contentAlignment = Alignment.Center
     ) {
         Row(modifier = Modifier.height(300.dp).fillMaxWidth(1f), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -59,7 +59,6 @@ fun SliderOptions(options: List<String>, onValueChanged: (index: Int) -> Unit) {
             }
             Slider(minOffset = minOffset, maxOffset = maxOffset, { selectedOption = it })
         }
-        Text("selectedIndex: ${selectedIndex}")
     }
 }
 
