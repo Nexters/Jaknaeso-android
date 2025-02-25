@@ -342,14 +342,10 @@ fun OnboardingGameView(
                 Modifier.padding(horizontal = 58.dp).wrapContentHeight(),
                 verticalArrangement = Arrangement.Center
             ) {
-                VerticalSliderForm(
-                    answerList = question.options.map { it.optionContents },
-                    onValueChange = { index ->
-                        selectedIndex = index
-                        val selectedOptionIndex = question.options[index].id
-                        onChangedOption(selectedOptionIndex)
-                    }
-                )
+                SliderOptions(options = question.options.map { it.optionContents }, onValueChanged = {index ->
+                    selectedIndex = index
+                    val selectedOptionIndex = question.options[index].id
+                    onChangedOption(selectedOptionIndex)})
             }
         }
         footContent()
