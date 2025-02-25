@@ -53,10 +53,15 @@ fun NavGraphBuilder.informationScreen(navigateToOnboarding: () -> Unit) {
 
 fun NavGraphBuilder.onboardingScreen(
     navigateToReport: (bundleId: String, surveyIndex: String, characterId: String) -> Unit,
-    navigateToLogin: () -> Unit
+    navigateToLogin: () -> Unit,
+    navigateToHome: () -> Unit,
 ) {
     composable(route = "${Route.Onboarding}") {
-        OnBoardingScreen(navigateToReport = navigateToReport, navigateToLogin = navigateToLogin)
+        OnBoardingScreen(
+            navigateToReport = navigateToReport,
+            navigateToLogin = navigateToLogin,
+            navigateToHome = navigateToHome
+        )
     }
 }
 
@@ -80,6 +85,7 @@ fun NavGraphBuilder.roundScreen(
     navigateToLogin: () -> Unit,
     navigateToBack: () -> Unit,
     navigateToBalanceRoundComplete: (remaingRounds: String) -> Unit,
+    navigateToHome: () -> Unit,
 ) {
     composable(
         route = "${Route.Round}/{bundleId}/{remainingRounds}",
@@ -94,7 +100,8 @@ fun NavGraphBuilder.roundScreen(
                 navigateToRoundComplete = { navigateToBalanceRoundComplete(remainingRounds) },
                 navigateToBack = navigateToBack,
                 bundleIndex = bundleId,
-                navigateToLogin = navigateToLogin
+                navigateToLogin = navigateToLogin,
+                navigateToHome = navigateToHome
             )
         } else {
             ErrorInfoView(title = "오류가 발생했어요!", message = "일시적인 오류가 발생했어요.\n화면을 새로고침 해주세요.", {}, {})
@@ -102,7 +109,7 @@ fun NavGraphBuilder.roundScreen(
     }
 }
 
-fun NavGraphBuilder.RoundCompleteScreen(navigateToHome: () -> Unit) {
+fun NavGraphBuilder.roundCompleteScreen(navigateToHome: () -> Unit) {
     composable(
         route = "${Route.RoundComplete}/{remainingRounds}",
         arguments = listOf(navArgument("remainingRounds") { type = NavType.StringType })

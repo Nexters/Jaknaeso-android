@@ -49,6 +49,20 @@ class RoundViewmodel @Inject constructor(
                 RoundEvent.ClickBackButton -> setEffect(RoundEffect.NavigateToBack)
                 RoundEvent.OpenModal -> setEffect(RoundEffect.OpenModal)
                 RoundEvent.CloseModal -> setEffect(RoundEffect.CloseModal)
+                is RoundEvent.ClickReload -> {
+                    setState {
+                        copy(
+                            isLoading = true,
+                            isError = false,
+                            question = null,
+                            isBalanceRound = true,
+                            selectedOptionId = null,
+                            enteredComment = "",
+                            surveyId = null
+                        )
+                    }
+                    getRoundQuestion(event.bundleIndex)
+                }
             }
         }
     }

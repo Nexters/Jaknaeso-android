@@ -39,6 +39,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun OnBoardingScreen(
     navigateToLogin: () -> Unit,
+    navigateToHome: () -> Unit,
     navigateToReport: (bundleId: String, surveyIndex: String, characterId: String) -> Unit,
     viewmodel: OnBoardingViewmodel = hiltViewModel()
 ) {
@@ -59,7 +60,11 @@ fun OnBoardingScreen(
         LoopyLoadingScreen()
     }
     if (uiState.isError) {
-        ErrorInfoView("에러 발생", "일시적인 오류가 발생했습니다.", {}, {})
+        ErrorInfoView(
+            title = "오류가 발생했어요!",
+            message = "일시적인 오류가 발생했어요.\n화면을 새로고침 해주세요.",
+            onClickReLoad = { viewmodel.handleEvent(OnBoardingEvent.ClickReload) },
+            onClickHome = { navigateToHome() })
     } else {
         if (uiState.isLoading) {
             LoopyLoadingScreen()
@@ -342,10 +347,11 @@ fun OnboardingGameView(
                 Modifier.padding(horizontal = 58.dp).wrapContentHeight(),
                 verticalArrangement = Arrangement.Center
             ) {
-                SliderOptions(options = question.options.map { it.optionContents }, onValueChanged = {index ->
+                SliderOptions(options = question.options.map { it.optionContents }, onValueChanged = { index ->
                     selectedIndex = index
                     val selectedOptionIndex = question.options[index].id
-                    onChangedOption(selectedOptionIndex)})
+                    onChangedOption(selectedOptionIndex)
+                })
             }
         }
         footContent()

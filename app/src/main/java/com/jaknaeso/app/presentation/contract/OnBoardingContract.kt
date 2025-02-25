@@ -8,6 +8,7 @@ sealed interface OnBoardingEvent : UiEvent {
     data object GetOnboardingData : OnBoardingEvent
     data class SelectOption(val optionId: String, val surveyId: String) : OnBoardingEvent
     data object SubmitResultButton : OnBoardingEvent
+    data object ClickReload:OnBoardingEvent
 }
 
 data class OnBoardingState(

@@ -145,7 +145,7 @@ fun ReportScreen(
                         } else if (uistate.value.isError) {
                             ErrorInfoView(
                                 title = "오류가 발생했어요!",
-                                message = "일시적인 오류가 바생했어요.\n화면을 새로고침 해주세요.",
+                                message = "일시적인 오류가 발생했어요.\n화면을 새로고침 해주세요.",
                                 onClickReLoad = { viewmodel.handleEvent(ReportEvent.ClickReload(bundleId)) },
                                 onClickHome = { navigateToHome() })
                         } else {

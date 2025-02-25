@@ -24,10 +24,7 @@ class HomeViewmodel @Inject constructor(
     BaseViewModel<HomeEvent, HomeState, HomeEffect>() {
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            getRounds()
-            getLatestCharacter()
-        }
+        initializeData()
     }
 
     override fun createInitialState(): HomeState {
@@ -43,6 +40,18 @@ class HomeViewmodel @Inject constructor(
                     currentState.remainRounds.toString()
                 )
             )
+
+            HomeEvent.ClickReload -> {
+                setState { copy(isLoading = true, isError = false, null, null, null, null, true, 0, ",", "", null) }
+                initializeData()
+            }
+        }
+    }
+
+    fun initializeData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            getRounds()
+            getLatestCharacter()
         }
     }
 
@@ -53,7 +62,6 @@ class HomeViewmodel @Inject constructor(
                     if (it.exception.message == ResponseResult.REFRESH_FAILED.name) {
                         setEffect(HomeEffect.NavigateToLogin)
                     }
-                    Log.e("HomeViewmodel", "getRounds: ${it.exception}")
                     setState { copy(isLoading = false, isError = true) }
                 }
 

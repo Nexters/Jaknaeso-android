@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun RoundScreen(
     navigateToLogin: () -> Unit,
+    navigateToHome: () -> Unit,
     navigateToRoundComplete: () -> Unit,
     navigateToBack: () -> Unit,
     bundleIndex: String,
@@ -55,8 +56,8 @@ fun RoundScreen(
         ErrorInfoView(
             title = "오류가 발생했어요!",
             message = "일시적인 오류가 발생했어요.\n화면을 새로고침 해주세요.",
-            onClickReLoad = {},
-            onClickHome = {})
+            onClickReLoad = { viewmodel.handleEvent(RoundEvent.ClickReload(bundleIndex)) },
+            onClickHome = { navigateToHome() })
     } else {
         if (uiState.value.isLoading) {
             LoopyLoadingScreen()

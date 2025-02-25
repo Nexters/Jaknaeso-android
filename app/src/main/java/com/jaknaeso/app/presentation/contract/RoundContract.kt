@@ -11,6 +11,7 @@ sealed interface RoundEvent : UiEvent {
     data object ClickBackButton : RoundEvent
     data object OpenModal : RoundEvent
     data object CloseModal : RoundEvent
+    data class ClickReload(val bundleIndex: String) : RoundEvent
 }
 
 data class RoundState(

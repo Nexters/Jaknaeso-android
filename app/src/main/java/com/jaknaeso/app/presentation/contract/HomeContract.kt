@@ -6,6 +6,7 @@ import com.jaknaeso.app.domain.model.Round
 sealed interface HomeEvent : UiEvent {
     data class ClickRound(val questionState: QuestionState, val questionIndex: Int) : HomeEvent
     data object TodayRoundButton : HomeEvent
+    data object ClickReload:HomeEvent
 }
 
 data class HomeState(

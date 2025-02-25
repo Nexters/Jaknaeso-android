@@ -33,6 +33,18 @@ class OnBoardingViewmodel @Inject constructor(
             OnBoardingEvent.GetOnboardingData -> getOnBoardingQuestion()
             is OnBoardingEvent.SelectOption -> updateAnswers(surveyId = event.surveyId, optionId = event.optionId)
             OnBoardingEvent.SubmitResultButton -> postAnswers()
+            OnBoardingEvent.ClickReload -> {
+                setState {
+                    copy(
+                        isLoading = true,
+                        isError = false,
+                        questions = emptyList(),
+                        pageCount = 0,
+                        answersForSubmission = mutableMapOf()
+                    )
+                }
+                getOnBoardingQuestion()
+            }
         }
     }
 
@@ -44,7 +56,6 @@ class OnBoardingViewmodel @Inject constructor(
                         if (it.exception.message == ResponseResult.REFRESH_FAILED.name) {
                             setEffect(OnBoardingEffect.NavigateToLogin)
                         }
-                        Log.e("OnBoardingViewmodel", "getOnBoardingQuestion:${it.exception}")
                         setState { copy(isLoading = false, isError = true) }
                     }
 

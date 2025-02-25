@@ -66,7 +66,11 @@ fun HomeScreen(
     }
 
     if (uiState.isError) {
-        Column(modifier = Modifier.fillMaxSize().background(color = ColorPalette.Neautral50)) { }
+        ErrorInfoView(
+            title = "오류가 발생했어요!",
+            message = "일시적인 오류가 발생했어요.\n화면을 새로고침 해주세요.",
+            onClickReLoad = { viewmodel.handleEvent(HomeEvent.ClickReload) },
+            onClickHome = {})
     } else {
         if (uiState.isLoading) {
             LoopyLoadingScreen()
