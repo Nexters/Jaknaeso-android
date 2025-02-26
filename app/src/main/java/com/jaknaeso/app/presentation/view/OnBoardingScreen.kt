@@ -29,6 +29,7 @@ import com.jaknaeso.app.domain.model.RoundQuestion
 import com.jaknaeso.app.domain.model.SurveyType
 import com.jaknaeso.app.presentation.contract.OnBoardingEffect
 import com.jaknaeso.app.presentation.contract.OnBoardingEvent
+import com.jaknaeso.app.presentation.contract.OptionIndex
 import com.jaknaeso.app.presentation.navigation.NO_BUNDLE_ID
 import com.jaknaeso.app.presentation.navigation.NO_CHARACTER_ID
 import com.jaknaeso.app.presentation.navigation.NO_SURVEY_INDEX
@@ -95,11 +96,14 @@ fun OnBoardingScreen(
                                     currentPage = page + 1,
                                     totalGamePage = uiState.questions.size,
                                     question = question,
-                                    onChangedOption = { optionIndex ->
+                                    optionIndex = uiState.answersForPresentation.get(page),
+                                    onChangedOption = { optionId:String, optionIndex:Int ->
                                         viewmodel.handleEvent(
                                             OnBoardingEvent.SelectOption(
-                                                optionId = optionIndex,
-                                                surveyId = question.surveyId
+                                                surveyId = question.surveyId,
+                                                optionId = optionId,
+                                                page = page ,
+                                                optionIndex = optionIndex
                                             )
                                         )
                                     },
@@ -299,10 +303,10 @@ fun OnboardingGameView(
     currentPage: Int,
     totalGamePage: Int,
     question: RoundQuestion,
-    onChangedOption: (selectedOptionIndex: String) -> Unit,
+    optionIndex:Int,
+    onChangedOption: (selectedOptionId: String, selectedOptionIndex:Int) -> Unit,
     footContent: @Composable () -> Unit
 ) {
-    var selectedIndex by remember { mutableStateOf(0) } //0이 VerticalSliderForm 디폴트 값, 순수 ui인덱스
     Column(
         Modifier.padding(horizontal = 20.dp).fillMaxWidth(1f),
         verticalArrangement = Arrangement.SpaceBetween,
@@ -347,10 +351,9 @@ fun OnboardingGameView(
                 Modifier.padding(horizontal = 58.dp).wrapContentHeight(),
                 verticalArrangement = Arrangement.Center
             ) {
-                SliderOptions(options = question.options.map { it.optionContents }, onValueChanged = { index ->
-                    selectedIndex = index
-                    val selectedOptionIndex = question.options[index].id
-                    onChangedOption(selectedOptionIndex)
+                SliderOptions(valueIndex = optionIndex, options = question.options.map { it.optionContents }, onValueChanged = { index ->
+                    val selectedOptionId = question.options[index].id
+                    onChangedOption(selectedOptionId, index)
                 })
             }
         }
@@ -378,8 +381,8 @@ fun OnBoardingPreview() {
                     Option(id = "0", optionContents = "짬뽕")
                 )
             ),
-            onChangedOption = { optionIndex ->
-            },
+            optionIndex = 1,
+            onChangedOption = { optionId:String, optionIndex:Int ->},
             {
                 Row(
                     modifier = Modifier.fillMaxWidth(1f).padding(bottom = 28.dp),

@@ -1,6 +1,7 @@
 package com.jaknaeso.app.designSystem.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,19 +25,29 @@ import com.jaknaeso.app.designSystem.theme.ColorPalette
 import com.jaknaeso.app.designSystem.theme.TextStyles
 import kotlin.math.roundToInt
 
-@Composable
-fun SliderOptions(options: List<String>, onValueChanged: (index: Int) -> Unit) {
-    val minOffset = -400f
-    val maxOffset = 400f // 필요에 따라 dp -> px 변환 적용
-    var selectedOption by remember { mutableStateOf(0f) }
-    val answerRange = mutableListOf<ClosedFloatingPointRange<Float>>(
-        -400f..-300f,
-        -301f..-100f,
-        -100f..100f,
-        101f..300f,
-        301f..400f
-    )
+val minOffset = -400f
+val maxOffset = 400f // 필요에 따라 dp -> px 변환 적용
+val answerRange = mutableListOf<ClosedFloatingPointRange<Float>>(
+    -400f..-301f,
+    -300f..-101f,
+    -100f..100f,
+    101f..300f,
+    301f..400f
+)
 
+fun mapValueIndexToRange(value:Int):Float{
+    return when(value){
+        0 -> -400f
+        1 -> -200f
+        2 -> 0f
+        3 -> 200f
+        else -> 400f
+    }
+}
+
+@Composable
+fun SliderOptions(valueIndex:Int, options: List<String>, onValueChanged: (index: Int) -> Unit) {
+    var selectedOptionRange by remember { mutableStateOf(mapValueIndexToRange(valueIndex)) }
     var selectedIndex by remember { mutableStateOf(2) }
 
     LaunchedEffect(selectedIndex) {
@@ -52,12 +63,12 @@ fun SliderOptions(options: List<String>, onValueChanged: (index: Int) -> Unit) {
         Row(modifier = Modifier.height(300.dp).fillMaxWidth(1f), horizontalArrangement = Arrangement.SpaceBetween) {
             LazyColumn(Modifier.fillMaxHeight(1f), verticalArrangement = Arrangement.SpaceBetween) {
                 itemsIndexed(options) { index, item ->
-                    SliderAnswer(isSelected = selectedOption in answerRange[index], answer = item, onSelected = {
+                    SliderAnswer(isSelected = selectedOptionRange in answerRange[index], answer = item, onSelected = {
                         selectedIndex = index
                     })
                 }
             }
-            Slider(minOffset = minOffset, maxOffset = maxOffset, { selectedOption = it })
+            Slider(initializedOffsetY = selectedOptionRange, minOffset = minOffset, maxOffset = maxOffset, { selectedOptionRange = it })
         }
     }
 }
@@ -88,8 +99,8 @@ fun SliderAnswer(isSelected: Boolean, answer: String, onSelected: () -> Unit) {
 
 
 @Composable
-fun Slider(minOffset: Float, maxOffset: Float, onOffsetChanged: (value: Float) -> Unit) {
-    var offsetY by remember { mutableStateOf(0f) }
+fun Slider(initializedOffsetY:Float,minOffset: Float, maxOffset: Float, onOffsetChanged: (value: Float) -> Unit) {
+    var offsetY by remember { mutableStateOf(initializedOffsetY) }
     Box(contentAlignment = Alignment.Center) {
         // 범위를 픽셀 단위로 지정 (예: 0 ~ 300px)
         Box(
@@ -98,6 +109,20 @@ fun Slider(minOffset: Float, maxOffset: Float, onOffsetChanged: (value: Float) -
                 .width(8.dp)
                 .clip(shape = RoundedCornerShape(20.dp))
                 .background(color = ColorPalette.PrimaryBlue500)
+                .pointerInput(Unit){
+                    detectTapGestures { tapOffset ->
+                        // 사용자가 터치한 위치로 슬라이더 이동
+                        val nextOffset = tapOffset.y - 400
+                        offsetY = when(nextOffset){
+                            in answerRange[0] -> answerRange[0].start
+                            in answerRange[1] -> (answerRange[1].start+ answerRange[1].endInclusive) / 2
+                            in answerRange[2] -> (answerRange[2].start+ answerRange[2].endInclusive) / 2
+                            in answerRange[3] -> (answerRange[3].start+ answerRange[3].endInclusive) / 2
+                            else -> answerRange[4].endInclusive
+                        }
+                        onOffsetChanged(offsetY)
+                    }
+                }
         )
         Box(
             contentAlignment = Alignment.Center,
@@ -126,5 +151,5 @@ fun Slider(minOffset: Float, maxOffset: Float, onOffsetChanged: (value: Float) -
 @Preview
 @Composable
 private fun SliderOptionsPreview() {
-    SliderOptions(listOf("Aaaaa", "Bbbbb", "Ccccc", "Ddddd", "Eeeee"), {})
+    SliderOptions(valueIndex = 1,listOf("Aaaaa", "Bbbbb", "Ccccc", "Ddddd", "Eeeee"), {})
 }

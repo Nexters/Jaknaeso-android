@@ -4,11 +4,15 @@ import com.jaknaeso.app.domain.model.OptionId
 import com.jaknaeso.app.domain.model.RoundQuestion
 import com.jaknaeso.app.domain.model.SurveyId
 
+typealias OptionIndex = Int
+
 sealed interface OnBoardingEvent : UiEvent {
     data object GetOnboardingData : OnBoardingEvent
-    data class SelectOption(val optionId: String, val surveyId: String) : OnBoardingEvent
+    data class SelectOption(val surveyId: String, val optionId: String, val page: Int, val optionIndex: Int) :
+        OnBoardingEvent
+
     data object SubmitResultButton : OnBoardingEvent
-    data object ClickReload:OnBoardingEvent
+    data object ClickReload : OnBoardingEvent
 }
 
 data class OnBoardingState(
@@ -16,7 +20,8 @@ data class OnBoardingState(
     val isError: Boolean = false,
     val questions: List<RoundQuestion> = emptyList(),
     val pageCount: Int = 0,
-    val answersForSubmission: MutableMap<SurveyId, OptionId> = mutableMapOf()//key값을 surveyId로 갖는 해시로 수정하기.
+    val answersForSubmission: MutableMap<SurveyId, OptionId> = mutableMapOf(),
+    val answersForPresentation: MutableList<OptionIndex> = mutableListOf()
 ) : UiState
 
 sealed interface OnBoardingEffect : UiEffect {

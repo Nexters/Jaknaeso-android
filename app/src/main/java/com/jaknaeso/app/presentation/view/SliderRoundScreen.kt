@@ -49,10 +49,10 @@ fun SliderRoundScreen(
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 headerContent()
-                SliderContent(question = question, onChangedOption = { roundIndex ->
+                SliderContent(optionIndex = 2, question = question, onChangedOption = { roundIndex ->
                     val selectedOption = question.options[roundIndex]
                     handleEvent(RoundEvent.SelectOption(selectedOption.id))
-                }, handleEvent = handleEvent, footerContent = footerContent)
+                }, footerContent = footerContent)
             }
         }
     }
@@ -60,9 +60,9 @@ fun SliderRoundScreen(
 
 @Composable
 fun SliderContent(
+    optionIndex:Int,
     question: RoundQuestion,
     onChangedOption: (roundIndex: Int) -> Unit,
-    handleEvent: (RoundEvent) -> Unit,
     footerContent: @Composable () -> Unit
 ) {
     var selectedIndex by remember { mutableStateOf(0) } //0이 VerticalSliderForm 디폴트 값
@@ -80,7 +80,7 @@ fun SliderContent(
         )
         Spacer(Modifier.fillMaxWidth(1f).height(82.dp))
         Column(Modifier.padding(horizontal = 58.dp).fillMaxHeight(0.8f), verticalArrangement = Arrangement.Top) {
-            SliderOptions(options = question.options.map { it.optionContents }, onValueChanged = { index ->
+            SliderOptions(valueIndex = optionIndex, options = question.options.map { it.optionContents }, onValueChanged = { index ->
                 selectedIndex = index
                 onChangedOption(index)
             })
@@ -115,7 +115,7 @@ fun SliderRoundPreview() {
                         Option("1", "짬뽕"),
                         Option("0", "짜장")
                     )
-                ), onChangedOption = {}, handleEvent = {}, footerContent = {})
+                ), onChangedOption = {}, optionIndex = 2, footerContent = {})
         }
     }
 }

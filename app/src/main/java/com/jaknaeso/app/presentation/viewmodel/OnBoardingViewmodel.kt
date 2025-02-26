@@ -1,6 +1,5 @@
 package com.jaknaeso.app.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.jaknaeso.app.data.entity.ResponseResult
 import com.jaknaeso.app.domain.Result
@@ -31,7 +30,13 @@ class OnBoardingViewmodel @Inject constructor(
     override fun handleEvent(event: OnBoardingEvent) {
         when (event) {
             OnBoardingEvent.GetOnboardingData -> getOnBoardingQuestion()
-            is OnBoardingEvent.SelectOption -> updateAnswers(surveyId = event.surveyId, optionId = event.optionId)
+            is OnBoardingEvent.SelectOption -> updateAnswers(
+                surveyId = event.surveyId,
+                optionId = event.optionId,
+                page = event.page,
+                optionIndex = event.optionIndex
+            )
+
             OnBoardingEvent.SubmitResultButton -> postAnswers()
             OnBoardingEvent.ClickReload -> {
                 setState {
@@ -40,7 +45,8 @@ class OnBoardingViewmodel @Inject constructor(
                         isError = false,
                         questions = emptyList(),
                         pageCount = 0,
-                        answersForSubmission = mutableMapOf()
+                        answersForSubmission = mutableMapOf(),
+                        answersForPresentation = mutableListOf()
                     )
                 }
                 getOnBoardingQuestion()
@@ -65,7 +71,8 @@ class OnBoardingViewmodel @Inject constructor(
                             copy(
                                 isLoading = false,
                                 questions = it.data,
-                                pageCount = it.data.size + ONBOARD_COMPLETED_PAGE
+                                pageCount = it.data.size + ONBOARD_COMPLETED_PAGE,
+                                answersForPresentation = MutableList(it.data.size) { 2 } // 슬라이더의 '보통' 위치의 인덱스 값으로 초기화
                             )
                         }
                     }
@@ -74,10 +81,15 @@ class OnBoardingViewmodel @Inject constructor(
         }
     }
 
-    fun updateAnswers(surveyId: String, optionId: String) {
+    fun updateAnswers(surveyId: String, optionId: String, page: Int, optionIndex: Int) {
         currentState.answersForSubmission[surveyId] = optionId
-        setState { copy(answersForSubmission = currentState.answersForSubmission) }
-        Log.d("OnBoardingViewmodel", "answersForSubmission:${currentState.answersForSubmission}")
+        currentState.answersForPresentation[page] = optionIndex
+        setState {
+            copy(
+                answersForSubmission = currentState.answersForSubmission,
+                answersForPresentation = currentState.answersForPresentation
+            )
+        }
     }
 
     fun postAnswers() {
