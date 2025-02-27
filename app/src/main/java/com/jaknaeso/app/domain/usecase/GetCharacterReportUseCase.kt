@@ -7,6 +7,8 @@ import com.jaknaeso.app.domain.model.CharacterReport
 import com.jaknaeso.app.domain.model.CharacterType
 import com.jaknaeso.app.domain.repository.CharacterRepository
 import com.jaknaeso.app.domain.repository.MemberRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
@@ -20,42 +22,49 @@ class GetCharacterReportUseCase @Inject constructor(
     suspend operator fun invoke(characterId: String): Flow<CharacterReport> {
         val memberId = memberRepository.getMemberId().firstOrNull()
         if (memberId != null) {
-            val response = characterRepository.getCharacterReport(characterId, memberId)
-            val keywordGraphResponse =
-                characterRepository.getCharacterGraphValue(characterId = characterId, memberId = memberId)
-            val userName = memberRepository.getMember(memberId)
-            if (response?.result == ResponseResult.ERROR.name) {
-                return flow { throw Exception(response.error?.code.toString()) }
-            } else if (response?.result == ResponseResult.REFRESH_FAILED.name) {
-                return flow { throw Exception(response.result) }
-            } else {
-                if (keywordGraphResponse?.result == ResponseResult.SUCCESS.name) {
-                    return flow {
-                        val data = response?.data
-                        emit(
-                            CharacterReport(
-                                characterId = data?.characterId!!,
-                                characterNo = data.characterNo,
-                                name = data.name,
-                                lottieRawFile = mapCharacterTypeToLottieRawFile(data.characterType),
-                                description = data.description,
-                                duration = "${data.startDate} - ${data.endDate}",
-                                mainTraits = data.mainTraits.map { it.description },
-                                strengths = data.strengths.map { it.description },
-                                weaknesses = data.weaknesses.map { it.description },
-                                keywordStrenthDescription = mapTwoMostStrengthToDescription(
-                                    keywordGraphResponse.data?.valueReports,
-                                    userName?.data?.name ?: "" //userName은 따로 에러처리 안 하고 바로 붙임
-                                ),
-                                keywordPercentage = mapToKeywordPercentage(keywordGraphResponse.data?.valueReports)
-                            )
-                        )
-                    }
-                } else if (response?.result == ResponseResult.REFRESH_FAILED.name) {
-                    return flow { throw Exception(response.result) }
-                } else {
-                    return flow { throw Exception(response?.error?.code.toString()) }
+            val result = coroutineScope {
+                val characterReportDeferred = async { characterRepository.getCharacterReport(characterId, memberId) }
+                val keywordGraphResponseDeferred =
+                    async { characterRepository.getCharacterGraphValue(characterId, memberId) }
+                val userNameDeferred = async { memberRepository.getMember(memberId) }
+
+                Triple(
+                    characterReportDeferred.await(),
+                    keywordGraphResponseDeferred.await(),
+                    userNameDeferred.await()
+                )
+            }
+
+            result.toList().forEach {
+                if (it?.result == ResponseResult.ERROR.name) {
+                    return flow { throw Exception(it.error?.code.toString()) }
+                } else if (it?.result == ResponseResult.REFRESH_FAILED.name) {
+                    return flow { throw Exception(it.error?.code.toString()) }
                 }
+            }
+
+            val (characterReport, keywordGraphResponse, userName) = result
+
+            return flow {
+                val data = characterReport?.data
+                emit(
+                    CharacterReport(
+                        characterId = data?.characterId!!,
+                        characterNo = data.characterNo,
+                        name = data.name,
+                        lottieRawFile = mapCharacterTypeToLottieRawFile(data.characterType),
+                        description = data.description,
+                        duration = "${data.startDate} - ${data.endDate}",
+                        mainTraits = data.mainTraits.map { it.description },
+                        strengths = data.strengths.map { it.description },
+                        weaknesses = data.weaknesses.map { it.description },
+                        keywordStrenthDescription = mapTwoMostStrengthToDescription(
+                            keywordGraphResponse?.data?.valueReports,
+                            userName?.data?.name ?: "" //userName은 따로 에러처리 안 하고 바로 붙임
+                        ),
+                        keywordPercentage = mapToKeywordPercentage(keywordGraphResponse?.data?.valueReports)
+                    )
+                )
             }
         } else {
             return flow { throw Exception("memberId를 찾을 수 없습니다.") }
