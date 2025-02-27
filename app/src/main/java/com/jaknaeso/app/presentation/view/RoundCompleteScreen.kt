@@ -28,7 +28,7 @@ fun RoundCompleteScreen(navigateToHome: () -> Unit, remaingRounds: Int) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "${15 - remaingRounds}g회차 질문에\n답변을 완료했어요!",
+                text = "${15 - remaingRounds}회차 질문에\n답변을 완료했어요!",
                 style = TextStyles.title02,
                 softWrap = true,
                 textAlign = TextAlign.Center
