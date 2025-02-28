@@ -16,6 +16,7 @@ import com.jaknaeso.app.presentation.contract.ReportState
 import com.jaknaeso.app.presentation.navigation.NO_BUNDLE_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,23 +39,21 @@ class ReportViewmodel @Inject constructor(
     }
 
     override fun handleEvent(event: ReportEvent) {
+        Log.d("ReportViewmodel", "event:${event}")
         when (event) {
-            is ReportEvent.GetCharactersList -> {
+
+            ReportEvent.GetFirstCharacterData -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    if (event.bundleId == NO_BUNDLE_ID) { //바텀네비게이션으로 들어온 경우
-                        getCharacters(true)
-                    } else {
-                        getCharacters(false)
-                    }
+                    async { getCharacters() }.await()
+                    getFirstCharacterReport()
                 }
             }
 
-            ReportEvent.GetFirstCharacterData -> {
-                getFirstCharacterReport()
-            }
-
             is ReportEvent.GetParticularCharacterData -> { //미션 라운드 아이템을 클릭해서 Report 페이지에 진입한 경우
-                initializeParticularCharacterHistory(bundleId = event.bundleId)
+                viewModelScope.launch(Dispatchers.IO) {
+                    async { getCharacters() }.await()
+                    initializeParticularCharacterHistory(bundleId = event.bundleId)
+                }
             }
 
             is ReportEvent.SelectCharacterData -> { //캐릭터별 결과를 보는 경우
@@ -76,9 +75,9 @@ class ReportViewmodel @Inject constructor(
             is ReportEvent.ClickReload -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     if (event.bundleId == NO_BUNDLE_ID) { //바텀네비게이션으로 들어온 경우
-                        getCharacters(true)
+                        handleEvent(ReportEvent.GetFirstCharacterData)
                     } else {
-                        getCharacters(false)
+                        handleEvent(ReportEvent.GetParticularCharacterData(event.bundleId))
                     }
                 }
             }
@@ -91,10 +90,11 @@ class ReportViewmodel @Inject constructor(
             if (character != null) {
                 val isCharacterExisted =
                     isCharacterResultExisted(characterId = character.characterId.toString())
-                getSubmissionsResult(character.bundleId.toString())
                 if (isCharacterExisted) {
-                    getParticularCharacter(character.characterId.toString())
+                    launch { getSubmissionsResult(character.bundleId.toString()) }
+                    launch { getParticularCharacter(character.characterId.toString()) }
                 } else {
+                    launch { getSubmissionsResult(character.bundleId.toString()) }
                     setState { copy(isNoCharacterToShow = true) }
                 }
             } else {
@@ -106,7 +106,8 @@ class ReportViewmodel @Inject constructor(
     private fun initializeParticularCharacterHistory(bundleId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val target = currentState.characters?.find { it.bundleId.toString() == bundleId }
-            if (target !== null) {
+            Log.d("ReportViewmodel", "target:${target}")
+            if (target != null) {
                 val isCharacterExisted = isCharacterResultExisted(characterId = target.characterId.toString())
 
                 setState { copy(reportTitle = mapToKoreanOrdinalWord(target.ordinalNumber)) } //레포트 타이틀 업데이트
@@ -118,7 +119,7 @@ class ReportViewmodel @Inject constructor(
                     setState { copy(isNoCharacterToShow = true) }
                 }
             } else {
-                setState { copy(isError = true) }
+                setState { copy(isLoading = false, isError = true) }
             }
         }
     }
@@ -143,7 +144,7 @@ class ReportViewmodel @Inject constructor(
         }
     }
 
-    private suspend fun getCharacters(isGetFirstCharacter: Boolean) {
+    private suspend fun getCharacters() {
         getCharacterUseCase().asResult().collect {
             when (it) {
                 is Result.Error -> {
@@ -157,9 +158,6 @@ class ReportViewmodel @Inject constructor(
                 Result.Loading -> {}
                 is Result.Success -> {
                     setState { copy(characters = it.data) }
-                    if (isGetFirstCharacter) {
-                        setEffect(ReportEffect.CompletedLoadCharacterList)
-                    }
                 }
             }
         }

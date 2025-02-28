@@ -1,5 +1,6 @@
 package com.jaknaeso.app.presentation.view
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -37,6 +38,7 @@ import com.jaknaeso.app.presentation.navigation.NO_BUNDLE_ID
 import com.jaknaeso.app.presentation.navigation.NO_SURVEY_INDEX
 import com.jaknaeso.app.presentation.navigation.Route
 import com.jaknaeso.app.presentation.viewmodel.ReportViewmodel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -57,20 +59,26 @@ fun ReportScreen(
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        viewmodel.handleEvent(ReportEvent.GetCharactersList(bundleId)) //캐릭터리스트 먼저 호출하고 나면 CompletedLoadCharacterList에서 캐릭터가 얻어짐
-
         if (surveyIndex != NO_SURVEY_INDEX && bundleId != NO_BUNDLE_ID) { //캐릭터리스트가 로드된 후에 호출할 필요가 없음
-            pagerState.animateScrollToPage(1)
+            Log.d("ReportScreen", "surveyIndex:${surveyIndex}, bundleId:${bundleId}")
+            launch(Dispatchers.Main) { pagerState.animateScrollToPage(1) }
             viewmodel.handleEvent(
-                ReportEvent.GetParticularCharacterData(bundleId)
+                ReportEvent.GetParticularCharacterData(
+                    bundleId = bundleId,
+                )
             )
+            Log.d("ReportScreen", "호출완료")
+        } else {
+            viewmodel.handleEvent(ReportEvent.GetFirstCharacterData)
         }
+    }
+
+    LaunchedEffect(Unit) {
         viewmodel.effects.collectLatest { effect ->
             when (effect) {
                 ReportEffect.NavigateToHome -> navigateToHome()
                 ReportEffect.NavigateToProfile -> navigateToProfile()
                 ReportEffect.NavigateToLogin -> navigateToLogin()
-                ReportEffect.CompletedLoadCharacterList -> viewmodel.handleEvent(ReportEvent.GetFirstCharacterData)
             }
         }
     }
