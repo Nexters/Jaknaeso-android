@@ -1,5 +1,7 @@
 package com.jaknaeso.app.di
 
+import com.jaknaeso.app.data.authentication.ApiCallAdapter
+import com.jaknaeso.app.data.authentication.ApiCallAdapterImpl
 import com.jaknaeso.app.data.authentication.RefreshTokenManager
 import com.jaknaeso.app.data.authentication.RefreshTokenManagerImpl
 import com.jaknaeso.app.data.token.TokenManager
@@ -21,4 +23,8 @@ interface AuthenticationModule {
     @Binds
     @Singleton
     fun bindRefreshTokenManager(refreshTokenManagerImpl: RefreshTokenManagerImpl): RefreshTokenManager
+
+    @Binds
+    @Singleton
+    fun bindApiCalAdapter(apiCallAdapterImpl: ApiCallAdapterImpl): ApiCallAdapter
 }

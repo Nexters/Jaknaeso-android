@@ -6,10 +6,6 @@ import com.jaknaeso.app.data.entity.LoopyResult
 import com.jaknaeso.app.data.entity.response.TokenInfo
 import com.jaknaeso.app.data.service.LoginService
 import com.jaknaeso.app.data.token.TokenManager
-import com.skydoves.sandwich.ApiResponse
-import com.skydoves.sandwich.adapters.ApiResponseCallAdapterFactory
-import com.skydoves.sandwich.suspendOnError
-import com.skydoves.sandwich.suspendOnSuccess
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -38,7 +34,6 @@ class RefreshTokenManagerImpl @Inject constructor(private val tokenManager: Toke
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(okHttp)
-            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()
     }
@@ -47,18 +42,20 @@ class RefreshTokenManagerImpl @Inject constructor(private val tokenManager: Toke
         retryCall: suspend () -> Unit,
         onRefreshFailed: () -> Unit
     ) {
-        refreshTokens().suspendOnSuccess {
-            saveRefreshTokens(
-                accessToken = this.data.data!!.accessToken,
-                refreshToken = this.data.data!!.refreshToken
-            )
-            retryCall()
-        }.suspendOnError {
+        refreshTokens().onSuccess {
+            if (it.data != null) {
+                saveRefreshTokens(
+                    accessToken = it.data!!.accessToken,
+                    refreshToken = it.data!!.refreshToken
+                )
+                retryCall()
+            }
+        }.onFailure {
             onRefreshFailed()
         }
     }
 
-    override suspend fun refreshTokens(): ApiResponse<LoopyResult<TokenInfo>> {
+    override suspend fun refreshTokens(): Result<LoopyResult<TokenInfo>> {
         val response =
             createWebService(BuildConfig.BASE_URL, okHttp).create(LoginService::class.java).getRefreshToken()
         return response
