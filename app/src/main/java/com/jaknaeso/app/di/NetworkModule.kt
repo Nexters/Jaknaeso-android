@@ -7,7 +7,6 @@ import com.jaknaeso.app.data.service.LoginService
 import com.jaknaeso.app.data.service.MemberService
 import com.jaknaeso.app.data.service.SurveyService
 import com.jaknaeso.app.data.token.TokenManager
-import com.skydoves.sandwich.adapters.ApiResponseCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,7 +29,6 @@ object NetworkModule {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
-            .addCallAdapterFactory(ApiResponseCallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()
     }
