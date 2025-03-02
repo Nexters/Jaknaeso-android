@@ -9,12 +9,14 @@ class CheckLoginedUserUseCase @Inject constructor(private val loginRepository: L
         val accessToken = loginRepository.getAccessToken()
         val refreshToken = loginRepository.getRefreshToken()
         val isOnBoardingCompleted = loginRepository.getIsOnBoardingCompleted() ?: false
-        if (accessToken.isNullOrBlank() || refreshToken.isNullOrBlank()) { //회원가입이 안됨
+        if (accessToken.isNullOrBlank() && refreshToken.isNullOrBlank() && !isOnBoardingCompleted) { //회원가입,온보딩 안됨
             return InitialRoute.Login
-        } else if (isOnBoardingCompleted) {
+        } else if (!accessToken.isNullOrBlank() && !refreshToken.isNullOrBlank() && isOnBoardingCompleted) {//회원가입,온보딩 됨
             return InitialRoute.Home
-        } else { //회원가입은 했는데 온보딩 제출이 안됨
+        } else if (!accessToken.isNullOrBlank() && !refreshToken.isNullOrBlank() && !isOnBoardingCompleted) { //온보딩만 안됨
             return InitialRoute.OnBoardingInformation
+        } else { //온보딩만 된 경우는 존재하지 않음
+            return InitialRoute.Login
         }
     }
 }
