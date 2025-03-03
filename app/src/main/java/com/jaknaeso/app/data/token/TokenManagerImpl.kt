@@ -102,10 +102,15 @@ class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context)
     }
 
     override suspend fun saveIsOnBoardingCompleted(value: Boolean) {
-        dataStore.edit { preferences ->
-            preferences[IS_ONBOARDING_COMPLETED] = value
+        try {
+            dataStore.edit { preferences ->
+                preferences[IS_ONBOARDING_COMPLETED] = value
+            }
+        } catch (e: Exception) {
+            Log.e("DataStoreError", "Failed to save onboarding status", e)
         }
     }
+
 
     override suspend fun deleteAccessToken() {
         dataStore.edit { preferences ->
