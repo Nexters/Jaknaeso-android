@@ -65,17 +65,13 @@ class ApiCallAdapterImpl @Inject constructor(private val refreshTokenManager: Re
         try {
             val response = apiCall()
             if (response.isSuccessful) {
-                if (response.body() != null) {
-                    return Result.success(
-                        LoopyResult(
-                            result = ResponseResult.SUCCESS.name,
-                            data = response.body()!!.data,
-                            error = null
-                        )
+                return Result.success(
+                    LoopyResult(
+                        result = ResponseResult.SUCCESS.name,
+                        data = response.body()?.data,
+                        error = null
                     )
-                } else {
-                    return Result.failure(Throwable("Response body is null"))
-                }
+                )
             }
             return Result.failure(Throwable("code: ${response.code()}, message: ${response.message()}"))
         } catch (e: Exception) {
