@@ -16,5 +16,6 @@ Loopy는 질문을 받고, 선택을 하며, 회고를 작성하며 본인의 �
 3. 15일 간의 질문 및 회고 작성 <br>
 4. 회차별 캐릭터 및 회고 확인 <br>
 
+### 앱 화면 미리보기 gif 
 <img src="https://github.com/user-attachments/assets/4b76ab40-d226-4c59-8bae-2762e7b94fdc" width=240 height = 480/> <img src="https://github.com/user-attachments/assets/18f88eb5-376b-4d2b-a9da-b53301f6ac67" width=240 height = 480/> <img src="https://github.com/user-attachments/assets/dcc6f37c-6c4d-43fa-815a-912ca693d300" width=240 height = 480/> 
 <img src="https://github.com/user-attachments/assets/b58fdb0d-b7e3-4785-b8ea-1c71442c00d4" width=240 height = 480/>
