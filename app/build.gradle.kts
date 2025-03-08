@@ -22,8 +22,8 @@ android {
         applicationId = "com.jaknaeso.app"
         minSdk = 24
         targetSdk = 34
-        versionCode = 14
-        versionName = "1.0.3"
+        versionCode = 15
+        versionName = "1.0.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "LIBRARY_PACKAGE_NAME", "\"com.jaknaeso.app\"")

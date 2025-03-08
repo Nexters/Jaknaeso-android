@@ -79,6 +79,7 @@ class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context)
 
     override suspend fun getIsOnBoardingCompleted(): Flow<Boolean?> {
         return dataStore.data.map { preferences ->
+            Log.d("TokenManagerImpl", "preferences[IS_ONBOARDING_COMPLETED]:${preferences[IS_ONBOARDING_COMPLETED]}")
             preferences[IS_ONBOARDING_COMPLETED]
         }
     }
@@ -103,6 +104,7 @@ class TokenManagerImpl @Inject constructor(@ApplicationContext context: Context)
 
     override suspend fun saveIsOnBoardingCompleted(value: Boolean) {
         try {
+            Log.d("TokenManagerImpl", "value:${value}")
             dataStore.edit { preferences ->
                 preferences[IS_ONBOARDING_COMPLETED] = value
             }

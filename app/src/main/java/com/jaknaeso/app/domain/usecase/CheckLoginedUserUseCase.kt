@@ -12,7 +12,7 @@ class CheckLoginedUserUseCase @Inject constructor(private val loginRepository: L
         val result = coroutineScope {
             val accessTokenDeferred = async { loginRepository.getAccessToken() }
             val refreshTokenDeferred = async { loginRepository.getRefreshToken() }
-            val isOnBoardingCompletedDeferred = async { loginRepository.getIsOnBoardingCompleted() ?: false }
+            val isOnBoardingCompletedDeferred = async { loginRepository.getIsOnBoardingCompleted() }
 
             Triple(
                 accessTokenDeferred.await(),
@@ -22,6 +22,9 @@ class CheckLoginedUserUseCase @Inject constructor(private val loginRepository: L
         }
 
         val (accessToken, refreshToken, isOnBoardingCompleted) = result
+        if (isOnBoardingCompleted == null) {
+            return InitialRoute.Login
+        }
 
         if (accessToken.isNullOrBlank() && refreshToken.isNullOrBlank() && !isOnBoardingCompleted) { //회원가입,온보딩 안됨
             return InitialRoute.Login
