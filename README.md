@@ -11,6 +11,11 @@ Loopy는 질문을 받고, 선택을 하며, 회고를 작성하며 본인의 �
 
 
 ### 화면 구성
-| 온보딩 | 15일 동안의 질문 | 가치관 리포트 보기 |
-|------------|---------------|----------------|
-| <img src="https://velog.velcdn.com/images/yongin01/post/fb9dfb95-25ae-4955-83af-f23acce28a91/image.gif" width=250 height = 500/> |<img src="https://velog.velcdn.com/images/yongin01/post/70291a7c-47f6-4339-8265-c5ed63a45fbd/image.gif" width=250 height = 500/> |<img src="https://velog.velcdn.com/images/yongin01/post/c81163ba-86b0-4dcc-b50d-8192cbe46ba4/image.gif" width=250 height = 500/> |
+1. 온보딩 화면 <br>
+2. 온보딩 결과 확인 <br>
+3. 15일 간의 질문 및 회고 작성 <br>
+4. 회차별 캐릭터 및 회고 확인 <br>
+
+### 앱 화면 미리보기 gif 
+<img src="https://github.com/user-attachments/assets/4b76ab40-d226-4c59-8bae-2762e7b94fdc" width=240 height = 480/> <img src="https://github.com/user-attachments/assets/18f88eb5-376b-4d2b-a9da-b53301f6ac67" width=240 height = 480/> <img src="https://github.com/user-attachments/assets/dcc6f37c-6c4d-43fa-815a-912ca693d300" width=240 height = 480/> 
+<img src="https://github.com/user-attachments/assets/b58fdb0d-b7e3-4785-b8ea-1c71442c00d4" width=240 height = 480/>
